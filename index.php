@@ -1,4 +1,3 @@
-  GNU nano 6.2                                                                                      index.php                                                                                               
 <?php
 
 use Illuminate\Http\Request;
