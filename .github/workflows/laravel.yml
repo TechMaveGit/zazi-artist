@@ -1,0 +1,74 @@
+name: Laravel CI/CD
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+
+      with:
+        php-version: '8.3'
+        tools: composer, php-cs-fixer
+
+    - name: Prepare cache directories
+      run: |
+        mkdir -p bootstrap/cache
+        mkdir -p storage/framework/cache
+        chmod -R 775 bootstrap/cache storage/framework/cache
+
+  cd:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_PRIVATE_KEY }}
+        script: |
+          cd /var/www/html/zazi-artist/
+
+          # Ensure bootstrap/cache exists and set permissions
+          sudo mkdir -p bootstrap/cache
+          sudo chown -R $USER:www-data storage bootstrap/cache
+          sudo chmod -R 775 storage bootstrap/cache
+          
+          # Update code and run necessary commands
+          git reset --hard origin/production
+          git pull origin production --rebase
+          /usr/bin/php8.3 artisan view:cache
+          
+          /usr/bin/php8.3 $(which composer) install --no-dev --prefer-dist --optimize-autoloader
+
+          # Run migrations with error handling
+          if ! /usr/bin/php8.3 artisan migrate --force; then
+            echo "Migration failed! Restoring previous database state..."
+            mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME < $BACKUP_FILE
+            exit 1
+          fi
+          
+          # /usr/bin/php8.3 artisan migrate --force
+          #/usr/bin/php8.3 artisan db:seed
+          /usr/bin/php8.3 artisan optimize
+          /usr/bin/php8.3 artisan optimize:clear
+          /usr/bin/php8.3 artisan storage:link
