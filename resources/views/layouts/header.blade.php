@@ -347,7 +347,7 @@
 									</li>
 
 									<li class="sidelogout" id="sidelogout">
-										<a href="login.php" class="sidelogoutmenu">
+										<a href="{{ route('logout') }}" class="sidelogoutmenu">
 											<iconify-icon icon="solar:logout-outline"></iconify-icon><span>Logout</span>
 										</a>
 									</li>
