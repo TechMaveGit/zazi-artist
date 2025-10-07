@@ -1,0 +1,176 @@
+/**
+ * EasyZoom core styles
+ */
+ .easyzoom {
+	position: relative;
+
+	/* 'Shrink-wrap' the element */
+	display: inline-block;
+	display: inline;
+	zoom: 1;
+}
+
+.easyzoom img {
+	vertical-align: bottom;
+}
+
+.easyzoom.is-loading img {
+	cursor: progress;
+}
+
+.easyzoom.is-ready img {
+	cursor: crosshair;
+}
+
+.easyzoom.is-error  img {
+	cursor: not-allowed;
+}
+
+.easyzoom-notice {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 150;
+	width: 10em;
+	margin: -1em 0 0 -5em;
+	line-height: 2em;
+	text-align: center;
+	background: #FFF;
+	box-shadow: 0 0 10px #888;
+}
+
+.easyzoom-flyout {
+	position:absolute;
+	z-index: 100;
+	overflow: hidden;
+	background: #FFF;
+}
+
+/**
+ * EasyZoom layout variations
+ */
+.easyzoom--overlay .easyzoom-flyout {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.easyzoom--adjacent .easyzoom-flyout {
+	top: 0;
+	left: 100%;
+	width: 100%;
+	height: 100%;
+	margin-left: 20px;
+}
+
+
+.product__carousel {
+    display: block;
+    max-width: 700px;
+    margin: 0px;
+    margin-top: 0px;
+}
+
+.product__carousel a {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.product__carousel .gallery-top {
+    border: 1px solid #ebebeb;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    background: #f7fafc;
+       height: 360px !important;
+    padding: 30px 0px;
+}
+
+.product__carousel .gallery-top .swiper-slide {
+  position: relative;
+  overflow: hidden;
+}
+
+.product__carousel .gallery-top .swiper-slide a {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.product__carousel .gallery-top .swiper-slide a img {
+  width: 75%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product__carousel .gallery-top .swiper-slide .easyzoom-flyout img {
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.product__carousel .swiper-button-next.swiper-button-white,
+.product__carousel .swiper-button-prev.swiper-button-white {
+  color: #ff3720;
+}
+
+.product__carousel .gallery-thumbs .swiper-slide {
+  position: relative;
+  transition: border .15s linear;
+  border: 1px solid #ebebeb;
+  border-radius: 3px;
+  cursor: pointer;
+  overflow: hidden;
+  height: calc(100% - 2px);
+}
+
+.product__carousel .gallery-thumbs .swiper-slide.swiper-slide-thumb-active {
+  border-color: #000;
+}
+
+.product__carousel .gallery-thumbs .swiper-slide img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+}
+
+.swiper-button-prev.swiper-button-white {
+  width: 48px;
+  height: 48px;
+  font-size: 12px;
+  color: #24272c;
+  font-weight: 700;
+  transition: all .3s ease;
+  background-color: #fff !important;
+  border-radius: 50%;
+  transition: all .3s ease;
+}
+.swiper-button-prev:after, .swiper-container-rtl .swiper-button-next:after {
+  font-size: 12px !important;
+  color: #24272c !important;
+  font-weight: 700 !important;
+  transition: all .3s ease;
+}
+
+.swiper-button-next.swiper-button-white, .swiper-button-prev.swiper-button-white {
+  width: 48px;
+  height: 48px;
+  font-size: 12px;
+  color: #24272c;
+  font-weight: 700;
+  transition: all .3s ease;
+  background-color: #fff !important;
+  border-radius: 50%;
+  transition: all .3s ease;
+}
+
+.swiper-button-next:after, .swiper-container-rtl .swiper-button-prev:after {
+  font-size: 12px !important;
+  color: #24272c !important;
+  font-weight: 700 !important;
+  transition: all .3s ease;
+}
