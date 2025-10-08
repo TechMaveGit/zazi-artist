@@ -1,9 +1,8 @@
-@extends('layouts.main')
-@section('main-content')
-
+<x-app-layout :title="__('Subscription Plans')">
     <div class="page-wrapper">
         <div class="content">
-            <div class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
+            <div
+                class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
                 <div class="my-auto ">
                     <h2 class="mb-1">Subscription Plans</h2>
                     <p class="page-subtitle">Manage subscription plans and pricing for beauty salons</p>
@@ -11,7 +10,8 @@
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
 
                     <div class="">
-                        <a href="{{route('subscription.create')}}" class="btn btn-primary d-flex align-items-center cmnaddbtn">
+                        <a href="{{ route('subscription.create') }}"
+                            class="btn btn-primary d-flex align-items-center cmnaddbtn">
                             <iconify-icon icon="icon-park-outline:add-one"></iconify-icon> Create New Plan
                         </a>
                     </div>
@@ -133,7 +133,7 @@
                                     <button class="btn-icon" data-bs-toggle="modal" data-bs-target="#planDetailsModal">
                                         <iconify-icon icon="formkit:eye"></iconify-icon>
                                     </button>
-                                    <a href="{{route('subscription.edit')}}" class="btn-icon">
+                                    <a href="" class="btn-icon">
                                         <iconify-icon icon="cuida:edit-outline"></iconify-icon>
                                     </a>
                                     <button class="btn-icon text-danger">
@@ -195,10 +195,11 @@
                                 </div>
 
                                 <div class="plan-actions">
-                                    <button class="btn-icon" data-bs-toggle="modal" data-bs-target="#planDetailsModal">
+                                    <button class="btn-icon" data-bs-toggle="modal"
+                                        data-bs-target="#planDetailsModal">
                                         <iconify-icon icon="formkit:eye"></iconify-icon>
                                     </button>
-                                    <a href="{{route('subscription.edit')}}" class="btn-icon">
+                                    <a href="" class="btn-icon">
                                         <iconify-icon icon="cuida:edit-outline"></iconify-icon>
                                     </a>
                                     <button class="btn-icon text-danger">
@@ -259,10 +260,11 @@
                                 </div>
 
                                 <div class="plan-actions">
-                                    <button class="btn-icon" data-bs-toggle="modal" data-bs-target="#planDetailsModal">
+                                    <button class="btn-icon" data-bs-toggle="modal"
+                                        data-bs-target="#planDetailsModal">
                                         <iconify-icon icon="formkit:eye"></iconify-icon>
                                     </button>
-                                    <a href="{{route('subscription.edit')}}" class="btn-icon">
+                                    <a href="" class="btn-icon">
                                         <iconify-icon icon="cuida:edit-outline"></iconify-icon>
                                     </a>
                                     <button class="btn-icon text-danger">
@@ -290,14 +292,16 @@
                 <div class="modal-header">
                     <div class="modal-title-section">
                         <h5 class="modal-title" id="planDetailsModalLabel">Plan Details</h5>
-                        <div class="modal-badges" id="modalBadges"><span class="badge badge-success">Active</span></div>
+                        <div class="modal-badges" id="modalBadges"><span class="badge badge-success">Active</span>
+                        </div>
                     </div>
                     <div class="modal-actions">
                         <a href="edit-plan.php" class="btn btn-primary btn-sm" id="editPlanBtn">
                             <iconify-icon icon="cuida:edit-outline"></iconify-icon>
                             Edit Plan
                         </a>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                 </div>
                 <div class="modal-body">
@@ -309,10 +313,11 @@
                                     <div class="metric-card text-center">
                                         <div class="metric-icon primary">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round" data-lucide="dollar-sign"
-                                                class="lucide lucide-dollar-sign">
-                                                <line x1="12" x2="12" y1="2" y2="22"></line>
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                data-lucide="dollar-sign" class="lucide lucide-dollar-sign">
+                                                <line x1="12" x2="12" y1="2" y2="22">
+                                                </line>
                                                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                                             </svg>
                                         </div>
@@ -326,9 +331,9 @@
                                     <div class="metric-card text-center">
                                         <div class="metric-icon success">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round" data-lucide="users"
-                                                class="lucide lucide-users">
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                data-lucide="users" class="lucide lucide-users">
                                                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                                                 <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
                                                 <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -346,9 +351,9 @@
                                     <div class="metric-card text-center">
                                         <div class="metric-icon warning">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round" data-lucide="trending-up"
-                                                class="lucide lucide-trending-up">
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                data-lucide="trending-up" class="lucide lucide-trending-up">
                                                 <path d="M16 7h6v6"></path>
                                                 <path d="m22 7-8.5 8.5-5-5L2 17"></path>
                                             </svg>
@@ -364,9 +369,9 @@
                                     <div class="metric-card text-center">
                                         <div class="metric-icon primary">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round" data-lucide="star"
-                                                class="lucide lucide-star">
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                data-lucide="star" class="lucide lucide-star">
                                                 <path
                                                     d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z">
                                                 </path>
@@ -395,7 +400,8 @@
                                     <div id="planDetails">
                                         <div class="detail-Title">
                                             <span class="detail-label">Description:</span>
-                                            <span class="detail-value">Perfect for small salons just getting started with
+                                            <span class="detail-value">Perfect for small salons just getting started
+                                                with
                                                 basic features and essential tools.</span>
                                         </div>
                                         <hr>
@@ -490,7 +496,8 @@
                                             <div class="activity-dot success"></div>
                                             <div class="activity-content">
                                                 <div class="activity-title">New subscription</div>
-                                                <div class="activity-subtitle">Beauty Lounge subscribed • 2 hours ago</div>
+                                                <div class="activity-subtitle">Beauty Lounge subscribed • 2 hours ago
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="activity-item">
@@ -516,5 +523,4 @@
             </div>
         </div>
     </div>
-
-@endsection
+</x-app-layout>

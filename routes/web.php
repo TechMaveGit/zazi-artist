@@ -23,9 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Subscription
-    Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscription.list');
-    Route::get('/create-subscriptions', [SubscriptionController::class, 'create'])->name('subscription.create');
-    Route::get('/edit-subscriptions', [SubscriptionController::class, 'edit'])->name('subscription.edit');
+    Route::resource('subscription', SubscriptionController::class);
 
     // Salon
     Route::get('/salons', [SalonController::class, 'index'])->name('salon.list');

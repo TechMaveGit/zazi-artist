@@ -1,10 +1,8 @@
-@extends('layouts.main')
-@section('main-content')
-
-
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
-            <div class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
+            <div
+                class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
                 <div class="my-auto ">
                     <h2 class="mb-1">Salon Management</h2>
                     <p class="page-subtitle">Manage registered salons, their subscriptions, and performance.</p>
@@ -115,8 +113,8 @@
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{asset('assets/img/users/userdummy.png')}}" alt="Glamour Studio"
-                                                    class="avatar-img">
+                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
+                                                    alt="Glamour Studio" class="avatar-img">
                                             </div>
                                         </div>
                                         <div class="media-body">
@@ -162,8 +160,8 @@
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{asset('assets/img/users/userdummy.png')}}" alt="Elite Beauty Lounge"
-                                                    class="avatar-img">
+                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
+                                                    alt="Elite Beauty Lounge" class="avatar-img">
                                             </div>
                                         </div>
                                         <div class="media-body">
@@ -209,8 +207,8 @@
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{asset('assets/img/users/userdummy.png')}}" alt="Harmony Spa & Salon"
-                                                    class="avatar-img">
+                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
+                                                    alt="Harmony Spa & Salon" class="avatar-img">
                                             </div>
                                         </div>
                                         <div class="media-body">
@@ -256,8 +254,8 @@
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{asset('assets/img/users/userdummy.png')}}" alt="Royal Crown Beauty"
-                                                    class="avatar-img">
+                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
+                                                    alt="Royal Crown Beauty" class="avatar-img">
                                             </div>
                                         </div>
                                         <div class="media-body">
@@ -301,9 +299,6 @@
             </div>
 
             <!-- /Filter -->
-
         </div>
     </div>
-
-
-@endsection
+</x-app-layout>
