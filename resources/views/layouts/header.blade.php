@@ -67,13 +67,13 @@
 
 			<!-- Logo -->
 			<div class="header-left">
-				<a href="index.php" class="logo logo-normal">
+				<a href="{{route('dashboard')}}" class="logo logo-normal">
 					<img src="{{asset('assets/img/newimages/logohorizontal2.png')}}" alt="">
 				</a>
-				<a href="index.php" class="logo logo-white">
+				<a href="{{route('dashboard')}}" class="logo logo-white">
 					<img src="{{asset('assets/img/logo-white.png')}}" alt="">
 				</a>
-				<a href="index.php" class="logo-small">
+				<a href="{{route('dashboard')}}" class="logo-small">
 					<img src="{{asset('assets/img/logo-small.png')}}" alt="">
 				</a>
 				<!-- <a id="toggle_btn" href="javascript:void(0);">
@@ -302,15 +302,15 @@
 							<li class="submenu-open">
 								
 								<ul>
-                                      <li><a href="index.php">
+                                      <li><a href="{{route('dashboard')}}">
 											<iconify-icon icon="radix-icons:dashboard"></iconify-icon>
 											<span>Dashboard</span>
 										</a></li>
-									<li><a href="subscriptions.php">
+									<li><a href="{{route('subscription.list')}}">
 											<iconify-icon icon="hugeicons:credit-card"></iconify-icon>
 											<span>Subscriptions</span>
 										</a></li>
-										<li><a href="salons.php">
+										<li><a href="{{route('salon.list')}}">
 											<iconify-icon icon="map:beauty-salon"></iconify-icon>
 											<span>Salons</span>
 										</a></li>
