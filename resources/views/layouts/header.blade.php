@@ -314,11 +314,11 @@
 											<iconify-icon icon="map:beauty-salon"></iconify-icon>
 											<span>Salons</span>
 										</a></li>
-										<li><a href="transactions.php">
+										<li><a href="{{route('transactions.list')}}">
 											<iconify-icon icon="solar:dollar-linear"></iconify-icon>
 											<span>Transactions</span>
 										</a></li>
-										<li><a href="email-management.php">
+										<li><a href="{{route('email.list')}}">
 											<iconify-icon icon="clarity:email-line"></iconify-icon>
 											<span>Email Management</span>
 										</a></li>
