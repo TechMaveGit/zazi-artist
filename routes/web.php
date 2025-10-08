@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\{SubscriptionController, SalonController};
+use App\Http\Controllers\Admin\{SubscriptionController, SalonController, TransactionController, EmailManagementController};
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 
@@ -29,6 +29,14 @@ Route::middleware('auth')->group(function () {
 
     // Salon
     Route::get('/salons', [SalonController::class, 'index'])->name('salon.list');
+    Route::get('/salon-show', [SalonController::class, 'show'])->name('salon.show');
+
+    // Transactions
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.list');
+
+    // Email Management
+    Route::get('/email-management', [EmailManagementController::class, 'index'])->name('email.list');
+    Route::get('/edit-email-management', [EmailManagementController::class, 'edit'])->name('email.edit');
 
 
 });

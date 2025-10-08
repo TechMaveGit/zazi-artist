@@ -11,4 +11,9 @@ class SalonController extends Controller
     {
         return view('salons.salons');
     }
+
+    public function show(Request $request)
+    {
+        return view('salons.salon-details');
+    }
 }
