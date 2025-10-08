@@ -544,6 +544,10 @@
     </div>
 </div>
 
+<!-- Chart JS -->
+<script src="{{asset('assets/plugins/apexchart/apexcharts.min.js')}}"></script>
+<script src="{{asset('assets/plugins/apexchart/chart-data.js')}}"></script>
+
 <script>
     // Revenue Data (Monthly / Weekly / Daily)
     var revenueData = {
@@ -684,4 +688,5 @@
         });
     });
 </script>
+
 @endsection
