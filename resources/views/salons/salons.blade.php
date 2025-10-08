@@ -109,9 +109,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><a href="salon-details.php" class="tbuserid">#SAL001</a></td>
+                            <td><a href="{{route('salon.show')}}" class="tbuserid">#SAL001</a></td>
                             <td>
-                                <a href="salon-details.php">
+                                <a href="{{route('salon.show')}}">
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
@@ -144,7 +144,7 @@
 
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                             data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="salon-details.php">
+                                            data-bs-original-title="Salon Details" href="{{route('salon.show')}}">
                                             <span class="icon"><span class="feather-icon">
                                                     <iconify-icon icon="hugeicons:view"></iconify-icon>
                                                 </span></span>
@@ -156,9 +156,9 @@
                         </tr>
 
                         <tr>
-                            <td><a href="salon-details.php" class="tbuserid">#SAL002</a></td>
+                            <td><a href="{{route('salon.show')}}" class="tbuserid">#SAL002</a></td>
                             <td>
-                                <a href="salon-details.php">
+                                <a href="{{route('salon.show')}}">
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
@@ -191,7 +191,7 @@
 
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                             data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="salon-details.php">
+                                            data-bs-original-title="Salon Details" href="{{route('salon.show')}}">
                                             <span class="icon"><span class="feather-icon">
                                                     <iconify-icon icon="hugeicons:view"></iconify-icon>
                                                 </span></span>
@@ -203,9 +203,9 @@
                         </tr>
 
                         <tr>
-                            <td><a href="salon-details.php" class="tbuserid">#SAL003</a></td>
+                            <td><a href="{{route('salon.show')}}" class="tbuserid">#SAL003</a></td>
                             <td>
-                                <a href="salon-details.php">
+                                <a href="{{route('salon.show')}}">
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
@@ -238,7 +238,7 @@
 
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                             data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="salon-details.php">
+                                            data-bs-original-title="Salon Details" href="{{route('salon.show')}}">
                                             <span class="icon"><span class="feather-icon">
                                                     <iconify-icon icon="hugeicons:view"></iconify-icon>
                                                 </span></span>
@@ -250,9 +250,9 @@
                         </tr>
 
                         <tr>
-                            <td><a href="salon-details.php" class="tbuserid">#SAL004</a></td>
+                            <td><a href="{{route('salon.show')}}" class="tbuserid">#SAL004</a></td>
                             <td>
-                                <a href="salon-details.php">
+                                <a href="{{route('salon.show')}}">
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
@@ -285,7 +285,7 @@
 
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                             data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="salon-details.php">
+                                            data-bs-original-title="Salon Details" href="{{route('salon.show')}}">
                                             <span class="icon"><span class="feather-icon">
                                                     <iconify-icon icon="hugeicons:view"></iconify-icon>
                                                 </span></span>
