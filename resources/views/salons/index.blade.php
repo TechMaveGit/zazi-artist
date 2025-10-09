@@ -1,10 +1,8 @@
-@extends('layouts.main')
-@section('main-content')
-
-
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
-            <div class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
+            <div
+                class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
                 <div class="my-auto ">
                     <h2 class="mb-1">Salon Management</h2>
                     <p class="page-subtitle">Manage registered salons, their subscriptions, and performance.</p>
@@ -109,14 +107,14 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><a href="{{route('salon.show')}}" class="tbuserid">#SAL001</a></td>
+                            <td><a href="{{route('salon.show',1)}}" class="tbuserid">#SAL001</a></td>
                             <td>
-                                <a href="{{route('salon.show')}}">
+                                <a href="{{route('salon.show',1)}}">
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{asset('assets/img/users/userdummy.png')}}" alt="Glamour Studio"
-                                                    class="avatar-img">
+                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
+                                                    alt="Glamour Studio" class="avatar-img">
                                             </div>
                                         </div>
                                         <div class="media-body">
@@ -144,7 +142,7 @@
 
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                             data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{route('salon.show')}}">
+                                            data-bs-original-title="Salon Details" href="{{route('salon.show',1)}}">
                                             <span class="icon"><span class="feather-icon">
                                                     <iconify-icon icon="hugeicons:view"></iconify-icon>
                                                 </span></span>
@@ -156,14 +154,14 @@
                         </tr>
 
                         <tr>
-                            <td><a href="{{route('salon.show')}}" class="tbuserid">#SAL002</a></td>
+                            <td><a href="{{route('salon.show',1)}}" class="tbuserid">#SAL002</a></td>
                             <td>
-                                <a href="{{route('salon.show')}}">
+                                <a href="{{route('salon.show',1)}}">
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{asset('assets/img/users/userdummy.png')}}" alt="Elite Beauty Lounge"
-                                                    class="avatar-img">
+                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
+                                                    alt="Elite Beauty Lounge" class="avatar-img">
                                             </div>
                                         </div>
                                         <div class="media-body">
@@ -191,7 +189,7 @@
 
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                             data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{route('salon.show')}}">
+                                            data-bs-original-title="Salon Details" href="{{route('salon.show',1)}}">
                                             <span class="icon"><span class="feather-icon">
                                                     <iconify-icon icon="hugeicons:view"></iconify-icon>
                                                 </span></span>
@@ -203,14 +201,14 @@
                         </tr>
 
                         <tr>
-                            <td><a href="{{route('salon.show')}}" class="tbuserid">#SAL003</a></td>
+                            <td><a href="{{route('salon.show',1)}}" class="tbuserid">#SAL003</a></td>
                             <td>
-                                <a href="{{route('salon.show')}}">
+                                <a href="{{route('salon.show',1)}}">
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{asset('assets/img/users/userdummy.png')}}" alt="Harmony Spa & Salon"
-                                                    class="avatar-img">
+                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
+                                                    alt="Harmony Spa & Salon" class="avatar-img">
                                             </div>
                                         </div>
                                         <div class="media-body">
@@ -238,7 +236,7 @@
 
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                             data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{route('salon.show')}}">
+                                            data-bs-original-title="Salon Details" href="{{route('salon.show',1)}}">
                                             <span class="icon"><span class="feather-icon">
                                                     <iconify-icon icon="hugeicons:view"></iconify-icon>
                                                 </span></span>
@@ -250,14 +248,14 @@
                         </tr>
 
                         <tr>
-                            <td><a href="{{route('salon.show')}}" class="tbuserid">#SAL004</a></td>
+                            <td><a href="{{route('salon.show',1)}}" class="tbuserid">#SAL004</a></td>
                             <td>
-                                <a href="{{route('salon.show')}}">
+                                <a href="{{route('salon.show',1)}}">
                                     <div class="tbUserWrap">
                                         <div class="media-head me-2">
                                             <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{asset('assets/img/users/userdummy.png')}}" alt="Royal Crown Beauty"
-                                                    class="avatar-img">
+                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
+                                                    alt="Royal Crown Beauty" class="avatar-img">
                                             </div>
                                         </div>
                                         <div class="media-body">
@@ -285,7 +283,7 @@
 
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                             data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{route('salon.show')}}">
+                                            data-bs-original-title="Salon Details" href="{{route('salon.show',1)}}">
                                             <span class="icon"><span class="feather-icon">
                                                     <iconify-icon icon="hugeicons:view"></iconify-icon>
                                                 </span></span>
@@ -301,9 +299,6 @@
             </div>
 
             <!-- /Filter -->
-
         </div>
     </div>
-
-
-@endsection
+</x-app-layout>

@@ -23,20 +23,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Subscription
-    Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscription.list');
-    Route::get('/create-subscriptions', [SubscriptionController::class, 'create'])->name('subscription.create');
-    Route::get('/edit-subscriptions', [SubscriptionController::class, 'edit'])->name('subscription.edit');
+    Route::resource('subscription', SubscriptionController::class);
 
     // Salon
-    Route::get('/salons', [SalonController::class, 'index'])->name('salon.list');
-    Route::get('/salon-show', [SalonController::class, 'show'])->name('salon.show');
+    Route::resource('salon', SalonController::class);
 
     // Transactions
-    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.list');
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 
     // Email Management
-    Route::get('/email-management', [EmailManagementController::class, 'index'])->name('email.list');
-    Route::get('/edit-email-management', [EmailManagementController::class, 'edit'])->name('email.edit');
+    Route::resource('email-management', EmailManagementController::class);
 
 
 });

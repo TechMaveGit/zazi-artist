@@ -9,11 +9,11 @@ class SalonController extends Controller
 {
     public function index(Request $request)
     {
-        return view('salons.salons');
+        return view('salons.index');
     }
 
     public function show(Request $request)
     {
-        return view('salons.salon-details');
+        return view('salons.show');
     }
 }

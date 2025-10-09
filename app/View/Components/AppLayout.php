@@ -6,7 +6,12 @@ use Illuminate\View\Component;
 use Illuminate\View\View;
 
 class AppLayout extends Component
-{
+{   
+    public $title = 'Dashboard';
+    public function __construct($title='BeautyPro Home')
+    {
+        $this->title = $title;
+    }
     /**
      * Get the view / contents that represents the component.
      */

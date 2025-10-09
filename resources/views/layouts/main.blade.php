@@ -1,8 +1,5 @@
 @include('layouts.header')
-
 @yield('main-content')
-
-
 {{-- <!-- @stack('push_script') --> --}}
 @include('layouts.footer')
 @include('common.message')
