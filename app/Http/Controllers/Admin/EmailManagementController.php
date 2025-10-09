@@ -9,11 +9,11 @@ class EmailManagementController extends Controller
 {
     public function index()
     {
-        return view('email-management.email-management');
+        return view('email-management.index');
     }
 
     public function edit()
     {
-        return view('email-management.edit-email-management');
+        return view('email-management.edit');
     }
 }
