@@ -1,64 +1,129 @@
-<section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
-        </h2>
+ <div class="tab-pane show active" id="main-profile" role="tabpanel" tabindex="0">
+     <div class="setting-title">
+         <h4>Basic Information</h4>
+     </div>
+     <form action="{{ route('profile.update') }}" method="post" enctype="multipart/form-data" class="global-ajax-form">
+         <div class="vendortab_inrdetails">
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
+             <div class="row">
+                 <div class="image-upload-container mb-2">
+                     <div class="profile-pic-wrapper">
+                         <div class="pic-holder">
+                             <!-- uploaded pic shown here -->
+                             <img id="profilePic" class="pic" src="">
 
-    <form id="send-verification" method="post" action="{{ route('verification.send') }}">
-        @csrf
-    </form>
+                             <Input class="uploadProfileInput" type="file" name="profile_pic" id="newProfilePhoto"
+                                 accept="image/*" style="opacity: 0;" />
+                             <label for="newProfilePhoto" class="upload-file-block">
+                                 <div class="text-center">
+                                     <div class="uploadicon_template">
+                                         <iconify-icon icon="bytesize:upload">
+                                         </iconify-icon>
+                                     </div>
+                                     <div class="text-uppercase">
+                                         Update <br /> Photo
+                                     </div>
+                                 </div>
+                             </label>
+                         </div>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
-        @csrf
-        @method('patch')
+                     </div>
+                 </div>
 
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-        </div>
+             </div>
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+             <div class="card-title-head afterfirsthead_title">
+                 <h6><span>
+                         <iconify-icon icon="solar:user-line-duotone">
+                         </iconify-icon>
+                     </span>Primary Contact</h6>
+             </div>
 
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
+             <div class="row">
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
+                 <div class="col-md-4">
+                     <div class="mb-3">
+                         <label class="form-label">Salutation</label>
+                         <input type="text" class="form-control" value="Mr.">
+                     </div>
+                 </div>
+                 <div class="col-md-4">
+                     <div class="mb-3">
+                         <label class="form-label"> First Name</label>
+                         <input type="text" class="form-control" value="John">
+                     </div>
+                 </div>
 
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
-                </div>
-            @endif
-        </div>
+                 <div class="col-md-4">
+                     <div class="mb-3">
+                         <label class="form-label"> Last Name</label>
+                         <input type="text" class="form-control" value="Doe">
+                     </div>
+                 </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+                 <div class="col-md-4">
+                     <div class="mb-3">
+                         <label class="form-label"> Phone Number</label>
+                         <input class="form-control phonewithcode_inp" id="phone" name="phone" type="text">
+                     </div>
+                 </div>
+                 <div class="col-md-4">
+                     <div class="mb-3">
+                         <label class="form-label"> Email Address</label>
+                         <input type="email" class="form-control" value="johndoe@example.com">
+                     </div>
+                 </div>
 
-            @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
-            @endif
-        </div>
-    </form>
-</section>
+             </div>
+
+             <div class="card-title-head afterfirsthead_title">
+                 <h6><span>
+                         <iconify-icon icon="fluent:location-ripple-24-regular">
+                         </iconify-icon>
+                     </span>Address
+
+                 </h6>
+             </div>
+             <div class="row">
+                 <div class="col-md-12">
+                     <div class="mb-3">
+                         <label class="form-label">Street Address 1</label>
+                         <input type="text" class="form-control" value="123 Main Street, Apt 101">
+                     </div>
+                 </div>
+                 <div class="col-md-12">
+                     <div class="mb-3">
+                         <label class="form-label">Street Address Line
+                             2</label>
+                         <input type="text" class="form-control" value="123 Main Street, Apt 101">
+                     </div>
+                 </div>
+
+                 <div class="col-md-3">
+                     <div class="mb-3">
+                         <label class="form-label">Country / Region</label>
+                         <input type="text" class="form-control" value="Morocco">
+                     </div>
+                 </div>
+                 <div class="col-xl-3 col-lg-4 col-md-3">
+                     <div class="mb-3">
+                         <label class="form-label">State / Province</label>
+                         <input type="text" class="form-control" value="California">
+                     </div>
+                 </div>
+                 <div class="col-xl-3 col-lg-4 col-md-3">
+                     <div class="mb-3">
+                         <label class="form-label">City</label>
+                         <input type="text" class="form-control" value="Los Angeles">
+                     </div>
+                 </div>
+                 <div class="col-xl-3 col-lg-4 col-md-3">
+                     <div class="mb-3">
+                         <label class="form-label">Postal / Zip Code</label>
+                         <input type="text" class="form-control" value="90001">
+                     </div>
+                 </div>
+             </div>
+         </div>
+ </div>
+ </form>

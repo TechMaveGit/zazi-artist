@@ -1,48 +1,40 @@
-<section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Update Password') }}
-        </h2>
+<div class="tab-pane" id="man-password" role="tabpanel" tabindex="0">
+    <div class="settings-page-wrap">
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
-        </p>
-    </header>
-
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
-        @csrf
-        @method('put')
-
-        <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+        <div class="setting-title">
+            <h4>Security Settings</h4>
         </div>
+        <div class="vendortab_inrdetails password_setting">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group inputwithICON position-relative">
+                        <label class="form-label">Old Password</label>
+                        <iconify-icon icon="iconamoon:eye-light" width="17" height="17"></iconify-icon>
+                        <input type="password" class="form-control" placeholder="Enter old Password">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group inputwithICON position-relative">
+                        <label class="form-label">New Password</label>
+                        <iconify-icon icon="iconamoon:eye-light" width="17" height="17"></iconify-icon>
+                        <input type="password" class="form-control" placeholder="Enter New Password">
+                    </div>
+                </div>
 
-        <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
+                <div class="col-md-4">
+                    <div class="form-group inputwithICON position-relative">
+                        <label class="form-label">Confirm
+                            Password</label>
+                        <iconify-icon icon="iconamoon:eye-light" width="17" height="17"></iconify-icon>
+                        <input type="password" class="form-control" placeholder="Confirm Password">
+                    </div>
+                </div>
+            </div>
+            <div class=" securityNote">
+                <iconify-icon icon="ph:info-fill"></iconify-icon>
+                <p>Password should be minmum 8 letter and include lower
+                    and uppercase letter.</p>
+            </div>
         </div>
-
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
-
-            @if (session('status') === 'password-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
-            @endif
-        </div>
-    </form>
-</section>
+    </div>
+</div>
