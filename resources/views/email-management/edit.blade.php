@@ -1,6 +1,4 @@
-@extends('layouts.main')
-@section('main-content')
-
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
             <div class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
@@ -1145,4 +1143,4 @@
     </style>
     <!-- Edit category end -->
 
-@endsection
+</x-app-layout>

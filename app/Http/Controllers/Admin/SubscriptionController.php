@@ -9,16 +9,16 @@ class SubscriptionController extends Controller
 {
     public function index(Request $request)
     {
-        return view('subscriptions.subscriptions');
+        return view('subscriptions.index');
     }
 
     public function create(Request $request)
     {
-        return view('subscriptions.create-subscription');
+        return view('subscriptions.create');
     }
 
     public function edit(Request $request)
     {
-        return view('subscriptions.edit-subscription');
+        return view('subscriptions.edit');
     }
 }
