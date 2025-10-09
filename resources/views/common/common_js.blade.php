@@ -1,6 +1,47 @@
 <script>
-    $(document).ready(function () {
-        $(".status-dropdown").change(function () {
+    $(document).on('submit', '.global-ajax-form', function(e) {
+        e.preventDefault(); // Stop normal form submission
+
+        let form = $(this);
+        let url = form.attr('action');
+        let formData = form.serialize();
+
+        // Clear old errors
+        form.find('.text-danger').remove();
+        form.find('.is-invalid').removeClass('is-invalid');
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                // If success: handle accordingly
+                alert('Form submitted successfully!');
+                form[0].reset();
+            },
+            error: function(xhr) {
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+
+                    // Loop through validation errors
+                    $.each(errors, function(field, messages) {
+                        let input = form.find(`[name="${field}"]`);
+
+                        // Add error style
+                        input.addClass('is-invalid');
+
+                        // Append error message below the field
+                        input.after(`<div class="text-danger mt-1">${messages[0]}</div>`);
+                    });
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        $(".status-dropdown").change(function() {
             let dropdown = $(this);
             let staffId = dropdown.data("id");
             let newStatus = dropdown.val();
@@ -29,12 +70,14 @@
                             table: table,
                             _token: $('meta[name="csrf-token"]').attr("content")
                         },
-                        success: function () {
-                            Swal.fire("Success!", "Status updated successfully.", "success");
+                        success: function() {
+                            Swal.fire("Success!", "Status updated successfully.",
+                                "success");
                             location.reload();
                         },
-                        error: function () {
-                            Swal.fire("Error!", "Failed to update status.", "error");
+                        error: function() {
+                            Swal.fire("Error!", "Failed to update status.",
+                            "error");
                         }
                     });
                 } else {
@@ -44,7 +87,7 @@
         });
 
         // Store previous value before change
-        $(".status-dropdown").focus(function () {
+        $(".status-dropdown").focus(function() {
             $(this).data("prev", $(this).val());
         });
     });
@@ -56,7 +99,6 @@
             minimumResultsForSearch: Infinity // This hides the search box
         });
     });
-
 </script>
 
 <script>

@@ -191,7 +191,7 @@
                             </div>
 
                         </div>
-                        <a href="profile.php" class="dropdown-item notify-item">
+                        <a href="{{ route('profile.edit') }}" class="dropdown-item notify-item">
                             <iconify-icon icon="si:user-duotone"></iconify-icon><span>My Account</span>
                         </a>
 
@@ -208,8 +208,8 @@
                 <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="profile.php">My Profile</a>
-                    <a class="dropdown-item" href="signinjavascript:void(0);">Logout</a>
+                    <a class="dropdown-item" href="{{ route('profile.edit') }}">">My Profile</a>
+                    <a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
                 </div>
             </div>
             <!-- /Mobile Menu -->
@@ -221,84 +221,11 @@
         <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
             aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="profile.php">My Profile</a>
-            <a class="dropdown-item" href="signinjavascript:void(0);">Logout</a>
+            <a class="dropdown-item" href="{{ route('profile.edit') }}">My Profile</a>
+            <a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
         </div>
     </div>
     <!-- /Mobile Menu -->
 </div>
 <!-- /Header -->
 
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="customsidebar">
-        <div class="sidebar-inner slimscroll">
-            <div id="sidebar-menu" class="sidebar-menu">
-                <ul>
-                    <li class="submenu-open">
-                        <h6 class="submenu-hdr">Main Navigation</h6>
-                    </li>
-
-                    <li class="submenu-open">
-
-                        <ul>
-                            <li><a href="{{ route('dashboard') }}">
-                                    <iconify-icon icon="radix-icons:dashboard"></iconify-icon>
-                                    <span>Dashboard</span>
-                                </a></li>
-                            <li><a href="{{ route('subscription.index') }}">
-                                    <iconify-icon icon="hugeicons:credit-card"></iconify-icon>
-                                    <span>Subscriptions</span>
-                                </a></li>
-                            <li><a href="{{ route('salon.index') }}">
-                                    <iconify-icon icon="map:beauty-salon"></iconify-icon>
-                                    <span>Salons</span>
-                                </a></li>
-                            <li><a href="{{ route('transactions.index') }}">
-                                    <iconify-icon icon="solar:dollar-linear"></iconify-icon>
-                                    <span>Transactions</span>
-                                </a></li>
-                            <li><a href="{{ route('email-management.index') }}">
-                                    <iconify-icon icon="clarity:email-line"></iconify-icon>
-                                    <span>Email Management</span>
-                                </a></li>
-
-
-                        </ul>
-                    </li>
-
-
-                </ul>
-            </div>
-        </div>
-
-        <div class="SidebottommenuWrap">
-
-            <div id="sidebar-menu" class="sidebar-menu">
-                <ul>
-
-                    <li class="submenu-open">
-                        <ul>
-
-                            <li><a href="profile.php">
-                                    <iconify-icon icon="iconoir:profile-circle"></iconify-icon>
-                                    <span>Profile</span>
-                                </a>
-                            </li>
-
-                            <li class="sidelogout" id="sidelogout">
-                                <a href="{{ route('logout') }}" class="sidelogoutmenu">
-                                    <iconify-icon icon="solar:logout-outline"></iconify-icon><span>Logout</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                </ul>
-            </div>
-
-        </div>
-    </div>
-
-</div>
-<!-- /Sidebar -->
