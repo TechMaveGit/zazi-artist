@@ -1,0 +1,63 @@
+<svg id="SvgjsSvg1092" width="353" height="192" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev" class="apexcharts-svg" xmlns:data="ApexChartsNS" transform="translate(0, 0)"><foreignObject x="0" y="0" width="353" height="192"><div class="apexcharts-legend" xmlns="http://www.w3.org/1999/xhtml"></div><style type="text/css">
+      .apexcharts-flip-y {
+        transform: scaleY(-1) translateY(-100%);
+        transform-origin: top;
+        transform-box: fill-box;
+      }
+      .apexcharts-flip-x {
+        transform: scaleX(-1);
+        transform-origin: center;
+        transform-box: fill-box;
+      }
+      .apexcharts-legend {
+        display: flex;
+        overflow: auto;
+        padding: 0 10px;
+      }
+      .apexcharts-legend.apx-legend-position-bottom, .apexcharts-legend.apx-legend-position-top {
+        flex-wrap: wrap
+      }
+      .apexcharts-legend.apx-legend-position-right, .apexcharts-legend.apx-legend-position-left {
+        flex-direction: column;
+        bottom: 0;
+      }
+      .apexcharts-legend.apx-legend-position-bottom.apexcharts-align-left, .apexcharts-legend.apx-legend-position-top.apexcharts-align-left, .apexcharts-legend.apx-legend-position-right, .apexcharts-legend.apx-legend-position-left {
+        justify-content: flex-start;
+      }
+      .apexcharts-legend.apx-legend-position-bottom.apexcharts-align-center, .apexcharts-legend.apx-legend-position-top.apexcharts-align-center {
+        justify-content: center;
+      }
+      .apexcharts-legend.apx-legend-position-bottom.apexcharts-align-right, .apexcharts-legend.apx-legend-position-top.apexcharts-align-right {
+        justify-content: flex-end;
+      }
+      .apexcharts-legend-series {
+        cursor: pointer;
+        line-height: normal;
+        display: flex;
+        align-items: center;
+      }
+      .apexcharts-legend-text {
+        position: relative;
+        font-size: 14px;
+      }
+      .apexcharts-legend-text *, .apexcharts-legend-marker * {
+        pointer-events: none;
+      }
+      .apexcharts-legend-marker {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-right: 1px;
+      }
+
+      .apexcharts-legend-series.apexcharts-no-click {
+        cursor: auto;
+      }
+      .apexcharts-legend .apexcharts-hidden-zero-series, .apexcharts-legend .apexcharts-hidden-null-series {
+        display: none !important;
+      }
+      .apexcharts-inactive-legend {
+        opacity: 0.45;
+      }</style></foreignObject><g id="SvgjsG1094" class="apexcharts-inner apexcharts-graphical" transform="translate(84, 0)"><defs id="SvgjsDefs1093"><clipPath id="gridRectMask1eppjvd2"><rect id="SvgjsRect1095" width="185" height="185" x="0" y="0" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><clipPath id="gridRectBarMask1eppjvd2"><rect id="SvgjsRect1096" width="189" height="189" x="-2" y="-2" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><clipPath id="gridRectMarkerMask1eppjvd2"><rect id="SvgjsRect1097" width="185" height="185" x="0" y="0" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><clipPath id="forecastMask1eppjvd2"></clipPath><clipPath id="nonForecastMask1eppjvd2"></clipPath></defs><g id="SvgjsG1100" class="apexcharts-pie"><g id="SvgjsG1101" transform="translate(0, 0) scale(1)"><circle id="SvgjsCircle1102" r="51.74634146341464" cx="92.5" cy="92.5" fill="transparent"></circle><g id="SvgjsG1103" class="apexcharts-slices"><g id="SvgjsG1104" class="apexcharts-series apexcharts-pie-series" seriesName="Paid" rel="1" data:realIndex="0"><path id="SvgjsPath1105" d="M 92.5 6.256097560975604 A 86.2439024390244 86.2439024390244 0 0 1 178.7439024390244 92.5 L 144.24634146341464 92.5 A 51.74634146341464 51.74634146341464 0 0 0 92.5 40.75365853658536 L 92.5 6.256097560975604 z " fill="rgba(255,193,7,1)" fill-opacity="1" stroke-opacity="1" stroke-linecap="round" stroke-width="0" stroke-dasharray="0" class="apexcharts-pie-area apexcharts-donut-slice-0" index="0" j="0" data:angle="90" data:startAngle="0" data:strokeWidth="0" data:value="25" data:pathOrig="M 92.5 6.256097560975604 A 86.2439024390244 86.2439024390244 0 0 1 178.7439024390244 92.5 L 144.24634146341464 92.5 A 51.74634146341464 51.74634146341464 0 0 0 92.5 40.75365853658536 L 92.5 6.256097560975604 z "></path></g><g id="SvgjsG1106" class="apexcharts-series apexcharts-pie-series" seriesName="Google" rel="2" data:realIndex="1"><path id="SvgjsPath1107" d="M 178.7439024390244 92.5 A 86.2439024390244 86.2439024390244 0 0 1 65.84916848512648 174.52282540535765 L 76.50950109107589 141.7136952432146 A 51.74634146341464 51.74634146341464 0 0 0 144.24634146341464 92.5 L 178.7439024390244 92.5 z " fill="rgba(12,75,94,1)" fill-opacity="1" stroke-opacity="1" stroke-linecap="round" stroke-width="0" stroke-dasharray="0" class="apexcharts-pie-area apexcharts-donut-slice-1" index="0" j="1" data:angle="108" data:startAngle="90" data:strokeWidth="0" data:value="30" data:pathOrig="M 178.7439024390244 92.5 A 86.2439024390244 86.2439024390244 0 0 1 65.84916848512648 174.52282540535765 L 76.50950109107589 141.7136952432146 A 51.74634146341464 51.74634146341464 0 0 0 144.24634146341464 92.5 L 178.7439024390244 92.5 z "></path></g><g id="SvgjsG1108" class="apexcharts-series apexcharts-pie-series" seriesName="Referals" rel="3" data:realIndex="2"><path id="SvgjsPath1109" d="M 65.84916848512648 174.52282540535765 A 86.2439024390244 86.2439024390244 0 0 1 22.7272172656143 143.1928939538094 L 50.63633035936858 122.91573637228564 A 51.74634146341464 51.74634146341464 0 0 0 76.50950109107589 141.7136952432146 L 65.84916848512648 174.52282540535765 z " fill="rgba(171,71,188,1)" fill-opacity="1" stroke-opacity="1" stroke-linecap="round" stroke-width="0" stroke-dasharray="0" class="apexcharts-pie-area apexcharts-donut-slice-2" index="0" j="2" data:angle="36" data:startAngle="198" data:strokeWidth="0" data:value="10" data:pathOrig="M 65.84916848512648 174.52282540535765 A 86.2439024390244 86.2439024390244 0 0 1 22.7272172656143 143.1928939538094 L 50.63633035936858 122.91573637228564 A 51.74634146341464 51.74634146341464 0 0 0 76.50950109107589 141.7136952432146 L 65.84916848512648 174.52282540535765 z "></path></g><g id="SvgjsG1110" class="apexcharts-series apexcharts-pie-series" seriesName="Campaigns" rel="4" data:realIndex="3"><path id="SvgjsPath1111" d="M 22.7272172656143 143.1928939538094 A 86.2439024390244 86.2439024390244 0 0 1 92.4849475995031 6.256098874545344 L 92.49096855970187 40.75365932472721 A 51.74634146341464 51.74634146341464 0 0 0 50.63633035936858 122.91573637228564 L 22.7272172656143 143.1928939538094 z " fill="rgba(253,57,149,1)" fill-opacity="1" stroke-opacity="1" stroke-linecap="round" stroke-width="0" stroke-dasharray="0" class="apexcharts-pie-area apexcharts-donut-slice-3" index="0" j="3" data:angle="126" data:startAngle="234" data:strokeWidth="0" data:value="35" data:pathOrig="M 22.7272172656143 143.1928939538094 A 86.2439024390244 86.2439024390244 0 0 1 92.4849475995031 6.256098874545344 L 92.49096855970187 40.75365932472721 A 51.74634146341464 51.74634146341464 0 0 0 50.63633035936858 122.91573637228564 L 22.7272172656143 143.1928939538094 z "></path></g></g></g><g id="SvgjsG1098" class="apexcharts-datalabels-group" transform="translate(0, 0) scale(1)"><text id="SvgjsText1112" font-family="Helvetica, Arial, sans-serif" x="92.5" y="82.5" text-anchor="middle" dominant-baseline="auto" font-size="16px" font-weight="400" fill="#373d3f" class="apexcharts-text apexcharts-datalabel-label" style="font-family: Helvetica, Arial, sans-serif;">Google</text><text id="SvgjsText1113" font-family="Helvetica, Arial, sans-serif" x="92.5" y="118.5" text-anchor="middle" dominant-baseline="auto" font-size="20px" font-weight="400" fill="#373d3f" class="apexcharts-text apexcharts-datalabel-value" style="font-family: Helvetica, Arial, sans-serif;">40%</text></g></g><line id="SvgjsLine1114" x1="0" y1="0" x2="185" y2="0" stroke="#b6b6b6" stroke-dasharray="0" stroke-width="1" stroke-linecap="butt" class="apexcharts-ycrosshairs"></line><line id="SvgjsLine1115" x1="0" y1="0" x2="185" y2="0" stroke-dasharray="0" stroke-width="0" stroke-linecap="butt" class="apexcharts-ycrosshairs-hidden"></line></g><g id="SvgjsG1099" class="apexcharts-datalabels-group" transform="translate(0, 0) scale(1)"></g></svg>
