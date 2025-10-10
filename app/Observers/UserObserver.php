@@ -4,9 +4,11 @@ namespace App\Observers;
 
 use App\Models\User;
 use App\Notifications\WelcomeUserNotification;
+use App\Traits\UploadFile;
 
 class UserObserver
 {
+    use UploadFile;
     /**
      * Handle the User "created" event.
      */
@@ -20,7 +22,7 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        //
+
     }
 
     /**
