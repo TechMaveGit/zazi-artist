@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use function GuzzleHttp\default_ca_bundle;
 
 return new class extends Migration
 {
@@ -11,16 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bookings', function (Blueprint $table) {
+        Schema::create('favorite_shops', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->comment('customer id');
+            $table->unsignedBigInteger('user_id')->comment('artist or salon id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('shop_id');
             $table->foreign('shop_id')->references('id')->on('shops')->onDelete('cascade');
-            $table->decimal('booking_amount', 10,2);
-            $table->decimal('pay_later_amount', 10,2);
-            $table->decimal('total_amount', 10,2);
-            $table->enum('status', ['pending', 'confirmed', 'canceled', 'in_progress', 'partial_completed', 'completed', 'reschedule']);
+            $table->enum('type', ['artist', 'salon'])->default('salon');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bookings');
+        Schema::dropIfExists('favorite_shops');
     }
 };
