@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class ForceJsonForApi
 {
     public function handle(Request $request, Closure $next)
-    {
+    {    
         if ($request->is('api/*')) {
             $request->headers->set('Accept', 'application/json');
         }

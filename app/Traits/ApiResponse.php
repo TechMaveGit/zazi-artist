@@ -32,7 +32,7 @@ trait ApiResponse
     public static function error(string $message = 'Error', int $statusCode = 400, $errors = null)
     {
         $response = [
-            'status' => 'fail',
+            'status' => 'failed',
             'message' => $message,
         ];
 
