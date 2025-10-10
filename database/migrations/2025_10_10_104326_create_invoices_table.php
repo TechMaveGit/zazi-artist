@@ -24,6 +24,7 @@ return new class extends Migration
             $table->decimal('sub_total', 10,2);
             $table->decimal('grand_total', 10,2);
             $table->text('note')->nullable();
+            $table->enum('status', ['publish', 'draft'])->default('publish');
             $table->timestamps();
         });
     }
