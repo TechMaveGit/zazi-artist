@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('phone')->nullable()->after('phone_code');
             $table->enum('gender',['male','female','other'])->nullable()->after('phone');
             $table->string('location')->nullable()->after('gender');
-            $table->enum('type',['admin','customer','artist','professional'])->nullable()->after('location');
+            $table->enum('type',['admin','customer','artist','salon'])->nullable()->after('location');
             $table->string('profile')->nullable()->after('type');
             $table->text('about')->nullable()->after('profile');
             $table->json('categories')->nullable()->after('about');
