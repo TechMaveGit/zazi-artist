@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('booking_amount', 10,2);
             $table->decimal('pay_later_amount', 10,2);
             $table->decimal('total_amount', 10,2);
+            $table->enum('status', ['pending', 'confirmed', 'canceled', 'in_progress', 'partial_completed', 'completed', 'reschedule']);
             $table->timestamps();
         });
     }
