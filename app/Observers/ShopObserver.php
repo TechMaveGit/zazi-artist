@@ -8,20 +8,21 @@ use App\Models\ShopScheduled;
 use App\Traits\UploadFile;
 
 class ShopObserver
-{   
+{
     use UploadFile;
     /**
      * Handle the Shop "created" event.
      */
     public function created(Shop $shop): void
-    {   
+    {
         $request = request();
         // Store Shop Schedule
         if (!empty($request->availability)) {
             foreach ($request->availability as $each) {
+                ShopScheduled::where('shop_id', $shop->id)->delete();
                 $scehedule = new ShopScheduled();
                 $scehedule->shop_id = $shop->id;
-                $scehedule->day = ucfirst($each['day']??'');
+                $scehedule->day = ucfirst($each['day'] ?? '');
                 $scehedule->opening_time = $each['open'];
                 $scehedule->closing_time = $each['close'];
                 $scehedule->save();
@@ -43,14 +44,16 @@ class ShopObserver
      * Handle the Shop "updated" event.
      */
     public function updated(Shop $shop): void
-    {   
+    {
         $request = request();
         // Store Shop Schedule
         if (!empty($request->availability)) {
             foreach ($request->availability as $each) {
+                ShopScheduled::where('shop_id', $shop->id)->delete();
+
                 $scehedule =  new ShopScheduled();
                 $scehedule->shop_id = $shop->id;
-                $scehedule->day = ucfirst($each['day']??'');
+                $scehedule->day = ucfirst($each['day'] ?? '');
                 $scehedule->opening_time = $each['open'];
                 $scehedule->closing_time = $each['close'];
                 $scehedule->save();
@@ -69,7 +72,7 @@ class ShopObserver
     }
 
     public function deleting(Shop $shop)
-    {   
+    {
         // Delete banner images
         if (is_array($shop->banner_img)) {
             foreach ($shop->banner_img as $each) {
@@ -93,10 +96,7 @@ class ShopObserver
     /**
      * Handle the Shop "deleted" event.
      */
-    public function deleted(Shop $shop): void
-    {
-
-    }
+    public function deleted(Shop $shop): void {}
 
     /**
      * Handle the Shop "restored" event.
