@@ -3,21 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
 
 class Shop extends Model
 {
-    use Searchable;
-    public function toSearchableArray()
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->title,
-            'address' => $this->address,
-        ];
-    }
-
-
     protected $casts = [
         'banner_img' => 'array',
     ];
