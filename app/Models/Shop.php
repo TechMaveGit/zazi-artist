@@ -3,9 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Shop extends Model
 {
+    use Searchable;
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->title,
+            'address' => $this->address,
+        ];
+    }
+
+
     protected $casts = [
         'banner_img' => 'array',
     ];
@@ -23,7 +35,28 @@ class Shop extends Model
 
     protected $appends = [
         'banner_img_url',
+        'ratings',
+        'distance'
     ];
+
+    public function services()
+    {
+        return $this->hasMany(ShopService::class);
+    }
+
+    public function galleryImages()
+    {
+        return $this->hasMany(ShopGalleryImage::class);
+    }
+
+    public function scheduled()
+    {
+        return $this->hasMany(ShopScheduled::class);
+    }
+
+    public function artists(){
+        return $this->hasOne(User::class,'id','shop_id');
+    }
 
     public function getBannerImgUrlAttribute()
     {
@@ -36,13 +69,26 @@ class Shop extends Model
         return count($urls) === 1 ? $urls[0] : $urls;
     }
 
-    public function galleryImages()
+    public function getRatingsAttribute()
     {
-        return $this->hasMany(ShopGalleryImage::class);
+        return 3.5;
     }
 
-    public function scheduled()
+    public function getDistanceAttribute()
     {
-        return $this->hasMany(ShopScheduled::class);
+        $user_lat = request()->lat ?? 28.630130116504127;
+        $user_lng = request()->lng ?? 77.3806560103913;
+        if ($this->lat && $this->lng) {
+            $distance = calculateDistance(
+                (float)$user_lat,
+                (float)$user_lng,
+                (float)$this->lat,
+                (float)$this->lng,
+                'km'
+            );
+            return $distance . ' km';
+        } else {
+            return null;
+        }
     }
 }

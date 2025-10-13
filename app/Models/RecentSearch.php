@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceSession extends Model
+class RecentSearch extends Model
 {
     protected $guarded = ['id'];
-    protected $table = 'service_sessions';
-    protected $fillable = ['service_id', 'session_no', 'type', 'gap_duration'];
+    protected $fillable = ['query','user_id'];
 
     protected $hidden = ['created_at', 'updated_at'];
 }
