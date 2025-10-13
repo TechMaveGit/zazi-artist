@@ -62,9 +62,31 @@ class ShopObserver
             foreach ($request->file('gallery_images') as $each) {
                 $shop_gallery =  ShopGalleryImage::find($shop->id) ?? new ShopGalleryImage();
                 $shop_gallery->shop_id = $shop->id;
-                $shop_gallery->file = UploadFile::uploadFile($each, 'shop');
+                $shop_gallery->file = UploadFile::uploadFile($each, 'shop_gallery_image');
                 $shop_gallery->save();
             }
+        }
+    }
+
+    public function deleting(Shop $shop)
+    {   
+        // Delete banner images
+        if (is_array($shop->banner_img)) {
+            foreach ($shop->banner_img as $each) {
+                UploadFile::deleteFile($each);
+            }
+        }
+
+        // Delete gallery images
+        $galleryImages = $shop->galleryImages;
+        foreach ($galleryImages as $each) {
+            UploadFile::deleteFile($each->file);
+        }
+
+        // Delete service cover images
+        $services = $shop->services;
+        foreach ($services as $each) {
+            UploadFile::deleteFile($each->cover_img);
         }
     }
 
@@ -73,7 +95,7 @@ class ShopObserver
      */
     public function deleted(Shop $shop): void
     {
-        //
+
     }
 
     /**
