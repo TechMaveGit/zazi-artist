@@ -19,9 +19,9 @@ class ShopObserver
         // Store Shop Schedule
         if (!empty($request->availability)) {
             foreach ($request->availability as $each) {
-                $scehedule = ShopScheduled::find($shop->id) ?? new ShopScheduled();
+                $scehedule = new ShopScheduled();
                 $scehedule->shop_id = $shop->id;
-                $scehedule->day = $each['day'];
+                $scehedule->day = ucfirst($each['day']??'');
                 $scehedule->opening_time = $each['open'];
                 $scehedule->closing_time = $each['close'];
                 $scehedule->save();
@@ -48,9 +48,9 @@ class ShopObserver
         // Store Shop Schedule
         if (!empty($request->availability)) {
             foreach ($request->availability as $each) {
-                $scehedule = ShopScheduled::find($shop->id) ?? new ShopScheduled();
+                $scehedule =  new ShopScheduled();
                 $scehedule->shop_id = $shop->id;
-                $scehedule->day = $each['day'];
+                $scehedule->day = ucfirst($each['day']??'');
                 $scehedule->opening_time = $each['open'];
                 $scehedule->closing_time = $each['close'];
                 $scehedule->save();
