@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Auth\Events\Login;
@@ -15,23 +16,8 @@ use Illuminate\Support\Facades\Password;
 class AuthController extends Controller
 {
     use ApiResponse;
-    public function register(Request $request)
+    public function register(UserRegisterRequest $request)
     {
-
-        $request->validate([
-            'type' => 'required|in:customer,artist,salon',
-            'name' => 'required',
-            'email' => 'required|unique:users,email',
-            'phone_code' => 'required',
-            'phone' => 'required|min_digits:10|max_digits:10',
-            'password' => 'required|min:6',
-            'confirm_password' => 'required|same:password',
-            'gender' => 'required|in:male,female',
-        ], [
-            'phone.min_digits' => 'Phone number must be 10 digits',
-            'phone.max_digits' => 'Phone number must be 10 digits',
-        ]);
-
         try {
             $user = User::create([
                 'name' => $request->name,
