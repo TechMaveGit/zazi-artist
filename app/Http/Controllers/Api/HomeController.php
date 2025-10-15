@@ -23,7 +23,7 @@ class HomeController extends Controller
 
 
                 //shops nearby
-                $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img')->get();
+                $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img','is_opened_today')->get();
                 $data['shops'] = Collection::make($shops)->sortBy('distance')->take(5);
 
                 //latest visits
@@ -38,6 +38,11 @@ class HomeController extends Controller
 
                 return ApiResponse::success('Data retrieved successfully', 200, $data);
             } elseif ($user->hasRole('artist') || $user->hasRole('salon')) {
+                $shop=$user->shop;
+                $data['counts']['pending_bookings'] = $shop->bookings()->where('status', 'pending')->count();
+                $data['counts']['total_bookings'] = $shop->bookings()->count();
+                $data['counts']['total_services'] = $shop->services()->count();
+                $data['bookings'] = $shop->bookings()->whereIn('status', ['pending', 'confirmed', 'in_progress'])->orderBy('id', 'desc')->get();
                 return ApiResponse::success('Data retrieved successfully', 200, $data);
             }
         } catch (\Throwable $th) {

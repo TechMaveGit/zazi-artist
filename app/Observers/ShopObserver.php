@@ -18,8 +18,9 @@ class ShopObserver
         $request = request();
         // Store Shop Schedule
         if (!empty($request->availability)) {
+            ShopScheduled::where('shop_id', $shop->id)->delete();
+
             foreach ($request->availability as $each) {
-                ShopScheduled::where('shop_id', $shop->id)->delete();
                 $scehedule = new ShopScheduled();
                 $scehedule->shop_id = $shop->id;
                 $scehedule->day = ucfirst($each['day'] ?? '');
@@ -48,8 +49,9 @@ class ShopObserver
         $request = request();
         // Store Shop Schedule
         if (!empty($request->availability)) {
+            ShopScheduled::where('shop_id', $shop->id)->delete();
+
             foreach ($request->availability as $each) {
-                ShopScheduled::where('shop_id', $shop->id)->delete();
 
                 $scehedule =  new ShopScheduled();
                 $scehedule->shop_id = $shop->id;

@@ -43,7 +43,15 @@ class Shop extends Model
     }
 
     public function artists(){
-        return $this->hasOne(User::class,'id','shop_id');
+        return $this->hasOne(User::class,'id','user_id');
+    }
+
+    public function bookings(){
+        return $this->hasMany(Booking::class);
+    }
+
+    public function reviews(){
+        return $this->hasMany(Review::class);
     }
 
     public function getBannerImgUrlAttribute()
@@ -59,7 +67,7 @@ class Shop extends Model
 
     public function getRatingsAttribute()
     {
-        return 3.5;
+        return Review::where('shop_id', $this->id)->avg('total_rating');
     }
 
     public function getDistanceAttribute()

@@ -17,7 +17,13 @@ class AuthController extends Controller
 {
     use ApiResponse;
     public function register(UserRegisterRequest $request)
-    {
+    {   
+        if (User::where('email', $request->email)->exists()) {
+            return ApiResponse::error("Email already has been registered", 400);
+        }
+        if(User::where('phone', $request->phone)->exists()) {
+            return ApiResponse::error("Phone number already has been registered", 400);
+        }
         try {
             $user = User::create([
                 'name' => $request->name,
