@@ -43,7 +43,11 @@ class Shop extends Model
     }
 
     public function artists(){
-        return $this->hasOne(User::class,'id','shop_id');
+        return $this->hasOne(User::class,'id','user_id');
+    }
+
+    public function bookings(){
+        return $this->hasMany(Booking::class);
     }
 
     public function getBannerImgUrlAttribute()
