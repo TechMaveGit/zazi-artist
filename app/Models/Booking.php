@@ -23,6 +23,8 @@ class Booking extends Model
         return $this->belongsTo(Shop::class);
     }
 
+    
+
     public function bookingServices()
     {
         return $this->hasMany(BookingService::class);

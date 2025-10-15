@@ -6,13 +6,17 @@ use App\Http\Controllers\Api\BankAccountController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\ShopGalleryImageController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\APi\WaitlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Spatie\GoogleCalendar\Event;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -85,5 +89,16 @@ Route::group(['prefix' => 'v1'], function () {
         #Waitlist
         Route::get('waitlist', [WaitlistController::class, 'index']);
         Route::post('waitlist/{id}/cancel-request', [WaitlistController::class, 'cancelRequest']);
+
+        #Review
+        Route::post('reviews/create', [ReviewController::class, 'store']);
+
+        #Session
+        Route::post('sessions/{id}/start', [SessionController::class, 'start']);
+        Route::post('sessions/{id}/end', [SessionController::class, 'end']);
+
+        #Customers
+        Route::get('customers', [UserController::class, 'customers']);
+        Route::get('customers/{id}', [UserController::class, 'customerDetails']);
     });
 });

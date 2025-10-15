@@ -50,6 +50,10 @@ class Shop extends Model
         return $this->hasMany(Booking::class);
     }
 
+    public function reviews(){
+        return $this->hasMany(Review::class);
+    }
+
     public function getBannerImgUrlAttribute()
     {
         $images = is_string($this->banner_img)
@@ -63,7 +67,7 @@ class Shop extends Model
 
     public function getRatingsAttribute()
     {
-        return 3.5;
+        return Review::where('shop_id', $this->id)->avg('total_rating');
     }
 
     public function getDistanceAttribute()
