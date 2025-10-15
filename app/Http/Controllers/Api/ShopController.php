@@ -24,7 +24,7 @@ class ShopController extends Controller
         $user_lat = $request->lat ?? 28.630130116504127;
         $user_lng = $request->lng ?? 77.3806560103913;
 
-        $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img')->get();
+        $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img','is_opened_today')->get();
         $shops = Collection::make($shops)->sortBy('distance')->values();
 
         $perPage = $request->get('per_page', 10);
@@ -43,7 +43,7 @@ class ShopController extends Controller
     public function show(Request $request)
     {
         try {
-            $shop = Shop::with(['services', 'galleryImages', 'scheduled'])->findOrFail($request->id);
+            $shop = Shop::with(['services', 'galleryImages', 'scheduled', 'artists','reviews','reviews.user'])->withCount('reviews')->findOrFail($request->id);
             return ApiResponse::success("Shop details", 200, $shop);
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());
@@ -130,6 +130,20 @@ class ShopController extends Controller
             return ApiResponse::success('Shop deleted successfully', 200, null);
         } catch (\Throwable $th) {
             DB::rollBack();
+            return ApiResponse::error("Something went wrong", 500, $th->getMessage());
+        }
+    }
+
+    public function openedClosedBooking(Request $request, string $id)
+    {
+        try {
+            $shop = Shop::findOrFail($id);
+            $shop->is_opened_today = $shop->is_opened_today == 1 ? 0 : 1;
+            $shop->save();
+
+            $message = $shop->is_opened_today == 1 ? 'Booking opened successfully for today.' : 'Booking closed successfully for today.';
+            return ApiResponse::success($message, 200, null);
+        } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());
         }
     }

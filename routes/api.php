@@ -3,14 +3,20 @@
 use App\Http\Controllers\Api\ArtistController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BankAccountController;
+use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\ShopGalleryImageController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\APi\WaitlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Spatie\GoogleCalendar\Event;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -44,6 +50,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('shop/create', [ShopController::class, 'store']);
         Route::post('shop/{id}/edit', [ShopController::class, 'update']);
         Route::delete('shop/{id}/delete', [ShopController::class, 'destroy']);
+        Route::post('shop/{id}/opened-closed-booking', [ShopController::class, 'openedClosedBooking']);
 
         #Shop Gallery
         Route::get('gallery-images', [ShopGalleryImageController::class, 'index']);
@@ -72,5 +79,26 @@ Route::group(['prefix' => 'v1'], function () {
         Route::put('bank-accounts/{id}/edit', [BankAccountController::class, 'update']);
         Route::delete('bank-accounts/{id}/delete', [BankAccountController::class, 'destroy']);
 
+        #Bookings
+        Route::get('booking', [BookingController::class, 'index']);
+        Route::get('booking/{id}', [BookingController::class, 'show']);
+        Route::post('booking/create', [BookingController::class, 'store']);
+        Route::post('/booking/{id}/mark-cancel', [BookingController::class, 'markCancel']);
+        Route::post('/booking/{id}/mark-approve', [BookingController::class, 'markApprove']);
+
+        #Waitlist
+        Route::get('waitlist', [WaitlistController::class, 'index']);
+        Route::post('waitlist/{id}/cancel-request', [WaitlistController::class, 'cancelRequest']);
+
+        #Review
+        Route::post('reviews/create', [ReviewController::class, 'store']);
+
+        #Session
+        Route::post('sessions/{id}/start', [SessionController::class, 'start']);
+        Route::post('sessions/{id}/end', [SessionController::class, 'end']);
+
+        #Customers
+        Route::get('customers', [UserController::class, 'customers']);
+        Route::get('customers/{id}', [UserController::class, 'customerDetails']);
     });
 });

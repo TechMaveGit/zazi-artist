@@ -47,7 +47,16 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'categories' => 'array',
         ];
+    }
+
+    public function shop(){
+        return $this->hasOne(Shop::class);
+    }
+
+    public function bookings(){
+        return $this->hasMany(Booking::class);
     }
 
     public function sendOtp($type = 'mobile')
@@ -89,7 +98,5 @@ class User extends Authenticatable
         return $this->profile && Storage::disk('public')->exists($this->profile) ? Storage::disk('public')->url($this->profile) : null;
     }
 
-    protected $casts = [
-        'categories' => 'array',
-    ];
+   
 }
