@@ -29,7 +29,11 @@ class HomeController extends Controller
                 //latest visits
                 $data['latest_visits'] = User::whereHas('roles', function ($query) {
                     $query->where('name', 'customer');
-                })->orderBy('id', 'desc')->select('id', 'name', 'email', 'profile')->limit(5)->get();
+                })
+                ->whereHas('bookings', function ($query) {
+                    $query->where('status', 'completed')->orderBy('created_at', 'desc');
+                })
+                ->orderBy('id', 'desc')->select('id', 'name', 'email', 'profile')->limit(5)->get();
 
                 //top rated artist
                 $data['artists'] = User::whereHas('roles', function ($query) {
