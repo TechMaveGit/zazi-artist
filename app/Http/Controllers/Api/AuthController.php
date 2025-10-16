@@ -198,7 +198,10 @@ class AuthController extends Controller
         ]);
 
         try {
-            $user = User::find($request->user_id);
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return ApiResponse::error("Invalid credentials", 401);
+            }
             if ($user->otp == $request->otp) {
                 if ($user->otp_expires_at < now()) {
                     return ApiResponse::error("OTP expired", 401);

@@ -43,6 +43,8 @@ class OrderStatusNotification extends Notification implements ShouldQueue
             'approved'  => "Good news! Your order has been approved.",
             'rejected'  => "Sorry, your order has been rejected.",
             'cancelled' => "Your order has been cancelled.",
+            'appointment' => "Your appointment has been booked,We will get back to you soon.",
+            'appointment_updated' => "Your appointment has been updated,Kindly check your appointment details.",
             default     => "Order status updated.",
         };
 
