@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\ArtistController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BankAccountController;
@@ -47,16 +48,16 @@ Route::group(['prefix' => 'v1'], function () {
         #Shop
         Route::get('shop', [ShopController::class, 'index']);
         Route::get('shop/{id}', [ShopController::class, 'show']);
-        Route::post('shop/create', [ShopController::class, 'store']);
-        Route::post('shop/{id}/edit', [ShopController::class, 'update']);
-        Route::delete('shop/{id}/delete', [ShopController::class, 'destroy']);
-        Route::post('shop/{id}/opened-closed-booking', [ShopController::class, 'openedClosedBooking']);
+        Route::post('shop/create', [ShopController::class, 'store'])->middleware('role:salon|artist');
+        Route::post('shop/{id}/edit', [ShopController::class, 'update'])->middleware('role:salon|artist');
+        Route::delete('shop/{id}/delete', [ShopController::class, 'destroy'])->middleware('role:salon|artist');
+        Route::post('shop/{id}/opened-closed-booking', [ShopController::class, 'openedClosedBooking'])->middleware('role:salon|artist');
 
         #Shop Gallery
         Route::get('gallery-images', [ShopGalleryImageController::class, 'index']);
-        Route::post('gallery-images/create', [ShopGalleryImageController::class, 'store']);
-        Route::put('gallery-images/{id}/edit', [ShopGalleryImageController::class, 'update']);
-        Route::delete('gallery-images/{id}/delete', [ShopGalleryImageController::class, 'destroy']);
+        Route::post('gallery-images/create', [ShopGalleryImageController::class, 'store'])->middleware('role:salon|artist');
+        Route::put('gallery-images/{id}/edit', [ShopGalleryImageController::class, 'update'])->middleware('role:salon|artist');
+        Route::delete('gallery-images/{id}/delete', [ShopGalleryImageController::class, 'destroy'])->middleware('role:salon|artist');
 
         #Favorite
         Route::get('favorite', [FavoriteController::class, 'index']);
@@ -67,24 +68,18 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('service/all-categories', [ServiceController::class, 'allCategories']);
         Route::get('service', [ServiceController::class, 'index']);
         Route::get('service/{id}', [ServiceController::class, 'show']);
-        Route::post('service/create', [ServiceController::class, 'store']);
-        Route::put('service/{id}/edit', [ServiceController::class, 'update']);
-        Route::delete('service/{id}/delete', [ServiceController::class, 'destroy']);
-        Route::post('service/{id}/update-status', [ServiceController::class, 'updateStatus']);
+        Route::post('service/create', [ServiceController::class, 'store'])->middleware('role:salon|artist');
+        Route::put('service/{id}/edit', [ServiceController::class, 'update'])->middleware('role:salon|artist');
+        Route::delete('service/{id}/delete', [ServiceController::class, 'destroy'])->middleware('role:salon|artist');
+        Route::post('service/{id}/update-status', [ServiceController::class, 'updateStatus'])->middleware('role:salon|artist');
 
-        #Bank Account
-        Route::get('bank-accounts', [BankAccountController::class, 'index']);
-        Route::get('bank-accounts/{id}', [BankAccountController::class, 'show']);
-        Route::post('bank-accounts/create', [BankAccountController::class, 'store']);
-        Route::put('bank-accounts/{id}/edit', [BankAccountController::class, 'update']);
-        Route::delete('bank-accounts/{id}/delete', [BankAccountController::class, 'destroy']);
 
         #Bookings
         Route::get('booking', [BookingController::class, 'index']);
         Route::get('booking/{id}', [BookingController::class, 'show']);
         Route::post('booking/create', [BookingController::class, 'store']);
         Route::post('/booking/{id}/mark-cancel', [BookingController::class, 'markCancel']);
-        Route::post('/booking/{id}/mark-approve', [BookingController::class, 'markApprove']);
+        Route::post('/booking/{id}/mark-approve', [BookingController::class, 'markApprove'])->middleware('role:salon|artist');
 
         #Waitlist
         Route::get('waitlist', [WaitlistController::class, 'index']);
@@ -93,12 +88,29 @@ Route::group(['prefix' => 'v1'], function () {
         #Review
         Route::post('reviews/create', [ReviewController::class, 'store']);
 
-        #Session
-        Route::post('sessions/{id}/start', [SessionController::class, 'start']);
-        Route::post('sessions/{id}/end', [SessionController::class, 'end']);
+        Route::group(['middleware' => 'role:salon|artist'], function () {
+            #Session
+            Route::post('sessions/{id}/start', [SessionController::class, 'start']);
+            Route::post('sessions/{id}/end', [SessionController::class, 'end']);
 
-        #Customers
-        Route::get('customers', [UserController::class, 'customers']);
-        Route::get('customers/{id}', [UserController::class, 'customerDetails']);
+            #Customers
+            Route::get('customers', [UserController::class, 'customers']);
+            Route::get('customers/{id}', [UserController::class, 'customerDetails']);
+
+            #Appointment By Salon
+            Route::get('appointments', [AppointmentController::class, 'index']);
+            Route::get('appointments/{id}', [AppointmentController::class, 'show']);
+            Route::post('appointments/create', [AppointmentController::class, 'store']);
+            Route::put('appointments/{id}/edit', [AppointmentController::class, 'update']);
+            Route::post('appointments/{id}/mark-cancel', [AppointmentController::class, 'markCancel']);
+            Route::post('appointments/{id}/mark-no-show', [AppointmentController::class, 'markNoShow']);
+
+            #Bank Account
+            Route::get('bank-accounts', [BankAccountController::class, 'index']);
+            Route::get('bank-accounts/{id}', [BankAccountController::class, 'show']);
+            Route::post('bank-accounts/create', [BankAccountController::class, 'store']);
+            Route::put('bank-accounts/{id}/edit', [BankAccountController::class, 'update']);
+            Route::delete('bank-accounts/{id}/delete', [BankAccountController::class, 'destroy']);
+        });
     });
 });

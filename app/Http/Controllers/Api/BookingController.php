@@ -15,9 +15,9 @@ class BookingController extends Controller
 {
     use ApiResponse;
     public function index()
-    {
+    {   
         $bookings = Booking::when(auth()->user()->hasRole('customer'), function ($query) {
-            $query->where('user_id', auth()->user()->id);
+            $query->where('user_id', auth()->user()->id)->where('is_visible', 1);
         })
             ->when(auth()->user()->hasAnyRole(['artist', 'salon']), function ($query) {
                 $shop = auth()->user()->shop;
@@ -116,19 +116,22 @@ class BookingController extends Controller
             if (!$request->filled('reason')) {
                 return ApiResponse::error('Cancel reason is required', 400);
             }
-            $booking = Booking::where('id', $id)->whereIn('status', ['pending', 'confirmed'])->first();
+            $booking = Booking::find($id);
             if (!$booking) {
                 return ApiResponse::error('No any pending booking found', 404);
             }
             if ($booking && in_array($booking->status, ['in_progress', 'completed', 'partial_completed'])) {
                 return ApiResponse::error('You can not cancel this booking, it is already in progress', 409);
             }
+            if($booking->status == 'canceled'){
+                return ApiResponse::error('You can not cancel this booking, it is already canceled', 409);
+            }
             $booking->reason = $request->reason ?? '';
             $booking->status = 'canceled';
             $booking->save();
 
             $booking->user->notify(new OrderStatusNotification($booking, 'rejected'));
-            return ApiResponse::success('Your booking has been canceled,any application refund will be processed shortly', 200, $booking);
+            return ApiResponse::success('Your booking has been canceled,any applicable refund will be processed shortly', 200, $booking);
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());
         }

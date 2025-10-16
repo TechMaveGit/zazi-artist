@@ -128,7 +128,7 @@ class UserController extends Controller
             });
         }
 
-        $users = $query->get();
+        $users = $query->paginate($request->get('per_page', 10), ['*'], 'page', $request->get('page', 1));
         if ($users->isEmpty()) {
             return ApiResponse::error("No customers found matching the filters", 400);
         }

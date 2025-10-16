@@ -76,7 +76,7 @@ class SessionController extends Controller
             $session->skin_type=$request->skin_type;
             $session->equipment_used=$request->equipment_used;
             $session->session_notes=$request->session_notes;
-            $session->save();
+            $session->save();            
 
             return ApiResponse::success("Session ended successfully", 200, $session);
         } catch (\Throwable $th) {
