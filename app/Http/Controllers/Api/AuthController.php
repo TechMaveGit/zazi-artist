@@ -59,15 +59,15 @@ class AuthController extends Controller
                 $user = User::where('email', $request->email)->first();
 
                 if (!$user) {
-                    return ApiResponse::error("Invalid credentials", 401);
+                    return ApiResponse::error("Invalid credentials", 403);
                 }
 
                 if (!Hash::check($request->password, $user->password)) {
-                    return ApiResponse::error("Invalid credentials", 401);
+                    return ApiResponse::error("Invalid credentials", 403);
                 }
 
                 if (!$user->hasVerifiedEmail()) {
-                    return ApiResponse::error("Email not verified", 401);
+                    return ApiResponse::error("Email not verified", 403);
                 }
 
                 // Generate API token
@@ -81,7 +81,7 @@ class AuthController extends Controller
                 $user = User::where('phone', $request->mobile)->first();
 
                 if (!$user) {
-                    return ApiResponse::error("Invalid credentials", 401);
+                    return ApiResponse::error("Invalid credentials", 403);
                 }
                 $user->sendOtp();
                 return ApiResponse::success("OTP sent successfully", 200, [
@@ -104,7 +104,7 @@ class AuthController extends Controller
             $user = User::where('phone', $request->mobile)->first();
             if ($user->otp == $request->otp) {
                 if ($user->otp_expires_at < now()) {
-                    return ApiResponse::error("OTP expired", 401);
+                    return ApiResponse::error("OTP expired", 403);
                 }
                 $user->otp = null;
                 $user->save();
@@ -113,7 +113,7 @@ class AuthController extends Controller
                     'user' => $user
                 ]);
             } else {
-                return ApiResponse::error("Invalid OTP", 401);
+                return ApiResponse::error("Invalid OTP", 403);
             }
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());
@@ -174,13 +174,13 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
             if ($user->otp == $request->otp) {
                 if ($user->otp_expires_at < now()) {
-                    return ApiResponse::error("OTP expired", 401);
+                    return ApiResponse::error("OTP expired", 403);
                 }
                 $user->otp = null;
                 $user->save();
                 return ApiResponse::success("OTP verified successfully", 200, ['user' => $user]);
             } else {
-                return ApiResponse::error("Invalid OTP", 401);
+                return ApiResponse::error("Invalid OTP", 403);
             }
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());
@@ -200,11 +200,11 @@ class AuthController extends Controller
         try {
             $user = User::where('email', $request->email)->first();
             if (!$user) {
-                return ApiResponse::error("Invalid credentials", 401);
+                return ApiResponse::error("Invalid credentials", 403);
             }
             if ($user->otp == $request->otp) {
                 if ($user->otp_expires_at < now()) {
-                    return ApiResponse::error("OTP expired", 401);
+                    return ApiResponse::error("OTP expired", 403);
                 }
                 $user->otp = null;
                 $user->password = Hash::make($request->password);
@@ -213,7 +213,7 @@ class AuthController extends Controller
                     'user' => $user
                 ]);
             } else {
-                return ApiResponse::error("Invalid OTP", 401);
+                return ApiResponse::error("Invalid OTP", 403);
             }
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());
