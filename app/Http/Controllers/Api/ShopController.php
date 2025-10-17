@@ -10,6 +10,7 @@ use App\Models\ShopGalleryImage;
 use App\Models\ShopScheduled;
 use App\Traits\ApiResponse;
 use App\Traits\UploadFile;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -24,7 +25,7 @@ class ShopController extends Controller
         $user_lat = $request->lat ?? 28.630130116504127;
         $user_lng = $request->lng ?? 77.3806560103913;
 
-        $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img','is_opened_today')->get();
+        $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img', 'is_opened_today')->get();
         $shops = Collection::make($shops)->sortBy('distance')->values();
 
         $perPage = $request->get('per_page', 10);
@@ -43,7 +44,7 @@ class ShopController extends Controller
     public function show(Request $request)
     {
         try {
-            $shop = Shop::with(['services', 'galleryImages', 'scheduled', 'artists','reviews','reviews.user'])->withCount('reviews')->findOrFail($request->id);
+            $shop = Shop::with(['services', 'galleryImages', 'scheduled', 'artists', 'reviews', 'reviews.user'])->withCount('reviews')->findOrFail($request->id);
             return ApiResponse::success("Shop details", 200, $shop);
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());
@@ -121,7 +122,7 @@ class ShopController extends Controller
     }
 
     public function destroy(string $id)
-    {   
+    {
         DB::beginTransaction();
         try {
             $shop = Shop::findOrFail($id);
@@ -143,6 +144,65 @@ class ShopController extends Controller
 
             $message = $shop->is_opened_today == 1 ? 'Booking opened successfully for today.' : 'Booking closed successfully for today.';
             return ApiResponse::success($message, 200, null);
+        } catch (\Throwable $th) {
+            return ApiResponse::error("Something went wrong", 500, $th->getMessage());
+        }
+    }
+
+    public function shopSchedules(Request $request, string $id)
+    {
+        try {
+            $dayOrder = [
+                'sunday',
+                'monday',
+                'tuesday',
+                'wednesday',
+                'thursday',
+                'friday',
+                'saturday'
+            ];
+
+            // 1. Fetch all 7 schedule records for the shop. Do not use ORDER BY day.
+            $shop = ShopScheduled::where('shop_id', $id)
+                ->select('id', 'shop_id', 'day', 'opening_time', 'closing_time', 'is_closed', 'additional_hours')
+                ->get();
+
+            // 2. Sort the collection using the day's chronological index.
+            $shop = $shop->sortBy(function ($item) use ($dayOrder) {
+                return array_search(strtolower($item->day), $dayOrder);
+            })->values();
+            return ApiResponse::success('Shop schedules', 200, $shop);
+        } catch (\Throwable $th) {
+            return ApiResponse::error("Something went wrong", 500, $th->getMessage());
+        }
+    }
+
+    public function updateSchedule(Request $request, string $id)
+    {
+        $request->validate([
+            'schedule_id' => 'required|exists:shop_scheduleds,id',
+            'opening_time' => 'required_if:is_closed,false',
+            'closing_time' => 'required_if:is_closed,false',
+            'is_closed' => 'required|boolean',
+            'additional_hours' => 'nullable|array',
+            'additional_hours.opening_time' => 'required|date_format:H:i',
+            'additional_hours.closing_time' => 'required|date_format:H:i',
+        ], [
+            'opening_time.required_if' => 'Opening time is required for non-closed day.',
+            'closing_time.required_if' => 'Closing time is required for non-closed day.',
+        ]);
+        
+        try {
+            $ShopScheduled=ShopScheduled::updateOrCreate([
+                'id' => $request->schedule_id,
+                'shop_id' => $id
+            ], [
+                'opening_time' => ($request->is_closed ? null : $request->opening_time),
+                'closing_time' => ($request->is_closed  ? null : $request->closing_time),
+                'is_closed' => $request->is_closed ,
+                'additional_hours' => $request->additional_hours
+            ]);
+            return ApiResponse::success('Schedule updated successfully', 200, $ShopScheduled);
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());
         }
