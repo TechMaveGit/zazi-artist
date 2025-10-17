@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BankAccountController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\SessionController;
@@ -111,6 +112,17 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('bank-accounts/create', [BankAccountController::class, 'store']);
             Route::put('bank-accounts/{id}/edit', [BankAccountController::class, 'update']);
             Route::delete('bank-accounts/{id}/delete', [BankAccountController::class, 'destroy']);
+
+            #Shop Schedule
+            Route::get('shop/{id}/schedules', [ShopController::class, 'shopSchedules']);
+            Route::put('shop/{id}/update-schedule', [ShopController::class, 'updateSchedule']);
+
+            #Invoice
+            Route::get('invoice', [InvoiceController::class, 'index']);
+            Route::get('invoice/{id}', [InvoiceController::class, 'show']);
+            Route::post('invoice/create', [InvoiceController::class, 'store']);
+            Route::put('invoice/{id}/edit', [InvoiceController::class, 'update']);
+            Route::delete('invoice/{id}/delete', [InvoiceController::class, 'destroy']);
         });
     });
 });

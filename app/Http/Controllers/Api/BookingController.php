@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBookingRequest;
 use App\Models\Booking;
+use App\Models\Shop;
 use App\Models\ShopService;
 use App\Notifications\OrderStatusNotification;
 use App\Traits\ApiResponse;
@@ -57,6 +58,11 @@ class BookingController extends Controller
             $ShopService = ShopService::whereIn('id', $request->services)->get();
             $bookingPrice = $request->is_waitlist ? 0 : $ShopService->sum('booking_price');
             $servicePrice = $ShopService->sum('service_price');
+            $shop= Shop::findOrFail($request->shop_id);
+            if($shop->is_opened_today == 0 && $request->is_waitlist == 0){
+                return ApiResponse::error('There is no more booking accepted for today', 400);
+            }
+           
 
             $booking = Booking::create([
                 'shop_id' => $request->shop_id,

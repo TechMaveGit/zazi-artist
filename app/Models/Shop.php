@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Shop extends Model
@@ -24,7 +25,8 @@ class Shop extends Model
     protected $appends = [
         'banner_img_url',
         'ratings',
-        'distance'
+        'distance',
+        'is_shop_opened',
     ];
 
     public function services()
@@ -42,15 +44,18 @@ class Shop extends Model
         return $this->hasMany(ShopScheduled::class);
     }
 
-    public function artists(){
-        return $this->hasOne(User::class,'id','user_id');
+    public function artists()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function bookings(){
+    public function bookings()
+    {
         return $this->hasMany(Booking::class);
     }
 
-    public function reviews(){
+    public function reviews()
+    {
         return $this->hasMany(Review::class);
     }
 
@@ -86,5 +91,59 @@ class Shop extends Model
         } else {
             return null;
         }
+    }
+
+    public function getIsShopOpenedAttribute()
+    {
+        $todaySchedule = ShopScheduled::where('shop_id', $this->id)->where('day', date('l'))->first();
+        if (!$todaySchedule) {
+            return false;
+        }
+        if ($todaySchedule->is_closed) {
+            return false;
+        }
+
+        $now = Carbon::now();
+
+        // Main hours
+        $mainOpen = $this->parseTime($todaySchedule->opening_time);
+        $mainClose = $this->parseTime($todaySchedule->closing_time);
+
+        // Additional hours
+        $additionalHours = is_array($todaySchedule->additional_hours)
+            ? $todaySchedule->additional_hours
+            : json_decode($todaySchedule->additional_hours, true);
+
+        $addOpen = $addClose = null;
+        if (!empty($additionalHours['opening_time']) && !empty($additionalHours['closing_time'])) {
+            $addOpen = $this->parseTime($additionalHours['opening_time']);
+            $addClose = $this->parseTime($additionalHours['closing_time']);
+        }
+
+        // Adjust if closing time < opening (overnight hours)
+        if ($mainClose && $mainOpen && $mainClose->lessThan($mainOpen)) {
+            $mainClose->addHours(12);
+        }
+        if ($addClose && $addOpen && $addClose->lessThan($addOpen)) {
+            $addClose->addHours(12);
+        }
+
+        $inMainHours = ($mainOpen && $mainClose && $now->between($mainOpen, $mainClose));
+        $inAdditionalHours = ($addOpen && $addClose && $now->between($addOpen, $addClose));
+
+        return $inMainHours || $inAdditionalHours;
+    }
+
+    protected function parseTime($time)
+    {
+        $formats = ['H:i', 'H:i:s', 'g:i A', 'h:i A'];
+        foreach ($formats as $format) {
+            try {
+                return Carbon::createFromFormat($format, trim($time));
+            } catch (\Exception $e) {
+                // try next format
+            }
+        }
+        return null;
     }
 }
