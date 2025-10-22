@@ -13,6 +13,8 @@ use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\ShopGalleryImageController;
+use App\Http\Controllers\Api\SlotController;
+use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\APi\WaitlistController;
 use Illuminate\Http\Request;
@@ -117,12 +119,24 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('shop/{id}/schedules', [ShopController::class, 'shopSchedules']);
             Route::put('shop/{id}/update-schedule', [ShopController::class, 'updateSchedule']);
 
+            #Invoice
+            Route::get('invoice', [InvoiceController::class, 'index']);
+            Route::get('invoice/{id}', [InvoiceController::class, 'show']);
+            Route::post('invoice/create', [InvoiceController::class, 'store']);
+            Route::put('invoice/{id}/edit', [InvoiceController::class, 'update']);
+
+            #Customer Checkout
+            Route::post('customer-checkout', [InvoiceController::class, 'customerCheckout']);
+
+            #Slots
+            Route::get('slots', [SlotController::class, 'index']);
+            Route::post('slots/create', [SlotController::class, 'store']);
+            Route::put('slots/{id}/edit', [SlotController::class, 'update']);
+            Route::delete('slots/{id}/delete', [SlotController::class, 'destroy']);
         });
-        #Invoice
-        Route::get('invoice', [InvoiceController::class, 'index']);
-        Route::get('invoice/{id}', [InvoiceController::class, 'show']);
-        Route::post('invoice/create', [InvoiceController::class, 'store']);
-        Route::put('invoice/{id}/edit', [InvoiceController::class, 'update']);
-        Route::delete('invoice/{id}/delete', [InvoiceController::class, 'destroy']);
+
+        #Stripe Controller
+        Route::post('/stripe/create-payment-intent', [StripeController::class, 'create']);
+        Route::post('/stripe/connect-account', [StripeController::class, 'connectAccount']);
     });
 });

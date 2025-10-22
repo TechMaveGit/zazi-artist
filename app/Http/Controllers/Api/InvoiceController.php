@@ -124,7 +124,7 @@ class InvoiceController extends Controller
                 'status' => $status,
             ]);
 
-            $invoice_number= $this->generateInvoiceNumber($invoice);
+            $invoice_number = $this->generateInvoiceNumber($invoice);
             $invoice->update(['invoice_number' => $invoice_number]);
 
             foreach ($request->services as $service) {
@@ -152,9 +152,9 @@ class InvoiceController extends Controller
                     'payment_method' => $request->payment_method ?? 'online',
                     'status' => 'success',
                 ]);
+                Mail::to($invoice?->user?->email)->send(new InvoiceMail($invoice));
             }
-            
-            Mail::to($invoice?->user?->email)->send(new InvoiceMail($invoice));
+
             DB::commit();
             return $this->success('Invoice created successfully.', 200, $invoice->load('invoiceItems', 'payments'));
         } catch (\Exception $e) {
@@ -163,70 +163,6 @@ class InvoiceController extends Controller
         }
     }
 
-    private function createBooking(Request $request)
-    {
-
-        DB::beginTransaction();
-        try {
-            $services_id = collect($request->services)->pluck('id')->toArray();
-            $ShopService = ShopService::whereIn('id', $services_id)->get();
-            $bookingPrice = $request->total;
-            $totalServicePrice = $ShopService->sum('service_price');
-            $shop = Shop::findOrFail($request->shop_id);
-
-            $booking = Booking::create([
-                'shop_id' => $request->shop_id,
-                'user_id' => $request->customer_id,
-                'is_date_flexible' => false,
-                'is_time_flexible' => 'after',
-                'start_date' => now()->format('Y-m-d'),
-                'start_time' => now()->format('H:i:s'),
-                'end_date' => null,
-                'end_time' => null,
-                'booking_amount' => $bookingPrice,
-                'pay_later_amount' => ($totalServicePrice - $bookingPrice),
-                'total_amount' => $totalServicePrice,
-                'status' => 'confirmed'
-            ]);
-
-            $booking_id = 'OD' . str_pad($booking->id, 6, '0', STR_PAD_LEFT);
-            $booking->update(['booking_id' => $booking_id]);
-
-            foreach ($ShopService as $service) {
-                $booking_price = collect($request->services)->where('id', $service->id)->first()['request_amount'] ?? 0;
-                $bookingService = $booking->bookingServices()->create([
-                    'booking_id' => $booking->id,
-                    'service_id' => $service->id,
-                    'booking_amount' => $booking_price,
-                    'pay_later_amount' => ($service->service_price - $booking_price),
-                    'total_amount' => $service->service_price,
-                    'status' => 'confirmed',
-                    'is_consent_form' => 'N'
-                ]);
-
-                //service session
-                $service->serviceSessions;
-                foreach ($service->serviceSessions as $session) {
-                    $bookingService->bookingServiceSessions()->create([
-                        'booking_service_id' => $booking->id,
-                        'service_session_id' => $session->id
-                    ]);
-                }
-            }
-
-            DB::commit();
-            return $booking;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return false;
-        }
-    }
-
-    private function generateInvoiceNumber($invoice)
-    {
-        $invoiceNumber = 'INV' . str_pad($invoice->id, 6, '0', STR_PAD_LEFT);
-        return $invoiceNumber;
-    }
 
     /**
      * Display the specified resource.
@@ -313,10 +249,159 @@ class InvoiceController extends Controller
             }
 
             DB::commit();
-            return $this->success($invoice->load('invoiceItems', 'payments'), 'Invoice updated successfully.');
+            return $this->success('Invoice updated successfully.', 200, $invoice->load('invoiceItems', 'payments'));
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->error('Failed to update invoice: ' . $e->getMessage(), 500);
         }
+    }
+
+    public function customerCheckout(Request $request)
+    {
+        try {
+            $booking_id = $request->booking_id;
+            if (!$request->filled('booking_id')) {
+                $booking_id = $this->createBooking($request);
+            }
+
+            $booking_id = $request->booking_id;
+            if (!$request->filled('booking_id')) {
+                $booking = $this->createBooking($request);
+                $booking_id = $booking->id;
+            }
+            $subTotal = $request->sub_total;
+            $grandTotal = $request->total;
+            $paidAmount = $grandTotal;
+            $remainingAmount = $grandTotal - $paidAmount;
+            $status = $request->is_draft ? 'draft' : ($remainingAmount > 0 ? 'pending' : 'paid');
+
+            $invoice = Invoice::where('booking_id', $booking_id)->first();
+            if (!$invoice) {
+                $invoice = Invoice::create([
+                    'booking_id' => $booking_id,
+                    'customer_id' => $request->customer_id,
+                    'date' => $request->date ?? now(),
+                    'due_date' => $request->due_date ?? now()->addDays(7),
+                    'sub_total' => $subTotal,
+                    'discount' => $request->discount ?? 0,
+                    'tax' => $request->tax_percent ?? 0,
+                    'grand_total' => $grandTotal,
+                    'paid_amount' => $paidAmount,
+                    'remaining_amount' => $remainingAmount,
+                    'is_publish' => $request->is_draft ? false : true,
+                    'status' => $status
+                ]);
+                $invoice->update(['invoice_number' => $this->generateInvoiceNumber($invoice)]);
+            }
+
+            if ($request->has('services')) {
+                $invoice->invoiceItems()->delete();
+                foreach ($request->services as $service) {
+                    $bookingService = BookingService::where('booking_id', $booking_id)
+                        ->where('service_id', $service['id'])
+                        ->first();
+                    if ($bookingService) {
+                        $invoice->invoiceItems()->create([
+                            'booking_service_id' => $bookingService->id,
+                            'shop_service_id' => $service['id'],
+                            'price' => $service['price'],
+                            'discount' => $service['discount'] ?? 0,
+                            'total' => $service['total'] ?? $service['price'],
+                            'paid_amount' =>  $service['price'],
+                            'remaining_amount' =>  0
+                        ]);
+                    }
+                }
+            }
+
+            if ($paidAmount > 0) {
+                $payment = $invoice->payments()->first();
+                if ($payment) {
+                    $payment->update([
+                        'amount' => $paidAmount,
+                        'payment_method' => $request->payment_method ?? $payment->payment_method,
+                        'status' => 'success',
+                    ]);
+                } else {
+                    $invoice->payments()->create([
+                        'amount' => $paidAmount,
+                        'payment_method' => $request->payment_method ?? 'online',
+                        'status' => 'success',
+                    ]);
+                }
+            }
+
+            return $this->success('Checkout successful.', 200, $invoice->load('invoiceItems', 'payments'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->error('Failed to create invoice: ' . $e->getMessage(), 500);
+        }
+    }
+
+    //Helper function
+    private function createBooking(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            $services_id = collect($request->services)->pluck('id')->toArray();
+            $ShopService = ShopService::whereIn('id', $services_id)->get();
+            $bookingPrice = $request->total;
+            $totalServicePrice = $ShopService->sum('service_price');
+            $shop = Shop::findOrFail($request->shop_id);
+
+            $booking = Booking::create([
+                'shop_id' => $request->shop_id,
+                'user_id' => $request->customer_id,
+                'is_date_flexible' => false,
+                'is_time_flexible' => 'after',
+                'start_date' => now()->format('Y-m-d'),
+                'start_time' => now()->format('H:i:s'),
+                'end_date' => null,
+                'end_time' => null,
+                'booking_amount' => $bookingPrice,
+                'pay_later_amount' => ($totalServicePrice - $bookingPrice),
+                'total_amount' => $totalServicePrice,
+                'status' => 'confirmed'
+            ]);
+
+            $booking_id = 'OD' . str_pad($booking->id, 6, '0', STR_PAD_LEFT);
+            $booking->update(['booking_id' => $booking_id]);
+
+            foreach ($ShopService as $service) {
+                $booking_price = collect($request->services)->where('id', $service->id)->first()['request_amount'] ?? 0;
+                $bookingService = $booking->bookingServices()->create([
+                    'booking_id' => $booking->id,
+                    'service_id' => $service->id,
+                    'booking_amount' => $booking_price,
+                    'pay_later_amount' => ($service->service_price - $booking_price),
+                    'total_amount' => $service->service_price,
+                    'status' => 'confirmed',
+                    'is_consent_form' => 'N'
+                ]);
+
+                //service session
+                $service->serviceSessions;
+                foreach ($service->serviceSessions as $session) {
+                    $bookingService->bookingServiceSessions()->create([
+                        'booking_service_id' => $booking->id,
+                        'service_session_id' => $session->id
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return $booking;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+    }
+
+    //Helper function
+    private function generateInvoiceNumber($invoice)
+    {
+        $invoiceNumber = 'INV' . str_pad($invoice->id, 6, '0', STR_PAD_LEFT);
+        return $invoiceNumber;
     }
 }

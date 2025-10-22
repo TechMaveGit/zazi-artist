@@ -20,7 +20,7 @@ class UpdateProfileRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
+    {   
         return [
             'type' => 'required|in:customer,artist,salon',
             'name' => 'required|string|max:255',
