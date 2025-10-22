@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
 
 
 
+
 Route::get('/mail', function () {
     $to = 'bilal@techmavesoftware.com'; // Replace with the recipient's email address
     $subject = 'Test Subject DDDDDDDD';
