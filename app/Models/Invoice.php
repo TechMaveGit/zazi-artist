@@ -8,7 +8,17 @@ class Invoice extends Model
 {
     protected $table = 'invoices';
     protected $guarded = ['id'];
-    protected $fillable = ['booking_id', 'booking_service_id', 'price', 'request_amount', 'discount', 'tax', 'sub_total', 'grand_total', 'note', 'status'];
+    protected $fillable = ['invoice_number','booking_id', 'date', 'due_date', 'discount', 'tax', 'sub_total', 'grand_total','paid_amount','remaining_amount', 'status','note','is_publish'];
+
+    public function invoiceItems()
+    {
+        return $this->hasMany(InvoiceItem::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 
     public function booking()
     {
@@ -24,4 +34,10 @@ class Invoice extends Model
     {
         return $this->hasOneThrough(User::class, Booking::class, 'id', 'id', 'booking_id', 'user_id');
     }
+
+    protected $casts=[
+        'date' => 'date',
+        'due_date' => 'date'
+    ];
+
 }

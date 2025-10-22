@@ -117,12 +117,12 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('shop/{id}/schedules', [ShopController::class, 'shopSchedules']);
             Route::put('shop/{id}/update-schedule', [ShopController::class, 'updateSchedule']);
 
-            #Invoice
-            Route::get('invoice', [InvoiceController::class, 'index']);
-            Route::get('invoice/{id}', [InvoiceController::class, 'show']);
-            Route::post('invoice/create', [InvoiceController::class, 'store']);
-            Route::put('invoice/{id}/edit', [InvoiceController::class, 'update']);
-            Route::delete('invoice/{id}/delete', [InvoiceController::class, 'destroy']);
         });
+        #Invoice
+        Route::get('invoice', [InvoiceController::class, 'index']);
+        Route::get('invoice/{id}', [InvoiceController::class, 'show']);
+        Route::post('invoice/create', [InvoiceController::class, 'store']);
+        Route::put('invoice/{id}/edit', [InvoiceController::class, 'update']);
+        Route::delete('invoice/{id}/delete', [InvoiceController::class, 'destroy']);
     });
 });
