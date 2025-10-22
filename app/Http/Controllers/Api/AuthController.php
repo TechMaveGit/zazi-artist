@@ -59,7 +59,7 @@ class AuthController extends Controller
                 $user = User::where('email', $request->email)->first();
 
                 if (!$user) {
-                    return ApiResponse::error("Invalid credentials", 403);
+                    return ApiResponse::error("User not found, please register first", 403);
                 }
 
                 if (!Hash::check($request->password, $user->password)) {
@@ -81,7 +81,7 @@ class AuthController extends Controller
                 $user = User::where('phone', $request->mobile)->first();
 
                 if (!$user) {
-                    return ApiResponse::error("Invalid credentials", 403);
+                    return ApiResponse::error("User not found, please register first", 403);
                 }
                 $user->sendOtp();
                 return ApiResponse::success("OTP sent successfully", 200, [

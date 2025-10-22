@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBookingRequest;
 use App\Models\Booking;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\Payment;
 use App\Models\Shop;
 use App\Models\ShopService;
 use App\Notifications\OrderStatusNotification;
@@ -16,7 +19,7 @@ class BookingController extends Controller
 {
     use ApiResponse;
     public function index()
-    {   
+    {
         $bookings = Booking::when(auth()->user()->hasRole('customer'), function ($query) {
             $query->where('user_id', auth()->user()->id)->where('is_visible', 1);
         })
@@ -58,11 +61,11 @@ class BookingController extends Controller
             $ShopService = ShopService::whereIn('id', $request->services)->get();
             $bookingPrice = $request->is_waitlist ? 0 : $ShopService->sum('booking_price');
             $servicePrice = $ShopService->sum('service_price');
-            $shop= Shop::findOrFail($request->shop_id);
-            if($shop->is_opened_today == 0 && $request->is_waitlist == 0){
+            $shop = Shop::findOrFail($request->shop_id);
+            if ($shop->is_opened_today == 0 && $request->is_waitlist == 0) {
                 return ApiResponse::error('There is no more booking accepted for today', 400);
             }
-           
+
 
             $booking = Booking::create([
                 'shop_id' => $request->shop_id,
@@ -105,6 +108,37 @@ class BookingController extends Controller
                 }
             }
 
+            // Reserve Code For Future
+            // if (!$request->is_waitlist) {
+            //     $invoice = Invoice::create([
+            //         'booking_id' => $booking->id,
+            //         'discount' => 0,
+            //         'tax' => 0,
+            //         'sub_total' => $service->service_price,
+            //         'grand_total' => $service->service_price,
+            //         'is_publish' => 0,
+            //         'status' => 'partial',
+            //     ]);
+
+            //     foreach($booking->bookingServices as $bookingService) {
+            //         InvoiceItem::create([
+            //             'invoice_id' => $invoice->id,
+            //             'booking_service_id' => $bookingService->id,
+            //             'shop_service_id' => $bookingService->service_id,
+            //             'price' => $bookingService->total_amount,
+            //             'discount' => 0,
+            //             'total' => $bookingService->total_amount
+            //         ]);
+            //     }
+
+            //     Payment::create([
+            //         'invoice_id' => $booking->id,
+            //         'amount' => $booking->total_amount,
+            //         'status' => 'success',
+            //         'payment_method' => 'online'
+            //     ]);
+            // }
+
             $booking->user->notify(new OrderStatusNotification($booking, $request->is_waitlist ? 'waitlist' : 'created'));
             DB::commit();
             $booking->load('bookingServices', 'bookingServices.bookingServiceSessions');
@@ -129,7 +163,7 @@ class BookingController extends Controller
             if ($booking && in_array($booking->status, ['in_progress', 'completed', 'partial_completed'])) {
                 return ApiResponse::error('You can not cancel this booking, it is already in progress', 409);
             }
-            if($booking->status == 'canceled'){
+            if ($booking->status == 'canceled') {
                 return ApiResponse::error('You can not cancel this booking, it is already canceled', 409);
             }
             $booking->reason = $request->reason ?? '';
