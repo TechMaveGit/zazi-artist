@@ -43,4 +43,8 @@ return [
         'refresh_token' => env('GOOGLE_REFRESH_TOKEN'),
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
 ];
