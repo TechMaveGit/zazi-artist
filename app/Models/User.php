@@ -52,7 +52,7 @@ class User extends Authenticatable
     }
 
     public function shop(){
-        return $this->hasOne(Shop::class);
+        return $this->hasMany(Shop::class);
     }
 
     public function bookings(){
