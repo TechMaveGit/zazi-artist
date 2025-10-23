@@ -16,12 +16,15 @@ class WaitlistController extends Controller
             $query->where('user_id', auth()->user()->id);
         })
             ->when(auth()->user()->hasAnyRole(['artist', 'salon']), function ($query) {
-                $shop = auth()->user()->shop;
-                $query->where('shop_id', $shop->id);
+                $shop_id = auth()->user()->shop->pluck('id')->toArray();
+                $query->whereIn('id', $shop_id);
             })
             ->where('status', 'waitlist')
             ->orderBy('created_at', 'desc')
             ->get();
+        if ($bookings->isEmpty()) {
+            return ApiResponse::success('No Waitlists Found', 200, []);
+        }
 
         return ApiResponse::success('Waitlists', 200, $bookings);
     }

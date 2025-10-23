@@ -51,6 +51,7 @@ Route::group(['prefix' => 'v1'], function () {
         #Shop
         Route::get('shop', [ShopController::class, 'index']);
         Route::get('shop/{id}', [ShopController::class, 'show']);
+        Route::get('shop/{id}/available-slots', [ShopController::class, 'availableSlots']);
         Route::post('shop/create', [ShopController::class, 'store'])->middleware('role:salon|artist');
         Route::post('shop/{id}/edit', [ShopController::class, 'update'])->middleware('role:salon|artist');
         Route::delete('shop/{id}/delete', [ShopController::class, 'destroy'])->middleware('role:salon|artist');

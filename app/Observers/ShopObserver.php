@@ -19,11 +19,10 @@ class ShopObserver
         // Store Shop Schedule
         if (!empty($request->availability)) {
             ShopScheduled::where('shop_id', $shop->id)->delete();
-
             foreach ($request->availability as $each) {
                 $scehedule = new ShopScheduled();
                 $scehedule->shop_id = $shop->id;
-                $scehedule->day = ucfirst($each['day'] ?? '');
+                $scehedule->day = $each['day'];
                 $scehedule->opening_time = $each['open'];
                 $scehedule->closing_time = $each['close'];
                 $scehedule->save();

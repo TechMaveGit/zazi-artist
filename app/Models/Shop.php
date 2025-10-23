@@ -103,7 +103,7 @@ class Shop extends Model
             return false;
         }
 
-        $now = Carbon::now();
+        $now = Carbon::now('Asia/Kolkata');
 
         // Main hours
         $mainOpen = $this->parseTime($todaySchedule->opening_time);
@@ -127,7 +127,6 @@ class Shop extends Model
         if ($addClose && $addOpen && $addClose->lessThan($addOpen)) {
             $addClose->addHours(12);
         }
-
         $inMainHours = ($mainOpen && $mainClose && $now->between($mainOpen, $mainClose));
         $inAdditionalHours = ($addOpen && $addClose && $now->between($addOpen, $addClose));
 
@@ -139,11 +138,21 @@ class Shop extends Model
         $formats = ['H:i', 'H:i:s', 'g:i A', 'h:i A'];
         foreach ($formats as $format) {
             try {
-                return Carbon::createFromFormat($format, trim($time));
+                 return Carbon::createFromFormat($format, trim($time), 'Asia/Kolkata')
+                ->setTimezone('Asia/Kolkata') 
+                ->setDateFrom(Carbon::now('Asia/Kolkata')); 
             } catch (\Exception $e) {
                 // try next format
             }
         }
         return null;
+    }
+
+    // Get available slots
+    public function availableSlots($date)
+    {
+        $date = Carbon::parse($date);
+        $slots = SlotTemplate::where('shop_id', $this->id)->where('date', $date->format('Y-m-d'))->get();
+        return $slots;
     }
 }
