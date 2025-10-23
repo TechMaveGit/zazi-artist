@@ -13,6 +13,8 @@ class SlotTemplate extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
+    protected $appends = ['remaining_slots'];
+
     public function shop()
     {
         return $this->belongsTo(Shop::class);
@@ -21,5 +23,10 @@ class SlotTemplate extends Model
     public function bookingServiceSlots()
     {
         return $this->hasMany(BookingServiceSlot::class);
+    }
+
+    public function getRemainingSlotsAttribute()
+    {
+        return $this->capacity - $this->bookingServiceSlots()->count();
     }
 }

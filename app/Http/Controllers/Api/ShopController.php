@@ -22,10 +22,13 @@ class ShopController extends Controller
     use ApiResponse, UploadFile;
     public function index(Request $request)
     {
-        $user_lat = $request->lat ?? 28.630130116504127;
-        $user_lng = $request->lng ?? 77.3806560103913;
-
-        $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img', 'is_opened_today')->get();
+        $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])
+            ->select('id', 'name', 'email', 'lat', 'lng', 'banner_img', 'is_opened_today')
+            ->when(auth()->user()->hasAnyRole(['artist', 'salon']), function ($query) {
+                $shop_id = auth()->user()->shop->pluck('id')->toArray();
+                $query->whereIn('id', $shop_id);
+            })
+            ->get();
         $shops = Collection::make($shops)->sortBy('distance')->values();
 
         $perPage = $request->get('per_page', 10);
@@ -191,18 +194,35 @@ class ShopController extends Controller
             'opening_time.required_if' => 'Opening time is required for non-closed day.',
             'closing_time.required_if' => 'Closing time is required for non-closed day.',
         ]);
-        
+
         try {
-            $ShopScheduled=ShopScheduled::updateOrCreate([
+            $ShopScheduled = ShopScheduled::updateOrCreate([
                 'id' => $request->schedule_id,
                 'shop_id' => $id
             ], [
                 'opening_time' => ($request->is_closed ? null : $request->opening_time),
                 'closing_time' => ($request->is_closed  ? null : $request->closing_time),
-                'is_closed' => $request->is_closed ,
+                'is_closed' => $request->is_closed,
                 'additional_hours' => $request->additional_hours
             ]);
             return ApiResponse::success('Schedule updated successfully', 200, $ShopScheduled);
+        } catch (\Throwable $th) {
+            return ApiResponse::error("Something went wrong", 500, $th->getMessage());
+        }
+    }
+
+    public function availableSlots(Request $request, string $id)
+    {
+        try {
+            $shop = Shop::find($id);
+            if (!$shop) {
+                return ApiResponse::error("Shop not found", 404, null);
+            }
+            $date = $request->filled('date') ? Carbon::parse($request->date)->format('Y-m-d') : Carbon::now()->format('Y-m-d');
+            $availableSlots = $shop->availableSlots($date);
+            if ($availableSlots->isEmpty()) return ApiResponse::error("No slots available", 404, null);
+
+            return ApiResponse::success('Available slots', 200, $availableSlots);
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());
         }
