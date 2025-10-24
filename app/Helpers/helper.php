@@ -20,3 +20,20 @@ if (!function_exists('calculateDistance')) {
         return round($earth_radius * $c, 2);
     }
 }
+
+if (!function_exists('badgeColor')) {
+    function badgeColor(string $status)
+    {
+        return match (strtolower($status)) {
+            'active' => 'badge-success',
+            'inactive' => 'badge-danger',
+            'pending' => 'badge-warning',
+            'banned' => 'badge-dark',
+            'notification' => 'badge-danger',
+            'promotion' => 'badge-success',
+            'welcome' => 'badge-primary',
+            'renewel' => 'badge-warning',
+            default => 'badge-primary',
+        };
+    }
+}

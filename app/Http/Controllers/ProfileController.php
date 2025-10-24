@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Traits\ApiResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    use ApiResponse;
     /**
      * Display the user's profile form.
      */
@@ -24,17 +27,56 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request)
     {
-        $request->user()->fill($request->validated());
+        try {
+            $fullNumber = preg_replace('/\D/', '', $request->phone_full); 
+            $phone = preg_replace('/\D/', '', $request->phone); 
+            $dial_code = str_replace($phone, '', $fullNumber);
+            $user = $request->user();
+            $user->name = $request->name;
+            $user->phone = $request->phone;
+            $user->phone_code = '+' . $dial_code;
+            $user->save();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+            // Update or create user address
+            $addressData = $request->only([
+                'address_line1',
+                'address_line2',
+                'city',
+                'state',
+                'postal_code',
+                'country',
+            ]);
+
+            $user->address()->updateOrCreate(
+                ['user_id' => $user->id],
+                $addressData
+            );
+
+            return ApiResponse::success('Profile updated successfully.', 200);
+        } catch (\Exception $e) {
+            return ApiResponse::error('Failed to update profile. Please try again.', 500, $e->getMessage());
         }
+    }
 
-        $request->user()->save();
+    public function updatePicture(Request $request)
+    {
+        if ($request->has('image')) {
+            $user = $request->user();
+            $imageData = $request->input('image');
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+            list($type, $imageData) = explode(';', $imageData);
+            list(, $imageData)      = explode(',', $imageData);
+            $imageData = base64_decode($imageData);
+            $fileName = 'profile_' . $user->id . '_' . time() . '.png';
+            $filePath = 'profile/' . $fileName;
+            Storage::disk('public')->put($filePath, $imageData);
+            $user->profile = $filePath;
+            $user->save();
+
+            return response()->json(['message' => 'Profile picture updated successfully!', 'path' => $filePath]);
+        }
     }
 
     /**

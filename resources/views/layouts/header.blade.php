@@ -169,7 +169,12 @@
                         aria-haspopup="false" aria-expanded="false">
                         <div class="profiletpAvatar">
                             <div class="cu3-avatar">
-                                <div class="user-bg-purple avatar" cu3-size="20">AS</div>
+                                <div class="user-bg-purple avatar" cu3-size="20" style="background: unset;"> <img
+                                        src="{{ asset('storage/' . auth()->user()->profile) }}"
+                                        onerror="this.src='{{ asset('assets/img/newimages/userdummy.png') }}'"
+                                        style="width:24px; height:24px; border-radius:50px;" alt="user-image"
+                                        class="rounded-circle">
+                                </div>
                             </div>
                         </div>
                         <iconify-icon icon="iconamoon:arrow-down-2-light"></iconify-icon>
@@ -179,14 +184,16 @@
                         <!-- item-->
                         <div class="dropdown-header noti-title">
                             <div class="proileDrop_right">
-                                <div class="profileInrImagewrap">
-                                    <!-- <img src="http://localhost/techmave-product/public/assets/images/new-images/userdummy.png"  alt="user-image" class="rounded-circle"> -->
-                                    <div class="namerletters">AS</div>
+                                <div class="profileInrImagewrap" style="background: unset;">
+                                    <img src="{{ asset('storage/' . auth()->user()->profile) }}"
+                                        onerror="this.src='{{ asset('assets/img/newimages/userdummy.png') }}'"
+                                        style="width:30px; height:30px; border-radius:50;" alt="user-image"
+                                        class="rounded-circle">
                                 </div>
 
                                 <div class="pro-user-name ms-1">
-                                    <h2>BeautyPro</h2>
-                                    <p class="user_mail_id">beautypro@gmail.com</p>
+                                    <h2>{{ auth()->user()?->name??'' }}</h2>
+                                    <p class="user_mail_id">{{ auth()->user()?->email??'' }}</p>
                                 </div>
                             </div>
 
@@ -228,4 +235,3 @@
     <!-- /Mobile Menu -->
 </div>
 <!-- /Header -->
-
