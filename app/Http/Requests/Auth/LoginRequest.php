@@ -46,6 +46,12 @@ class LoginRequest extends FormRequest
                 'email' => trans('auth.failed'),
             ]);
         }
+       if(!Auth::user()->hasRole('admin')){
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Only admins are allowed to login here.',
+            ]);
+       }
         RateLimiter::clear($this->throttleKey());
     }
 
