@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\{SubscriptionController, SalonController, TransactionController, EmailManagementController};
+use App\Http\Controllers\CommonController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -50,6 +51,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/picture', [ProfileController::class, 'updatePicture'])->name('profile.picture.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Subscription
@@ -63,6 +65,8 @@ Route::middleware('auth')->group(function () {
 
     // Email Management
     Route::resource('email-management', EmailManagementController::class);
+
+    Route::post('delete/record', [CommonController::class, 'deleteRecord'])->name('delete.record');
 });
 
 

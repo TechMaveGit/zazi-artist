@@ -17,6 +17,7 @@ trait ApiResponse
             'status' => 'success',
             'message' => $message,
             'data' => $data,
+            'redirect' => $data['redirect'] ?? null,
         ], $statusCode);
     }
 

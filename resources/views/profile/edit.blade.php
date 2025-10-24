@@ -1,111 +1,105 @@
 <x-app-layout>
     <div class="page-wrapper">
-        <form action="profile.php">
-            <div class="content settings-content">
-                <div
-                    class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
+        <div class="content settings-content">
+            <div
+                class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
 
-                    <div class="my-auto ">
-                        <h2 class="mb-1 flexpagetitle">
-                            <div class="backbtnwrap">
-                                <a href="index.php">
-                                    <iconify-icon icon="octicon:arrow-left-24"></iconify-icon>
-                                </a>
-                            </div>
-                            Your Profile
-                        </h2>
-                    </div>
-
-                    <div class="d-flex  right-content align-items-center flex-wrap ">
-                        <ul class="tophead_action">
-
-                            <li>
-                                <div class="enquiryDate">
-                                    <iconify-icon icon="ion:calendar-outline"></iconify-icon> Last Updated On : <div
-                                        class="Onboarddate">
-                                        14 Dec 2024 12:24pm</div>
-
-                                </div>
-                            </li>
-                            <li>
-                                <div class="pageheader_rightbtns">
-                                    <button type="submit" class="cmnPromary_btn">Save Changes</button>
-                                </div>
-                            </li>
-
-
-                        </ul>
-                        <div class="head-icons ms-2 mb-0">
-                            <a href="javascript:void(0);" class="" data-bs-toggle="tooltip"
-                                data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header">
-                                <i class="ti ti-chevrons-up"></i>
+                <div class="my-auto ">
+                    <h2 class="mb-1 flexpagetitle">
+                        <div class="backbtnwrap">
+                            <a href="index.php">
+                                <iconify-icon icon="octicon:arrow-left-24"></iconify-icon>
                             </a>
                         </div>
-                    </div>
+                        Your Profile
+                    </h2>
                 </div>
 
-                <div class="card tablemaincard_nopaddingleftright noboxshadow">
-                    <div class="card-body p-0">
-                        <div class="custom-datatable-filter">
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="settings-wrapper d-flex">
-                                        <div class="sidebars settings-sidebar " id="sidebar2">
-                                            <div class="sidebar-inner slimscroll">
-                                                <div class="profile-content">
-                                                    <div class="profile-contentimg">
-                                                        <img src="assets/img/newimages/userdummy.png" alt="img"
-                                                            id="blah">
-                                                    </div>
-                                                    <div class="profile-contentname">
-                                                        <h2>BeautyPro</h2>
-                                                        <p><a
-                                                                href="mailto:BeautyProinfo@gmail.com">BeautyPro@gmail.com</a>
-                                                        </p>
-                                                    </div>
-                                                </div>
+                <div class="d-flex  right-content align-items-center flex-wrap ">
+                    <ul class="tophead_action">
 
-                                                <div class="copy-container">
+                        <li>
+                            <div class="enquiryDate">
+                                <iconify-icon icon="ion:calendar-outline"></iconify-icon> Last Updated On : <div
+                                    class="Onboarddate">
+                                    {{ $user?->updated_at?->format('d M Y h:i A') }}</div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="head-icons ms-2 mb-0">
+                        <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top"
+                            data-bs-original-title="Collapse" id="collapse-header">
+                            <i class="ti ti-chevrons-up"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card tablemaincard_nopaddingleftright noboxshadow">
+                <div class="card-body p-0">
+                    <div class="custom-datatable-filter">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="settings-wrapper d-flex">
+                                    <div class="sidebars settings-sidebar " id="sidebar2">
+                                        <div class="sidebar-inner slimscroll">
+                                            <div class="profile-content">
+                                                <div class="profile-contentimg">
+                                                    <img src="{{ asset('storage/' . auth()->user()->profile) }}"
+                                                        onerror="this.src='assets/img/newimages/userdummy.png"
+                                                        style="width: 100px;height:100px;border-radius:50%;"
+                                                        alt="img" id="blah">
+                                                </div>
+                                                <div class="profile-contentname">
+                                                    <h2>{{ $user->name ?? '' }}</h2>
+                                                    <p><a
+                                                            href="mailto:{{ $user->email ?? '' }}">{{ $user->email ?? '' }}</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {{-- <div class="copy-container">
                                                     <span>Your ID:</span>
                                                     <div class="user-id" id="userID">#USD565</div>
-                                                </div>
+                                                </div> --}}
 
-                                                <div id="sidebar-menu5" class="sidebar-menu">
-                                                    <div class="nav vendorDetail_lefttabs flex-column nav-pills  tab-style-7"
-                                                        id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                                        <button class="nav-link text-start active" id="main-profile-tab"
-                                                            data-bs-toggle="pill" data-bs-target="#main-profile"
-                                                            type="button" role="tab" aria-controls="main-profile"
-                                                            aria-selected="true">
-                                                            <iconify-icon icon="solar:user-line-duotone"></iconify-icon>
-                                                            Basic
-                                                            Details
-                                                        </button>
-                                                        <button class="nav-link text-start" id="man-password-tab"
-                                                            data-bs-toggle="pill" data-bs-target="#man-password"
-                                                            type="button" role="tab" aria-controls="man-password"
-                                                            aria-selected="false">
-                                                            <iconify-icon
-                                                                icon="hugeicons:square-lock-password"></iconify-icon>
-                                                            Security
-                                                        </button>
-
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="profileLogout_wrap">
-                                                    <button class="btn" id="logoutbtn" type="button">
-                                                        <iconify-icon icon="solar:logout-broken"></iconify-icon> Logout
+                                            <div id="sidebar-menu5" class="sidebar-menu">
+                                                <div class="nav vendorDetail_lefttabs flex-column nav-pills  tab-style-7"
+                                                    id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                                    <button class="nav-link text-start active" id="main-profile-tab"
+                                                        data-bs-toggle="pill" data-bs-target="#main-profile"
+                                                        type="button" role="tab" aria-controls="main-profile"
+                                                        aria-selected="true">
+                                                        <iconify-icon icon="solar:user-line-duotone"></iconify-icon>
+                                                        Basic
+                                                        Details
                                                     </button>
+                                                    <button class="nav-link text-start" id="man-password-tab"
+                                                        data-bs-toggle="pill" data-bs-target="#man-password"
+                                                        type="button" role="tab" aria-controls="man-password"
+                                                        aria-selected="false">
+                                                        <iconify-icon
+                                                            icon="hugeicons:square-lock-password"></iconify-icon>
+                                                        Security
+                                                    </button>
+
                                                 </div>
+
+                                            </div>
+
+                                            <div class="profileLogout_wrap">
+                                                <a href="{{ route('logout') }}">
+                                                    <button class="btn" id="logoutbtn" type="button">
+                                                        <iconify-icon icon="solar:logout-broken"></iconify-icon>
+                                                        Logout
+                                                    </button>
+                                                </a>
                                             </div>
                                         </div>
-                                        <div class="settings-page-wrap">
-                                            <div class="tab-content" id="v-pills-tabContent">
-                                                @include('profile.partials.update-profile-information-form')
-                                                @include('profile.partials.update-password-form')
-                                            </div>
+                                    </div>
+                                    <div class="settings-page-wrap">
+                                        <div class="tab-content" id="v-pills-tabContent">
+                                            @include('profile.partials.update-profile-information-form')
+                                            @include('profile.partials.update-password-form')
                                         </div>
                                     </div>
                                 </div>
@@ -113,9 +107,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-        </form>
+
+        </div>
     </div>
     <!-- Add Bank Account -->
     <div class="modal fade" id="add-account">
@@ -336,25 +330,37 @@
                             setTimeout(function() {
                                 holder.classList.remove("uploadInProgress");
                                 loader.remove();
-                                var random = Math.random();
-                                if (random < 0.9) {
-                                    wrapper.innerHTML +=
-                                        '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> Store image updated successfully</div>';
-                                    triggerInput.value = "";
-                                    // Hide the label by setting opacity to 0
-                                    wrapper.querySelector(".upload-file-block").style.opacity = "0";
-                                    setTimeout(function() {
-                                        wrapper.querySelector('[role="alert"]').remove();
-                                    }, 3000);
-                                } else {
-                                    holder.querySelector(".pic").src = currentImg;
-                                    wrapper.innerHTML +=
-                                        '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> There is an error while uploading! Please try again later.</div>';
-                                    triggerInput.value = "";
-                                    setTimeout(function() {
-                                        wrapper.querySelector('[role="alert"]').remove();
-                                    }, 3000);
-                                }
+                                $.ajax({
+                                    url: '{{ route('profile.picture.update') }}',
+                                    method: 'PATCH',
+                                    data: {
+                                        _token: '{{ csrf_token() }}',
+                                        image: holder.querySelector(".pic").src,
+                                    },
+                                    success: function(response) {
+                                        wrapper.innerHTML +=
+                                            '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> Store image updated successfully</div>';
+                                        triggerInput.value = "";
+                                        // Hide the label by setting opacity to 0
+                                        wrapper.querySelector(".upload-file-block").style
+                                            .opacity = "0";
+                                        setTimeout(function() {
+                                            wrapper.querySelector('[role="alert"]')
+                                                .remove();
+
+                                        }, 3000);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        holder.querySelector(".pic").src = currentImg;
+                                        wrapper.innerHTML +=
+                                            '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> There is an error while uploading! Please try again later.</div>';
+                                        triggerInput.value = "";
+                                        setTimeout(function() {
+                                            wrapper.querySelector('[role="alert"]')
+                                                .remove();
+                                        }, 3000);
+                                    }
+                                });
                             }, 1500);
                         };
                     } else {

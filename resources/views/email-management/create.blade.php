@@ -508,8 +508,8 @@
                         </svg>
                     </a>
                     <div class="my-auto ">
-                        <h2 class="mb-1">Edit Email Template</h2>
-                        <p class="page-subtitle">Modify email templates for communication</p>
+                        <h2 class="mb-1">Create Email Template</h2>
+                        <p class="page-subtitle">Design email templates for customer communication</p>
                     </div>
                 </div>
 
@@ -523,7 +523,7 @@
                     </div>
                 </div>
             </div>
-            <form id="createTemplateForm" method="PUT" action="{{ route('email-management.update', $template->id) }}"
+            <form id="createTemplateForm" method="POST" action="{{ route('email-management.store') }}"
                 class="global-ajax-form">
                 @csrf <div class="email-template-wrapper">
                     <div class="row">
@@ -543,17 +543,15 @@
                                         <div class="col-md-6 mb-3">
                                             <label class="email-template-form-label">Template Name</label>
                                             <input type="text" class="form-control" name="name" id="templateName"
-                                                placeholder="e.g., Welcome Email" value="{{ $template->name ?? '' }}">
+                                                placeholder="e.g., Welcome Email">
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="email-template-form-label">Template Type</label>
                                             <select name="type" id="templateType" class="form-select">
                                                 <option value="">Select Type</option>
-                                                <option value="welcome" @selected($template && $template->type == 'welcome')>Welcome</option>
-                                                <option value="notification" @selected($template && $template->type == 'notification')>Notification
-                                                </option>
-                                                <option value="promotion" @selected($template && $template->type == 'promotion')>Promotion
-                                                </option>
+                                                <option value="welcome">Welcome</option>
+                                                <option value="notification">Notification</option>
+                                                <option value="promotion">Promotion</option>
                                             </select>
                                         </div>
                                     </div>
@@ -562,8 +560,7 @@
                                         <div class="col-md-12 mb-3">
                                             <label class="email-template-form-label">Subject Line</label>
                                             <input type="text" class="form-control" id="templateSubject"
-                                                placeholder="e.g., Welcome to BeautyPro!"
-                                                value="{{ $template->subject ?? '' }}" name="subject">
+                                                placeholder="e.g., Welcome to BeautyPro!" name="subject">
                                         </div>
                                     </div>
 
@@ -575,8 +572,7 @@
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" name="status"
-                                                id="isTemplateActive" checked value="1"
-                                                @checked($template && $template->status == 1)>
+                                                id="isTemplateActive" checked value="1">
                                         </div>
                                     </div>
                                 </div>
@@ -614,8 +610,55 @@
                                         <div class="mb-3">
                                             <label class="email-template-form-label">Email Body</label>
                                             <textarea name="content" id="summernote">
-                                               {!! $template->content ?? '' !!}
+                                                <p>Dear [name],</p>
+                                                <p>Welcome to BeautyPro! We're excited to have you join our platform.
+                                                </p>
+                                                <p>Your account has been successfully created and you can now start
+                                                    managing
+                                                    your salon.</p>
+                                                <p>Best regards,<br>The BeautyPro Team</p>
                                             </textarea>
+                                            {{-- <div class="email-template-editor-toolbar">
+                                                <button type="button" class="email-template-toolbar-btn"
+                                                    data-action="bold">
+                                                    <iconify-icon icon="material-symbols:format-bold"></iconify-icon>
+                                                </button>
+                                                <button type="button" class="email-template-toolbar-btn"
+                                                    data-action="italic">
+                                                    <iconify-icon icon="material-symbols:format-italic"></iconify-icon>
+                                                </button>
+                                                <button type="button" class="email-template-toolbar-btn"
+                                                    data-action="underline">
+                                                    <iconify-icon
+                                                        icon="material-symbols:format-underlined"></iconify-icon>
+                                                </button>
+                                                <div class="email-template-toolbar-divider"></div>
+                                                <button type="button" class="email-template-toolbar-btn"
+                                                    data-action="insertOrderedList">
+                                                    <iconify-icon icon="material-symbols:format-list-numbered">
+                                                    </iconify-icon>
+                                                </button>
+                                                <button type="button" class="email-template-toolbar-btn"
+                                                    data-action="insertUnorderedList">
+                                                    <iconify-icon icon="material-symbols:format-list-bulleted">
+                                                    </iconify-icon>
+                                                </button>
+                                                <div class="email-template-toolbar-divider"></div>
+                                                <button type="button" class="email-template-toolbar-btn"
+                                                    data-action="createLink">
+                                                    <iconify-icon icon="material-symbols:link"></iconify-icon>
+                                                </button>
+                                            </div>
+                                            <div class="email-template-editor" id="emailEditor"
+                                                contenteditable="true">
+                                                <p>Dear [name],</p>
+                                                <p>Welcome to BeautyPro! We're excited to have you join our platform.
+                                                </p>
+                                                <p>Your account has been successfully created and you can now start
+                                                    managing
+                                                    your salon.</p>
+                                                <p>Best regards,<br>The BeautyPro Team</p>
+                                            </div> --}}
                                         </div>
 
                                     </div>
@@ -667,19 +710,23 @@
                                     <div class="email-template-preview" id="emailPreview">
                                         <div class="email-template-preview-header">
                                             <div class="email-template-preview-from">
-                                                <strong>From:</strong> {{ config('app.name') }}
-                                                &lt;noreply@beautypro.com&gt;
+                                                <strong>From:</strong> BeautyPro &lt;noreply@beautypro.com&gt;
                                             </div>
                                             <div class="email-template-preview-to">
                                                 <strong>To:</strong> salon@example.com
                                             </div>
                                             <div class="email-template-preview-subject">
-                                                <strong>Subject:</strong> <span id="previewSubject">{{ $template?->subject??'' }}</span>
+                                                <strong>Subject:</strong> <span id="previewSubject">Email
+                                                    Subject</span>
                                             </div>
                                         </div>
                                         <div class="email-template-preview-divider"></div>
                                         <div class="email-template-preview-body" id="previewBody">
-                                            {!! $template->content ?? '' !!}
+                                            <p>Dear Glamour Studio,</p>
+                                            <p>Welcome to BeautyPro! We're excited to have you join our platform.</p>
+                                            <p>Your account has been successfully created and you can now start managing
+                                                your salon.</p>
+                                            <p>Best regards,<br>The BeautyPro Team</p>
                                         </div>
                                     </div>
                                 </div>

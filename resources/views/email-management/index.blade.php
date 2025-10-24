@@ -10,7 +10,8 @@
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
 
                     <div class="">
-                        <a href="create-template.php" class="btn btn-primary d-flex align-items-center cmnaddbtn">
+                        <a href="{{ route('email-management.create') }}"
+                            class="btn btn-primary d-flex align-items-center cmnaddbtn">
                             <iconify-icon icon="icon-park-outline:add-one"></iconify-icon>Create Template
                         </a>
                     </div>
@@ -30,7 +31,7 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Total Templates</p>
-                                    <p class="metric-value primary">12</p>
+                                    <p class="metric-value primary">{{ $templates->count() }}</p>
                                 </div>
                                 <div class="metric-icon primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -46,12 +47,12 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="metric-footer">
+                            {{-- <div class="metric-footer">
                                 <div class="metric-change positive">
                                     <span>+3 new</span>
                                     <span class="text-muted">this month</span>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
@@ -60,7 +61,7 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Active Templates</p>
-                                    <p class="metric-value success">9</p>
+                                    <p class="metric-value success">{{ $templates->where('status', 1)->count() }}</p>
                                 </div>
                                 <div class="metric-icon success">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -72,9 +73,9 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="metric-footer">
+                            {{-- <div class="metric-footer">
                                 <p class="text-muted">75% of total</p>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
@@ -82,8 +83,8 @@
                         <div class="metric-card">
                             <div class="metric-content">
                                 <div class="metric-info">
-                                    <p class="metric-label">Draft Templates</p>
-                                    <p class="metric-value warning">3</p>
+                                    <p class="metric-label">Inactive Templates</p>
+                                    <p class="metric-value warning">{{ $templates->where('status', 0)->count() }}</p>
                                 </div>
                                 <div class="metric-icon warning">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -95,17 +96,17 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="metric-footer">
+                            {{-- <div class="metric-footer">
                                 <p class="text-muted">25% of total</p>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 mb-4">
+                    {{-- <div class="col-lg-3 col-md-6 mb-4">
                         <div class="metric-card">
                             <div class="metric-content">
                                 <div class="metric-info">
-                                    <p class="metric-label">Most Used</p>
+                                    <p class="metric-label">Most Used Template</p>
                                     <p class="metric-value primary">Welcome</p>
                                 </div>
                                 <div class="metric-icon primary">
@@ -123,7 +124,7 @@
                                 <p class="text-muted">Template type</p>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
@@ -145,10 +146,9 @@
                                     <div class="col-lg-3 col-sm-6 col-12">
                                         <div class="input-blocks">
                                             <i data-feather="layers" class="info-img"></i>
-                                            <select class="select2">
-                                                <option value="Active">Active</option>
-                                                <option value="Draft">Draft</option>
-                                                <option value="Sent">Sent</option>
+                                            <select class="select2" id="status">
+                                                <option value="1">Active</option>
+                                                <option value="0">Inactive</option>
                                             </select>
                                         </div>
                                     </div>
@@ -156,12 +156,12 @@
                                     <div class="col-lg-3 col-sm-6 col-12">
                                         <div class="input-blocks">
                                             <i data-feather="toggle-right" class="info-img"></i>
-                                            <select class="form-select select2">
-                                                <option>All Templates</option>
-                                                <option>Welcome</option>
-                                                <option>Promotion</option>
-                                                <option>Newsletter</option>
-                                                <option>Notification</option>
+                                            <select class="form-select select2" id="template_type">
+                                                <option value="">All Templates</option>
+                                                <option value="welcome">Welcome</option>
+                                                <option value="promotion">Promotion</option>
+                                                <option value="newsletter">Newsletter</option>
+                                                <option value="notification">Notification</option>
                                             </select>
                                         </div>
                                     </div>
@@ -171,7 +171,7 @@
                         </div>
 
                         <!-- Right Filters -->
-                        <div class="col-lg-4">
+                        {{-- <div class="col-lg-4">
                             <div class="rightPrFilters">
                                 <div class="input-icon mb-2 position-relative">
                                     <span class="input-icon-addon">
@@ -181,165 +181,11 @@
                                         placeholder="dd/mm/yyyy - dd/mm/yyyy">
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <!-- /Filter -->
-
-                <table class="table common-datatable nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th>Template Name</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Created On</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div>
-                                    <div class="fw-medium">Welcome Email Template</div>
-                                    <div class="text-muted small">TPL001</div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-primary">Welcome</span></td>
-                            <td><span class="badge badge-success">Active</span></td>
-                            <td>Dec 15, 2024</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Edit Template" href="{{ route('email-management.edit',1) }}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                        <button
-                                            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Delete Template">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="fluent:delete-16-regular"></iconify-icon>
-                                                </span></span>
-                                        </button>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div>
-                                    <div class="fw-medium">Payment Reminder Template</div>
-                                    <div class="text-muted small">TPL002</div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-danger">Notification</span></td>
-                            <td><span class="badge badge-success">Active</span></td>
-                            <td>Dec 10, 2024</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Edit Template" href="{{ route('email-management.edit',1) }}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                        <button
-                                            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Delete Template">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="fluent:delete-16-regular"></iconify-icon>
-                                                </span></span>
-                                        </button>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div>
-                                    <div class="fw-medium">Subscription Renewal Template</div>
-                                    <div class="text-muted small">TPL003</div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-warning">Renewal</span></td>
-                            <td><span class="badge badge-success">Active</span></td>
-                            <td>Dec 8, 2024</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Edit Template" href="{{ route('email-management.edit',1) }}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                        <button
-                                            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Delete Template">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="fluent:delete-16-regular"></iconify-icon>
-                                                </span></span>
-                                        </button>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div>
-                                    <div class="fw-medium">Promotional Offer Template</div>
-                                    <div class="text-muted small">TPL004</div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-success">Promotion</span></td>
-                            <td><span class="badge badge-secondary">Draft</span></td>
-                            <td>Dec 5, 2024</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Edit Template" href="{{ route('email-management.edit',1) }}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                        <button
-                                            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Delete Template">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="fluent:delete-16-regular"></iconify-icon>
-                                                </span></span>
-                                        </button>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
+                {{ $dataTable->table() }}
             </div>
 
             <!-- /Filter -->
@@ -442,4 +288,21 @@
         </div>
     </div>
     <!-- Edit category end -->
+    @push('scripts')
+        {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+        <script>
+            $(document).ready(function() {
+                const table = window.LaravelDataTables && window.LaravelDataTables["global-datatable"];
+
+                table.on('preXhr.dt', function(e, settings, data) {
+                    data.status = $('#status').val();
+                    data.template_type = $('#template_type').val();
+                });
+
+                $("body").on('change', '#status,#template_type', function() {
+                    table.ajax.reload();
+                });
+            });
+        </script>
+    @endpush
 </x-app-layout>
