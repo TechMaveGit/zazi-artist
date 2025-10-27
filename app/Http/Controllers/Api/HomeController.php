@@ -51,12 +51,11 @@ class HomeController extends Controller
                 if(empty($shop)){
                     return ApiResponse::error('Shop not found', 400);
                 }
-                $booking=Booking::where('shop_id', $shop->id)->first();
                 $service= ShopService::where('shop_id', $shop->id)->get();
-                $data['counts']['pending_bookings'] = (clone $booking)?->where('status', 'pending')->count() ?? 0;
-                $data['counts']['total_bookings'] = (clone $booking)?->count() ?? 0;
+                $data['counts']['pending_bookings'] = $shop?->bookings()->where('status', 'pending')->count() ?? 0;
+                $data['counts']['total_bookings'] = $shop?->bookings()?->count() ?? 0;
                 $data['counts']['total_services'] = $service->count();
-                $data['bookings'] = (clone $booking)?->whereIn('status', ['pending', 'confirmed', 'in_progress'])->orderBy('id', 'desc')->get();
+                $data['bookings'] = $shop?->bookings()?->whereIn('status', ['pending', 'confirmed', 'in_progress'])->orderBy('id', 'desc')->get();
                 return ApiResponse::success('Data retrieved successfully', 200, $data);
             }
         } catch (\Throwable $th) {
