@@ -29,12 +29,12 @@ class EmailTemplateDataTable extends DataTable
             ->editColumn('type', function ($row) {
                 $badgeClass = badgeColor($row->type);
                 return '<span class="badge ' . $badgeClass . '">' . ucfirst($row->type) . '</span>';
-            }   )
+            })
             ->editColumn('status', function ($row) {
-                $row->status= $row->status ? 'Active' : 'Inactive';
+                $row->status = $row->status ? 'Active' : 'Inactive';
                 $badgeClass = badgeColor($row->status);
                 return '<span class="badge ' . $badgeClass . '">' . ucfirst($row->status) . '</span>';
-            }   )
+            })
             ->addColumn('action', function ($row) {
                 $editUrl = route('email-management.edit', $row->id);
                 $deleteUrl = route('email-management.destroy', $row->id);
@@ -59,17 +59,24 @@ class EmailTemplateDataTable extends DataTable
                 return $action;
             })
             ->filter(function ($query) {
-                if (request()->has('status') && request('status') !== '') {
+                if (request()->has('status') && !empty(request('status'))) {
                     $status = request('status');
                     $query->where('status', $status);
                 }
-                if (request()->has('template_type') && request('template_type') !== '') {
+                if (request()->has('template_type') && !empty(request('template_type'))) {
                     $type = request('template_type');
                     $query->where('type', $type);
                 }
+                if (request()->has('search') && request('search')['value'] != '') {
+                    $search = request('search')['value'];
+                    $query->where(function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('type', 'like', "%{$search}%");
+                    });
+                }
             })
             ->setRowId('id')
-            ->rawColumns(['action','type','status']);
+            ->rawColumns(['action', 'type', 'status']);
     }
 
     /**

@@ -1,10 +1,10 @@
-<x-app-layout>
+<x-app-layout :title="__('Edit Plan')">
     <div class="page-wrapper">
         <div class="content">
             <div
                 class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
                 <div class="pageheaderleft">
-                    <a href="subscriptions.php" class="btn btn-ghost btn-sm">
+                    <a href="{{ route('subscription.index') }}" class="btn btn-ghost btn-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" data-lucide="arrow-left" class="lucide lucide-arrow-left">
@@ -14,15 +14,16 @@
                     </a>
                     <div class="my-auto ">
                         <h2 class="mb-1">Edit Plan</h2>
-                        <p class="page-subtitle">Modify subscription plan details</p>
+                        <p class="page-subtitle">Modify the subscription plan for your salons</p>
                     </div>
                 </div>
 
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
+
                     <div class="">
-                        <button type="button" id="savePlanBtn"
+                        <button type="submit" form="editPlanForm"
                             class="btn btn-primary d-flex align-items-center cmnaddbtn">
-                            <iconify-icon icon="fluent:save-32-regular"></iconify-icon> Save Plan
+                            <iconify-icon icon="fluent:save-32-regular"></iconify-icon> Save Changes
                         </button>
                     </div>
                     <div class="head-icons ms-2 headicon_innerpage">
@@ -47,23 +48,35 @@
                                 </h6>
                             </div>
                             <div class="card-body">
-                                <form id="editPlanForm">
+                                <form id="editPlanForm" action="{{ route('subscription.update', $subscription->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Plan Name</label>
-                                            <input type="text" class="form-control" id="planName"
-                                                placeholder="e.g., Professional Plan" value="Professional Plan">
+                                            <input type="text" class="form-control" id="planName" name="name"
+                                                placeholder="e.g., Professional Plan" value="{{ old('name', $subscription->name) }}">
+                                            @error('name')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Price</label>
-                                            <input type="number" class="form-control" id="planPrice"
-                                                placeholder="99.99" step="0.01" value="99.99">
+                                            <input type="number" class="form-control" id="planPrice" name="price"
+                                                placeholder="99.99" step="0.01" value="{{ old('price', $subscription->price) }}">
+                                            @error('price')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Description</label>
-                                        <textarea class="form-control" id="planDescription" rows="3" placeholder="Describe what this plan offers...">Ideal for growing salons with advanced features and premium support for enhanced business growth.</textarea>
+                                        <textarea class="form-control" id="planDescription" name="description" rows="3"
+                                            placeholder="Describe what this plan offers...">{{ old('description', $subscription->description) }}</textarea>
+                                        @error('description')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </form>
                             </div>
@@ -83,8 +96,8 @@
                                         <label class="form-label">Billing Duration</label>
 
                                         <div class="custom-default-select">
-                                            <div class="select-trigger form-control" data-value="monthly">
-                                                <span class="selected-text">Monthly</span>
+                                            <div class="select-trigger form-control" data-value="{{ old('billing_period', $subscription->billing_period) }}">
+                                                <span class="selected-text">{{ ucfirst(old('billing_period', $subscription->billing_period)) }}</span>
                                                 <span class="select-arrow">
                                                     <iconify-icon icon="iconamoon:arrow-down-2-light"></iconify-icon>
                                                 </span>
@@ -94,18 +107,27 @@
                                                 <span data-value="quarterly">Quarterly</span>
                                                 <span data-value="yearly">Yearly</span>
                                             </div>
+                                            <input type="hidden" name="billing_period" id="billingPeriodHidden" value="{{ old('billing_period', $subscription->billing_period) }}">
                                         </div>
-
+                                        @error('billing_period')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label class="form-label">Max Salons</label>
-                                        <input type="number" class="form-control" id="maxSalons" placeholder="5"
-                                            value="3">
+                                        <label class="form-label">Max Branches</label>
+                                        <input type="number" class="form-control" id="maxSalons" name="max_branches"
+                                            placeholder="5" value="{{ old('max_branches', $subscription->max_branches) }}">
+                                        @error('max_branches')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label class="form-label">Max Artists per Salon</label>
-                                        <input type="number" class="form-control" id="maxArtists" placeholder="10"
-                                            value="15">
+                                        <label class="form-label">Max Artists Per Branch</label>
+                                        <input type="number" class="form-control" id="maxArtists" name="max_artists_per_branch"
+                                            placeholder="10" value="{{ old('max_artists_per_branch', $subscription->max_artists_per_branch) }}">
+                                        @error('max_artists_per_branch')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -115,7 +137,8 @@
                                         <p class="setting-description">Highlight this plan with a popular badge</p>
                                     </div>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="isPopular" checked>
+                                        <input class="form-check-input" type="checkbox" id="isPopular" name="is_popular"
+                                            {{ old('is_popular', $subscription->is_popular) ? 'checked' : '' }}>
                                     </div>
                                 </div>
 
@@ -125,7 +148,8 @@
                                         <p class="setting-description">Available for new subscriptions</p>
                                     </div>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="isActive" checked>
+                                        <input class="form-check-input" type="checkbox" id="isActive" name="is_active"
+                                            {{ old('is_active', $subscription->is_active) ? 'checked' : '' }}>
                                     </div>
                                 </div>
                             </div>
@@ -141,105 +165,31 @@
                             </div>
                             <div class="card-body">
                                 <div class="row" id="featuresGrid">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature1" class="feature-input" checked>
-                                            <label for="feature1" class="feature-label">Online Booking System</label>
+                                    @php
+                                        $features = $subscription->features ?? [];
+                                        $allFeatures = [
+                                            'Online Booking System', 'Gallery Management', 'Artist Management',
+                                            'Customer Reviews', 'Analytics Dashboard', 'Payment Integration',
+                                            'Social Media Integration', 'Custom Branding', '24/7 Support',
+                                            'Mobile App Access'
+                                        ];
+                                    @endphp
+                                    @foreach($allFeatures as $feature)
+                                        <div class="col-md-6 mb-3">
+                                            <div class="feature-checkbox">
+                                                <input type="checkbox" id="feature{{ Str::slug($feature) }}"
+                                                    class="feature-input" name="features[]" value="{{ $feature }}"
+                                                    {{ in_array($feature, old('features', $features)) ? 'checked' : '' }}>
+                                                <label for="feature{{ Str::slug($feature) }}" class="feature-label">{{ $feature }}</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature2" class="feature-input" checked>
-                                            <label for="feature2" class="feature-label">Gallery Management</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature3" class="feature-input" checked>
-                                            <label for="feature3" class="feature-label">Artist Management</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature4" class="feature-input">
-                                            <label for="feature4" class="feature-label">Customer Reviews</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature5" class="feature-input" checked>
-                                            <label for="feature5" class="feature-label">Analytics Dashboard</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature6" class="feature-input" checked>
-                                            <label for="feature6" class="feature-label">Payment Integration</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature7" class="feature-input">
-                                            <label for="feature7" class="feature-label">Social Media
-                                                Integration</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature8" class="feature-input">
-                                            <label for="feature8" class="feature-label">Custom Branding</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature9" class="feature-input">
-                                            <label for="feature9" class="feature-label">24/7 Support</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="feature-checkbox">
-                                            <input type="checkbox" id="feature10" class="feature-input">
-                                            <label for="feature10" class="feature-label">Mobile App Access</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Plan Statistics (Additional section for edit page) -->
-                        <div class="card glass-card">
-                            <div class="card-header">
-                                <h6 class="card-title">
-                                    <iconify-icon icon="solar:graph-new-up-linear"></iconify-icon>
-                                    Plan Statistics
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="stat-item">
-                                            <div class="stat-value">67</div>
-                                            <div class="stat-label">Current Subscribers</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="stat-item">
-                                            <div class="stat-value">$6,699</div>
-                                            <div class="stat-label">Monthly Revenue</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="stat-item">
-                                            <div class="stat-value">92.3%</div>
-                                            <div class="stat-label">Retention Rate</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="stat-item">
-                                            <div class="stat-value">24.5%</div>
-                                            <div class="stat-label">Conversion Rate</div>
-                                        </div>
-                                    </div>
+                                    @endforeach
+                                    @error('features')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                    @error('features.*')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -255,15 +205,13 @@
                                 <div class="plan-preview" id="planPreview">
                                     <div class="preview-header">
                                         <span class="preview-badge" id="previewBadge"
-                                            style="display: inline-block;">Popular</span>
-                                        <h6 class="preview-name" id="previewName">Professional Plan</h6>
+                                            style="display: {{ old('is_popular', $subscription->is_popular) ? 'inline-block' : 'none' }};">Popular</span>
+                                        <h6 class="preview-name" id="previewName">{{ old('name', $subscription->name) ?: 'Plan Name' }}</h6>
                                         <div class="preview-price">
-                                            <span class="preview-price-value" id="previewPrice">$99.99</span>
-                                            <span class="preview-period" id="previewPeriod">/monthly</span>
+                                            <span class="preview-price-value" id="previewPrice">${{ old('price', number_format($subscription->price, 2)) ?: '0.00' }}</span>
+                                            <span class="preview-period" id="previewPeriod">/{{ old('billing_period', $subscription->billing_period) ?: 'monthly' }}</span>
                                         </div>
-                                        <p class="preview-description" id="previewDescription">Ideal for growing
-                                            salons with advanced features and premium support for enhanced business
-                                            growth.</p>
+                                        <p class="preview-description" id="previewDescription">{{ old('description', $subscription->description) ?: 'Plan description will appear here...' }}</p>
                                     </div>
                                     <div class="preview-features" id="previewFeatures">
                                         <!-- Features will be populated by JavaScript -->
@@ -272,56 +220,20 @@
                             </div>
                         </div>
 
-                        <div class="card glass-card mb-4">
+                        <div class="card glass-card">
                             <div class="card-body">
                                 <div class="preview-details">
                                     <div class="detail-item">
                                         <span class="detail-label">Max Salons:</span>
-                                        <span class="detail-value" id="previewMaxSalons">3</span>
+                                        <span class="detail-value" id="previewMaxSalons">{{ old('max_branches', $subscription->max_branches) ?: '—' }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Max Artists:</span>
-                                        <span class="detail-value" id="previewMaxArtists">15</span>
+                                        <span class="detail-value" id="previewMaxArtists">{{ old('max_artists_per_branch', $subscription->max_artists_per_branch) ?: '—' }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Status:</span>
-                                        <span class="badge badge-success" id="previewStatus">Active</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Plan History (Additional section for edit page) -->
-                        <div class="card glass-card">
-                            <div class="card-header">
-                                <h6 class="card-title">
-                                    <iconify-icon icon="quill:clock"></iconify-icon>
-                                    Recent Changes
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="activity-list">
-                                    <div class="activity-item">
-                                        <div class="activity-dot success"></div>
-                                        <div class="activity-content">
-                                            <div class="activity-title">Price updated</div>
-                                            <div class="activity-subtitle">Changed from $89.99 to $99.99 • 2 days ago
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="activity-item">
-                                        <div class="activity-dot primary"></div>
-                                        <div class="activity-content">
-                                            <div class="activity-title">Features modified</div>
-                                            <div class="activity-subtitle">Added Payment Integration • 1 week ago</div>
-                                        </div>
-                                    </div>
-                                    <div class="activity-item">
-                                        <div class="activity-dot warning"></div>
-                                        <div class="activity-content">
-                                            <div class="activity-title">Plan created</div>
-                                            <div class="activity-subtitle">Initial setup completed • 2 weeks ago</div>
-                                        </div>
+                                        <span class="badge {{ old('is_active', $subscription->is_active) ? 'badge-success' : 'badge-secondary' }}" id="previewStatus">{{ old('is_active', $subscription->is_active) ? 'Active' : 'Inactive' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -344,8 +256,8 @@
             const isPopularCheckbox = document.getElementById('isPopular');
             const isActiveCheckbox = document.getElementById('isActive');
             const billingDurationSelect = document.querySelector('.custom-default-select');
+            const billingPeriodHidden = document.getElementById('billingPeriodHidden');
             const featureCheckboxes = document.querySelectorAll('.feature-input');
-            const savePlanBtn = document.getElementById('savePlanBtn');
 
             // Get all preview elements
             const previewName = document.getElementById('previewName');
@@ -370,7 +282,7 @@
                 if (price && !isNaN(price)) {
                     previewPrice.textContent = '$' + parseFloat(price).toFixed(2);
                 } else {
-                    previewPrice.textContent = '$0';
+                    previewPrice.textContent = '$0.00';
                 }
             }
 
@@ -398,6 +310,7 @@
                 }
 
                 previewPeriod.textContent = periodText;
+                billingPeriodHidden.value = selectedValue; // Update hidden input
             }
 
             // Update max salons
@@ -456,30 +369,6 @@
                 }
             }
 
-            // Save plan function
-            function savePlan() {
-                // Show loading state
-                savePlanBtn.innerHTML = '<iconify-icon icon="eos-icons:loading"></iconify-icon>Saving...';
-                savePlanBtn.disabled = true;
-
-                // Simulate save operation
-                setTimeout(() => {
-                    // Show success message
-                    savePlanBtn.innerHTML = '<iconify-icon icon="prime:check-circle"></iconify-icon>Saved!';
-                    savePlanBtn.classList.add('btn-success');
-                    savePlanBtn.classList.remove('btn-primary');
-
-                    // Reset button after 2 seconds
-                    setTimeout(() => {
-                        savePlanBtn.innerHTML =
-                            '<iconify-icon icon="fluent:save-20-regular"></iconify-icon>Save Changes';
-                        savePlanBtn.classList.remove('btn-success');
-                        savePlanBtn.classList.add('btn-primary');
-                        savePlanBtn.disabled = false;
-                    }, 2000);
-                }, 1500);
-            }
-
             // Add event listeners
             planNameInput.addEventListener('input', updatePlanName);
             planPriceInput.addEventListener('input', updatePlanPrice);
@@ -488,15 +377,16 @@
             maxArtistsInput.addEventListener('input', updateMaxArtists);
             isPopularCheckbox.addEventListener('change', updatePopularBadge);
             isActiveCheckbox.addEventListener('change', updateStatus);
-            savePlanBtn.addEventListener('click', savePlan);
 
             // Add event listener for custom select dropdown - listen for clicks on options
             if (billingDurationSelect) {
                 const options = billingDurationSelect.querySelectorAll('.options span');
                 options.forEach(option => {
                     option.addEventListener('click', function() {
-                        // Small delay to ensure data-value is updated by the existing select functionality
-                        setTimeout(updateBillingPeriod, 50);
+                        const selectedTextSpan = billingDurationSelect.querySelector('.selected-text');
+                        selectedTextSpan.textContent = this.textContent;
+                        billingDurationSelect.querySelector('.select-trigger').setAttribute('data-value', this.dataset.value);
+                        updateBillingPeriod();
                     });
                 });
             }
@@ -506,7 +396,7 @@
                 checkbox.addEventListener('change', updateFeatures);
             });
 
-            // Initialize preview with current values
+            // Initialize preview with default values
             updatePlanName();
             updatePlanPrice();
             updatePlanDescription();
@@ -572,29 +462,26 @@
         }
 
 
-        /* Enhanced preview styles */
-
-        /* Statistics section styles */
-        .stat-item {
-            text-align: center;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .stat-value {
+        .preview-name {
             font-size: 24px;
             font-weight: 700;
             color: #333;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
-        .stat-label {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .preview-price-value {
+            font-size: 30px;
+            font-weight: 800;
+            color: #667eea;
         }
     </style>
+
 </x-app-layout>
+<task_progress>
+- [x] Analyze `resources/views/subscriptions/create.blade.php` to understand subscription fields.
+- [x] Create a migration file for the `subscriptions` table.
+- [x] Create a `Subscription` model.
+- [x] Implement `store`, `edit`, `update`, and `delete` methods in `app/Http/Controllers/Admin/SubscriptionController.php`.
+- [ ] Update `resources/views/subscriptions/index.blade.php` to display subscriptions dynamically.
+</task_progress>
+</write_to_file>
