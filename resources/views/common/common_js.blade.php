@@ -31,10 +31,40 @@
             error: function(xhr) {
                 if (xhr.status === 422) {
                     let errors = xhr.responseJSON.errors;
+
+                    // Clear old errors first
+                    form.find('.is-invalid').removeClass('is-invalid');
+                    form.find('.text-danger').remove();
+
                     $.each(errors, function(field, messages) {
                         let input = form.find(`[name="${field}"]`);
-                        input.addClass('is-invalid');
-                        input.after(`<div class="text-danger mt-1">${messages[0]}</div>`);
+
+                        // If not found, try array-style name (e.g. features[])
+                        if (input.length === 0) {
+                            input = form.find(`[name="${field}[]"]`);
+                        }
+
+                        if (input.length > 0) {
+                            input.addClass('is-invalid');
+
+                            if (input.attr('type') === 'checkbox' || input.attr('type') ===
+                                'radio') {
+                                input.last().closest('.feature-checkbox').after(
+                                    `<div class="text-danger mt-1">${messages[0]}</div>`
+                                );
+                            } else {
+                                input.after(
+                                    `<div class="text-danger mt-1">${messages[0]}</div>`
+                                );
+                            }
+                        } else {
+                            // Fallback if field is not found
+                            Swal.fire({
+                                title: "Validation Error",
+                                text: `${messages[0]}`,
+                                icon: "warning"
+                            });
+                        }
                     });
                 } else {
                     Swal.fire({
@@ -44,6 +74,7 @@
                     });
                 }
             }
+
         });
     });
 
@@ -142,14 +173,20 @@
                         _token: csrfToken
                     },
                     success: function(response) {
-                        Swal.fire({icon: 'success',text: 'Deleted Successfully!'});
+                        Swal.fire({
+                            icon: 'success',
+                            text: 'Deleted Successfully!'
+                        });
                         // Auto-refresh page after 2 seconds
                         setTimeout(() => {
                             location.reload();
                         }, 2000);
                     },
                     error: function(xhr) {
-                        Swal.fire({icon: 'error', text: 'Something went wrong!',});
+                        Swal.fire({
+                            icon: 'error',
+                            text: 'Something went wrong!',
+                        });
                         console.error("AJAX Error:", xhr.responseText);
                     }
                 });

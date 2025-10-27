@@ -136,7 +136,7 @@
                 </div>
 
                 <div id="tablefiltesa_container">
-                    <div class="row">
+                    <div class="row mb-2">
                         <!-- Left Filters -->
                         <div class="col-lg-8">
                             <div class="leftprFilters">
@@ -147,6 +147,7 @@
                                         <div class="input-blocks">
                                             <i data-feather="layers" class="info-img"></i>
                                             <select class="select2" id="status">
+                                                <option value="">All</option>
                                                 <option value="1">Active</option>
                                                 <option value="0">Inactive</option>
                                             </select>

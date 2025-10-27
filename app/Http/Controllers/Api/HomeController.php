@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\RecentSearch;
 use App\Models\Shop;
+use App\Models\ShopService;
 use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Database\Eloquent\Collection;
@@ -42,11 +44,19 @@ class HomeController extends Controller
 
                 return ApiResponse::success('Data retrieved successfully', 200, $data);
             } elseif ($user->hasRole('artist') || $user->hasRole('salon')) {
-                $shop=$user->shop;
-                $data['counts']['pending_bookings'] = $shop->bookings()->where('status', 'pending')->count();
-                $data['counts']['total_bookings'] = $shop->bookings()->count();
-                $data['counts']['total_services'] = $shop->services()->count();
-                $data['bookings'] = $shop->bookings()->whereIn('status', ['pending', 'confirmed', 'in_progress'])->orderBy('id', 'desc')->get();
+                if(empty($request->get('shop_id'))){
+                    return ApiResponse::error('Shop ID is required', 400);
+                }
+                $shop = Shop::where('id', $request->get('shop_id'))->first();
+                if(empty($shop)){
+                    return ApiResponse::error('Shop not found', 400);
+                }
+                $booking=Booking::where('shop_id', $shop->id)->first();
+                $service= ShopService::where('shop_id', $shop->id)->get();
+                $data['counts']['pending_bookings'] = (clone $booking)?->where('status', 'pending')->count() ?? 0;
+                $data['counts']['total_bookings'] = (clone $booking)?->count() ?? 0;
+                $data['counts']['total_services'] = $service->count();
+                $data['bookings'] = (clone $booking)?->whereIn('status', ['pending', 'confirmed', 'in_progress'])->orderBy('id', 'desc')->get();
                 return ApiResponse::success('Data retrieved successfully', 200, $data);
             }
         } catch (\Throwable $th) {
