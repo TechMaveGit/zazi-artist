@@ -193,80 +193,18 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row" id="featuresGrid">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature1" class="feature-input"
-                                                    name="features[]" value="Online Booking System">
-                                                <label for="feature1" class="feature-label">Online Booking
-                                                    System</label>
+                                        @forelse ($features as $feature)
+                                            <div class="col-md-6 mb-3">
+                                                <div class="feature-checkbox">
+                                                    <input type="checkbox" id="feature{{ $loop->index }}"
+                                                        class="feature-input" name="features[]"
+                                                        value="{{ $feature?->name ?? '' }}">
+                                                    <label for="feature{{ $loop->index }}"
+                                                        class="feature-label">{{ $feature?->name ?? '' }}</label>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature2" class="feature-input"
-                                                    name="features[]" value="Gallery Management">
-                                                <label for="feature2" class="feature-label">Gallery Management</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature3" class="feature-input"
-                                                    name="features[]" value="Artist Management">
-                                                <label for="feature3" class="feature-label">Artist Management</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature4" class="feature-input"
-                                                    name="features[]" value="Customer Reviews">
-                                                <label for="feature4" class="feature-label">Customer Reviews</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature5" class="feature-input"
-                                                    name="features[]" value="Analytics Dashboard">
-                                                <label for="feature5" class="feature-label">Analytics
-                                                    Dashboard</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature6" class="feature-input"
-                                                    name="features[]" value="Payment Integration">
-                                                <label for="feature6" class="feature-label">Payment
-                                                    Integration</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature7" class="feature-input"
-                                                    name="features[]" value="Social Media Integration">
-                                                <label for="feature7" class="feature-label">Social Media
-                                                    Integration</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature8" class="feature-input"
-                                                    name="features[]" value="Custom Branding">
-                                                <label for="feature8" class="feature-label">Custom Branding</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature9" class="feature-input"
-                                                    name="features[]" value="24/7 Support">
-                                                <label for="feature9" class="feature-label">24/7 Support</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="feature-checkbox">
-                                                <input type="checkbox" id="feature10" class="feature-input"
-                                                    name="features[]" value="Mobile App Access">
-                                                <label for="feature10" class="feature-label">Mobile App Access</label>
-                                            </div>
-                                        </div>
+                                        @empty
+                                        @endforelse
                                     </div>
                                 </div>
                             </div>
@@ -464,7 +402,6 @@
                     const options = billingDurationSelect.querySelectorAll('.options span');
                     options.forEach(option => {
                         option.addEventListener('click', function() {
-                            // Small delay to ensure data-value is updated by the existing select functionality
                             setTimeout(updateBillingPeriod, 50);
                         });
                     });
@@ -486,8 +423,7 @@
                 updateStatus();
                 updateFeatures();
 
-                // Additional event listener to catch any changes in the custom select
-                // This is a backup to ensure billing period updates work
+                
                 const observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'attributes' && mutation.attributeName === 'data-value') {

@@ -89,7 +89,7 @@
                     @forelse($subscriptions as $subscription)
                         <div class="col-lg-4 mb-4">
                             <div class="plan-card {{ $subscription->is_popular ? 'popular' : '' }}">
-                                @if($subscription->is_popular)
+                                @if ($subscription->is_popular)
                                     <span class="popular-badge">Popular</span>
                                 @endif
                                 <div class="plan-header">
@@ -117,29 +117,33 @@
                                 <div class="plan-body">
                                     <div class="plan-features">
                                         @forelse($subscription->features as $feature)
-                                            <div class="feature">
-                                                <div class="feature-dot"></div>
-                                                {{ $feature }}
-                                            </div>
+                                            @if ($loop->index < 3)
+                                                <div class="feature">
+                                                    <div class="feature-dot"></div>
+                                                    {{ $feature }}
+                                                </div>
+                                            @else
+                                                <div class="feature-more">+{{ $loop->count - 3 }} more features</div>
+                                                @break
+                                            @endif
                                         @empty
                                             <div class="feature">No features defined.</div>
                                         @endforelse
                                     </div>
 
                                     <div class="plan-actions">
-                                        <button class="btn-icon view-plan-details" data-bs-toggle="modal" data-bs-target="#planDetailsModal" data-subscription-id="{{ $subscription->id }}">
+                                        <button class="btn-icon view-plan-details" data-bs-toggle="modal"
+                                            data-bs-target="#planDetailsModal"
+                                            data-subscription-id="{{ $subscription->id }}">
                                             <iconify-icon icon="formkit:eye"></iconify-icon>
                                         </button>
                                         <a href="{{ route('subscription.edit', $subscription->id) }}" class="btn-icon">
                                             <iconify-icon icon="cuida:edit-outline"></iconify-icon>
                                         </a>
-                                        <form action="{{ route('subscription.destroy', $subscription->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-icon text-danger" onclick="return confirm('Are you sure you want to delete this plan?')">
-                                                <iconify-icon icon="fluent:delete-32-regular"></iconify-icon>
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn-icon text-danger del-button" data-id="{{ $subscription->id}}"
+                                            data-table="subscriptions">
+                                            <iconify-icon icon="fluent:delete-32-regular"></iconify-icon>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -403,15 +407,21 @@
                         ${subscription.is_active ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-secondary">Inactive</span>'}
                         ${subscription.is_popular ? '<span class="badge badge-info ms-2">Popular</span>' : ''}
                     `;
-                    document.getElementById('modalPrice').textContent = `$${parseFloat(subscription.price).toFixed(2)}`;
+                    document.getElementById('modalPrice').textContent =
+                        `$${parseFloat(subscription.price).toFixed(2)}`;
                     document.getElementById('modalPeriod').textContent = `/${subscription.billing_period}`;
-                    document.getElementById('modalFeaturesCount').textContent = subscription.features ? subscription.features.length : 0;
-                    document.getElementById('modalDescription').textContent = subscription.description || 'No description provided.';
+                    document.getElementById('modalFeaturesCount').textContent = subscription.features ?
+                        subscription.features.length : 0;
+                    document.getElementById('modalDescription').textContent = subscription.description ||
+                        'No description provided.';
                     document.getElementById('modalBillingCycle').textContent = subscription.billing_period;
                     document.getElementById('modalMaxSalons').textContent = subscription.max_branches;
-                    document.getElementById('modalMaxArtists').textContent = subscription.max_artists_per_branch;
-                    document.getElementById('modalCreatedAt').textContent = new Date(subscription.created_at).toLocaleDateString();
-                    document.getElementById('modalUpdatedAt').textContent = new Date(subscription.updated_at).toLocaleDateString();
+                    document.getElementById('modalMaxArtists').textContent = subscription
+                        .max_artists_per_branch;
+                    document.getElementById('modalCreatedAt').textContent = new Date(subscription
+                        .created_at).toLocaleDateString();
+                    document.getElementById('modalUpdatedAt').textContent = new Date(subscription
+                        .updated_at).toLocaleDateString();
 
                     const modalPlanFeatures = document.getElementById('modalPlanFeatures');
                     modalPlanFeatures.innerHTML = '';
@@ -419,7 +429,8 @@
                         subscription.features.forEach(feature => {
                             const featureElement = document.createElement('div');
                             featureElement.className = 'feature mb-2';
-                            featureElement.innerHTML = `<iconify-icon icon="prime:check-circle"></iconify-icon><span>${feature}</span>`;
+                            featureElement.innerHTML =
+                                `<iconify-icon icon="prime:check-circle"></iconify-icon><span>${feature}</span>`;
                             modalPlanFeatures.appendChild(featureElement);
                         });
                     } else {
@@ -427,7 +438,8 @@
                     }
 
                     // Update edit button link
-                    document.getElementById('editPlanBtn').href = `/admin/subscriptions/${subscription.id}/edit`; // Assuming a route structure
+                    document.getElementById('editPlanBtn').href =
+                        `/admin/subscriptions/${subscription.id}/edit`; // Assuming a route structure
                 }
             });
         });

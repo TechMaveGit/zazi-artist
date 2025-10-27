@@ -29,6 +29,8 @@ class User extends Authenticatable
         'gender',
         'type',
         'email_verified_at',
+        'about', // Added 'about' field
+        'profile', // Added 'profile' field for image path
     ];
 
     public $appends = ['profile_url'];
@@ -99,7 +101,7 @@ class User extends Authenticatable
 
     public function getProfileUrlAttribute()
     {
-        return $this->profile && Storage::disk('public')->exists($this->profile) ? Storage::disk('public')->url($this->profile) : null;
+        return $this->profile && Storage::disk('public')->exists($this->profile) ? Storage::url($this->profile) : null;
     }
 
    
