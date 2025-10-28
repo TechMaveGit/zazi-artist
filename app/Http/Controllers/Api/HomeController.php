@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingService;
 use App\Models\RecentSearch;
 use App\Models\Shop;
 use App\Models\ShopService;
@@ -25,17 +26,17 @@ class HomeController extends Controller
 
 
                 //shops nearby
-                $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img','is_opened_today')->get();
+                $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img', 'is_opened_today')->get();
                 $data['shops'] = Collection::make($shops)->sortBy('distance')->take(5);
 
                 //latest visits
                 $data['latest_visits'] = User::whereHas('roles', function ($query) {
                     $query->where('name', 'customer');
                 })
-                ->whereHas('bookings', function ($query) {
-                    $query->where('status', 'completed')->orderBy('created_at', 'desc');
-                })
-                ->orderBy('id', 'desc')->select('id', 'name', 'email', 'profile')->limit(5)->get();
+                    ->whereHas('bookings', function ($query) {
+                        $query->where('status', 'completed')->orderBy('created_at', 'desc');
+                    })
+                    ->orderBy('id', 'desc')->select('id', 'name', 'email', 'profile')->limit(5)->get();
 
                 //top rated artist
                 $data['artists'] = User::whereHas('roles', function ($query) {
@@ -44,18 +45,38 @@ class HomeController extends Controller
 
                 return ApiResponse::success('Data retrieved successfully', 200, $data);
             } elseif ($user->hasRole('artist') || $user->hasRole('salon')) {
-                if(empty($request->get('shop_id'))){
+                if (empty($request->get('shop_id'))) {
                     return ApiResponse::error('Shop ID is required', 400);
                 }
                 $shop = Shop::where('id', $request->get('shop_id'))->first();
-                if(empty($shop)){
+                if (empty($shop)) {
                     return ApiResponse::error('Shop not found', 400);
                 }
-                $service= ShopService::where('shop_id', $shop->id)->get();
+                $service = ShopService::where('shop_id', $shop->id)->get();
                 $data['counts']['pending_bookings'] = $shop?->bookings()->where('status', 'pending')->count() ?? 0;
                 $data['counts']['total_bookings'] = $shop?->bookings()?->count() ?? 0;
                 $data['counts']['total_services'] = $service->count();
-                $data['bookings'] = $shop?->bookings()?->whereIn('status', ['pending', 'confirmed', 'in_progress'])->orderBy('id', 'desc')->get();
+                $data['bookings'] = BookingService::with(['booking', 'service'])->whereIn('status', ['pending', 'confirmed', 'in_progress'])
+                    ->whereHas('booking', function ($query) use ($shop) {
+                        $query->where('shop_id', $shop->id);
+                    })
+                    ->orderBy('id', 'desc')
+                    ->get()
+                    ->map(function ($bookingService) {
+                        return [
+                            'id' => $bookingService->id,
+                            'booking_id' => $bookingService->booking_id,
+                            'booking_number' => $bookingService?->booking?->booking_id,
+                            'service_name' => $bookingService?->service?->name,
+                            'booking_date' => $bookingService?->booking?->start_date,
+                            'booking_time' => $bookingService?->booking?->start_time,
+                            'customer_id' => $bookingService?->booking?->customer_id,
+                            'customer_name' => $bookingService->booking?->user?->name,
+                            'status' => $bookingService->status,
+
+                        ];
+                    });
+
                 return ApiResponse::success('Data retrieved successfully', 200, $data);
             }
         } catch (\Throwable $th) {
@@ -105,7 +126,7 @@ class HomeController extends Controller
             $perPage = $request->get('per_page', 10);
             $query = $request->get('search', '');
             $sortBy = $request->input('filters.sort_by', null);
-            $categories = $request->input('filters.categories', []); 
+            $categories = $request->input('filters.categories', []);
             $user_lat = $request->input('lat', null);
             $user_lng = $request->input('lng', null);
 
@@ -114,7 +135,7 @@ class HomeController extends Controller
                 'user_id' => auth()->id(),
                 'query' => $query
             ]);
-            
+
             $shopsQuery = Shop::query()->select('id', 'name', 'lat', 'lng', 'banner_img');
             if ($query) {
                 $shopsQuery->where('name', 'like', "%{$query}%");
@@ -139,8 +160,8 @@ class HomeController extends Controller
 
             $data['query'] = $query;
             $data['search_result'] = $shops;
-            $data['recent_searches']= RecentSearch::where('user_id', auth()->user()->id)->select('id', 'query')->orderBy('id', 'desc')->limit(10)->get();
-            
+            $data['recent_searches'] = RecentSearch::where('user_id', auth()->user()->id)->select('id', 'query')->orderBy('id', 'desc')->limit(10)->get();
+
             return ApiResponse::success('Data retrieved successfully', 200, $data);
         } catch (\Throwable $th) {
             return ApiResponse::error('Something went wrong', 500, $th->getMessage());
