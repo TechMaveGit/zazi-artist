@@ -73,7 +73,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('service', [ServiceController::class, 'index']);
         Route::get('service/{id}', [ServiceController::class, 'show']);
         Route::post('service/create', [ServiceController::class, 'store'])->middleware('role:salon|artist');
-        Route::put('service/{id}/edit', [ServiceController::class, 'update'])->middleware('role:salon|artist');
+        Route::post('service/{id}/edit', [ServiceController::class, 'update'])->middleware('role:salon|artist');
         Route::delete('service/{id}/delete', [ServiceController::class, 'destroy'])->middleware('role:salon|artist');
         Route::post('service/{id}/update-status', [ServiceController::class, 'updateStatus'])->middleware('role:salon|artist');
 
