@@ -17,7 +17,7 @@ class SuperAdminMiddleware
         }
 
         // If user logged in but not a Super Admin
-        if (!Auth::user()->hasRole('admin')) {
+        if (!Auth::user()->hasRole('admin')) { 
             Auth::guard('web')->logout();
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
