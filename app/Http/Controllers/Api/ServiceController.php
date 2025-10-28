@@ -118,7 +118,8 @@ class ServiceController extends Controller
                 }
                 $validatedData['cover_img'] = $this->uploadFile($request->file('cover_img'), 'shop_services');
             }
-
+            
+            $service->update($validatedData);
             if ($request->has('sessions')) {
                 $service->serviceSessions()->delete();
                 $service->serviceSessions()->createMany($request->input('sessions'));
