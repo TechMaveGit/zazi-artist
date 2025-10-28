@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\{SubscriptionController, SalonController, TransactionController, EmailManagementController};
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,7 +13,8 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-Route::get('/checkout/{id}', [HomeController::class, 'checkout'])->name('web.checkout');
+Route::get('/checkout/{id}', [CheckoutController::class, 'showCheckoutForm'])->name('web.checkout');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::middleware(['auth:salon'])->group(function () {
     Route::get('/profile', [HomeController::class, 'profile'])->name('web.profile');
     Route::patch('/profile/update', [ProfileController::class, 'webUpdate'])->name('web.profile.update');

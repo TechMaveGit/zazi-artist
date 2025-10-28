@@ -31,7 +31,7 @@ class UpdateShopServiceRequest extends FormRequest
             'service_price' => ['sometimes', 'required', 'numeric', 'min:0'],
             'booking_price' => ['nullable', 'numeric', 'min:0'],
             'cover_img' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'status' => ['sometimes', 'required', 'in:active,inactive'],
+            'status' => ['sometimes', 'required', 'in:publish,draft'],
         ];
     }
 }

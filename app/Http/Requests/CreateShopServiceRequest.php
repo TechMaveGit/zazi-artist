@@ -35,6 +35,7 @@ class CreateShopServiceRequest extends FormRequest
             'sessions.*.session_no' => ['required', 'numeric', 'min:0'],
             'sessions.*.type' => ['required', 'string', 'in:days,weeks'],
             'sessions.*.gap_duration' => ['required', 'integer', 'min:0'],
+            'status' => ['nullable', 'in:publish,draft'],
         ];
     }
 }
