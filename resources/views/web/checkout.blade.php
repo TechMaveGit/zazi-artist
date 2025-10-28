@@ -11,6 +11,36 @@
         <div class="checkout-header">
             <h1>Checkout</h1>
             <p>Complete your purchase to get started with {{ config('app.name') }}</p>
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    <strong>Error!</strong>
+                    <ul>
+                        @if(is_array(session('error')))
+                            @foreach(session('error') as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        @else
+                            <li>{{ session('error') }}</li>
+                        @endif
+                    </ul>
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <strong>Validation Error!</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            @if(session('success'))
+                <div class="alert alert-success">
+                    <strong>Success!</strong>
+                    {{ session('success') }}
+                </div>
+            @endif
         </div>
 
         <div class="checkout-content">
@@ -100,7 +130,7 @@
                     <div class="payment-form card-form active">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="form-group full-width">
+                                <div class="form-group full-width" style="background-color: #f0f0f0; padding: 5px;">
                                     <label class="form-label" for="card-element">Credit or debit card</label>
                                     <div id="card-element" class="form-input" style="height: 40px; border: 1px solid #ced4da; padding: 10px; border-radius: 4px; background-color: white; display: block !important; visibility: visible !important; z-index: 9999 !important;">
                                         <!-- A Stripe Element will be inserted here. -->

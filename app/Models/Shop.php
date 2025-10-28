@@ -7,6 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Shop extends Model
 {
+    protected $guarded = ['id'];
+    protected $fillable = [
+        'user_id',
+        'name',
+        'email',
+        'dial_code',
+        'phone',
+        'address',
+        'lat',
+        'lng',
+        'country',
+        'state',
+        'city',
+        'city',
+        'zipcode',
+        'description',
+        'banner_img',
+        'is_opened_today'
+    ];
     protected $casts = [
         'banner_img' => 'array',
     ];
@@ -138,9 +157,9 @@ class Shop extends Model
         $formats = ['H:i', 'H:i:s', 'g:i A', 'h:i A'];
         foreach ($formats as $format) {
             try {
-                 return Carbon::createFromFormat($format, trim($time), 'Asia/Kolkata')
-                ->setTimezone('Asia/Kolkata') 
-                ->setDateFrom(Carbon::now('Asia/Kolkata')); 
+                return Carbon::createFromFormat($format, trim($time), 'Asia/Kolkata')
+                    ->setTimezone('Asia/Kolkata')
+                    ->setDateFrom(Carbon::now('Asia/Kolkata'));
             } catch (\Exception $e) {
                 // try next format
             }
