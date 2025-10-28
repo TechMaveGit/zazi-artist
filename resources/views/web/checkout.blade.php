@@ -18,7 +18,9 @@
                 <!-- Billing Information -->
                 <div class="billing-section">
                     <h2>Billing Information</h2>
-                    <form class="billing-form">
+                    <form id="checkout-form" action="{{ route('checkout.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group full-width">
@@ -29,14 +31,14 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group full-width">
-                                    <label for="fullName">Email</label>
-                                    <input type="text" id="fullName" name="fullName" placeholder="Email" required>
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" name="email" placeholder="Email" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group full-width">
-                                    <label for="fullName">Mobile No.</label>
-                                    <input type="text" id="fullName" name="fullName" placeholder="Mobile No."
+                                    <label for="mobileNo">Mobile No.</label>
+                                    <input type="text" id="mobileNo" name="mobileNo" placeholder="Mobile No."
                                         required>
                                 </div>
                             </div>
@@ -97,31 +99,14 @@
                     <!-- Credit Card Form -->
                     <div class="payment-form card-form active">
                         <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-12">
                                 <div class="form-group full-width">
-                                    <label class="form-label" for="cardNumber">Card Number *</label>
-                                    <input type="text" id="cardNumber" class="form-input"
-                                        placeholder="1234 5678 9012 3456" required="">
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group full-width">
-                                    <label class="form-label" for="cardName">Name on Card *</label>
-                                    <input type="text" id="cardName" class="form-input" required="">
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="expiryDate">Expiry Date *</label>
-                                    <input type="text" id="expiryDate" class="form-input" placeholder="MM/YY"
-                                        required="">
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="cvv">CVV *</label>
-                                    <input type="text" id="cvv" class="form-input" placeholder="123"
-                                        required="">
+                                    <label class="form-label" for="card-element">Credit or debit card</label>
+                                    <div id="card-element" class="form-input" style="height: 40px; border: 1px solid #ced4da; padding: 10px; border-radius: 4px;">
+                                        <!-- A Stripe Element will be inserted here. -->
+                                    </div>
+                                    <!-- Used to display form errors. -->
+                                    <div id="card-errors" role="alert" style="color: red;"></div>
                                 </div>
                             </div>
                         </div>
@@ -154,19 +139,19 @@
                     <div class="pricing-breakdown">
                         <div class="pricing-row">
                             <span>Subtotal</span>
-                            <span id="subtotal">$45.00</span>
+                            <span id="subtotal">${{ $plan->price }}</span>
                         </div>
                         <div class="pricing-row">
                             <span>Tax</span>
-                            <span id="tax">$4.50</span>
+                            <span id="tax">${{ number_format($plan->price * 0.1, 2) }}</span>
                         </div>
                         <div class="pricing-row total">
                             <span>Total</span>
-                            <span id="total">$49.50</span>
+                            <span id="total">${{ number_format($plan->price * 1.1, 2) }}</span>
                         </div>
                     </div>
 
-                    <button class="place-order-btn" type="submit">
+                    <button class="place-order-btn" type="button" id="card-button">
                         <span>Make Payment</span>
                         <i class="icofont-arrow-right"></i>
                     </button>
@@ -197,50 +182,71 @@
 
 @include('web.layouts.footer')
 
+<script src="https://js.stripe.com/v3/"></script>
 <script>
-    // Payment method switching
-    document.querySelectorAll('.payment-option').forEach(option => {
-        option.addEventListener('click', function() {
-            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
-            document.querySelectorAll('.payment-form').forEach(form => form.classList.remove('active'));
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Script block loaded.');
+        // Payment method switching
+        document.querySelectorAll('.payment-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+                document.querySelectorAll('.payment-form').forEach(form => form.classList.remove('active'));
 
-            this.classList.add('active');
+                this.classList.add('active');
 
-            const method = this.dataset.method;
-            document.querySelector(`.${method}-form`).classList.add('active');
+                const method = this.dataset.method;
+                document.querySelector(`.${method}-form`).classList.add('active');
+            });
         });
-    });
 
-    // Get plan details from URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const billing = urlParams.get('billing') || '{{ $plan->billing_period }}'; // Use plan's billing period as default
+        // Stripe integration
+        console.log('Stripe Key:', '{{ env('STRIPE_KEY') }}');
+        const stripe = Stripe('{{ env('STRIPE_KEY') }}');
+        const elements = stripe.elements();
+        const card = elements.create('card');
+        card.mount('#card-element');
+        console.log('Stripe card element mounted.');
 
-    // Update order summary based on selected plan
-    const price = {{ $plan->price }};
-    const tax = Math.round(price * 0.1 * 100) / 100;
-    const total = price + tax;
+        const form = document.getElementById('checkout-form');
+        const cardButton = document.getElementById('card-button');
 
-    document.getElementById('subtotal').textContent = `$${price}.00`;
-    document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
-    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+        cardButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log('Make Payment button clicked. Form submission initiated.');
 
-    // Card number formatting
-    document.getElementById('cardNumber').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
-        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-        e.target.value = formattedValue;
-    });
+            const { paymentMethod, error } = await stripe.createPaymentMethod(
+                'card', card, {
+                    billing_details: {
+                        name: document.getElementById('fullName').value,
+                        email: document.getElementById('email').value,
+                    }
+                }
+            );
 
-    // CVV validation
-    document.getElementById('cvv').addEventListener('input', function(e) {
-        e.target.value = e.target.value.replace(/[^0-9]/g, '');
-    });
+            if (error) {
+                console.error('Stripe error:', error);
+                const displayError = document.getElementById('card-errors');
+                displayError.textContent = error.message;
+            } else {
+                console.log('PaymentMethod created:', paymentMethod);
+                const hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('name', 'stripeToken');
+                hiddenInput.setAttribute('value', paymentMethod.id);
+                form.appendChild(hiddenInput);
 
-    // Handle place order button click
-    document.querySelector('.place-order-btn').addEventListener('click', function(e) {
-        e.preventDefault();
-        // Simulate successful payment (replace with actual payment processing logic)
-        const successModal = document.getElementById('successModal');
-        successModal.style.display = 'flex';
+                console.log('Submitting form to backend...');
+                form.submit();
+            }
+        });
+
+        // Update order summary based on selected plan
+        const price = {{ $plan->price }};
+        const tax = Math.round(price * 0.1 * 100) / 100;
+        const total = price + tax;
+
+        document.getElementById('subtotal').textContent = `$${price}.00`;
+        document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+        document.getElementById('total').textContent = `$${total.toFixed(2)}`;
     });
 </script>
