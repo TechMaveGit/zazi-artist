@@ -66,10 +66,11 @@ class HomeController extends Controller
                         return [
                             'id' => $bookingService->id,
                             'booking_id' => $bookingService->booking_id,
-                            'service_name' => $bookingService->service->name,
-                            'booking_date' => $bookingService->booking->start_date,
-                            'booking_time' => $bookingService->booking->start_time,
-                            'customer_id' => $bookingService->booking?->customer_id,
+                            'booking_number' => $bookingService?->booking?->booking_id,
+                            'service_name' => $bookingService?->service?->name,
+                            'booking_date' => $bookingService?->booking?->start_date,
+                            'booking_time' => $bookingService?->booking?->start_time,
+                            'customer_id' => $bookingService?->booking?->customer_id,
                             'customer_name' => $bookingService->booking?->user?->name,
                             'status' => $bookingService->status,
 
