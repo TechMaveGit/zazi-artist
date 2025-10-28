@@ -10,10 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\WelcomeUserMail;
+use App\Models\UserSubscription;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
@@ -41,7 +44,7 @@ class CheckoutController extends Controller
         $plan = Subscription::findOrFail($request->plan_id);
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
-
+        DB::beginTransaction();
         try {
             $paymentIntent = PaymentIntent::create([
                 'amount' => $plan->price * 100, 
@@ -79,16 +82,42 @@ class CheckoutController extends Controller
                     'description' => 'A new shop created after plan purchase.',
                 ]);
 
+                // Calculate expiry date based on billing period
+                $purchaseDate = Carbon::now();
+                $expiryDate = null;
+                if ($plan->billing_period === 'monthly') {
+                    $expiryDate = $purchaseDate->copy()->addMonth();
+                } elseif ($plan->billing_period === 'yearly') {
+                    $expiryDate = $purchaseDate->copy()->addYear();
+                } else {
+                    $expiryDate = $purchaseDate->copy()->addMonth();
+                }
+
+                UserSubscription::create([
+                    'user_id' => $user->id,
+                    'subscription_id' => $plan->id,
+                    'price' => $plan->price,
+                    'currency' => 'usd',
+                    'purchase_date' => $purchaseDate,
+                    'expiry_date' => $expiryDate,
+                    'status' => 'active',
+                    'payment_method' => 'Credit Card', 
+                    'stripe_payment_intent_id' => $paymentIntent->id,
+                    'stripe_response' => (array) $paymentIntent,
+                ]);
+
                 Auth::guard('salon')->login($user);
 
                 $shopConfigMessage = "Please log in and navigate to your profile to complete your shop's setup, including adding services, scheduling, and gallery images.";
                 Mail::to($user->email)->send(new WelcomeUserMail($user, $password, $shopConfigMessage));
+                DB::commit();
                 return redirect()->route('web.profile')->with('success', 'Payment successful and shop created!');
             } else {
+                DB::rollBack();
                 return redirect()->back()->with('error', 'Payment failed: ' . $paymentIntent->last_payment_error->message ?? 'Unknown error.');
             }
-
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('error', 'Payment failed: ' . $e->getMessage());
         }
     }

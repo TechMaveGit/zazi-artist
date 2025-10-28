@@ -10,6 +10,7 @@ class BankAccount extends Model
         'user_id',
         'account_holder_name',
         'bank_name',
+        'account_number',
         'branch',
         'ifsc_code',
         'is_default',

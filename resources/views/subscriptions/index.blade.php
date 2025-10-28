@@ -45,7 +45,7 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Total Subscribers</p>
-                                    <p class="metric-value">214</p>
+                                    <p class="metric-value">{{ $userSubsciptions?->count()??0 }}</p>
                                 </div>
                                 <div class="metric-icon success">
                                     <iconify-icon icon="mynaui:users"></iconify-icon>
@@ -59,7 +59,7 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Monthly Revenue</p>
-                                    <p class="metric-value">$17,498</p>
+                                    <p class="metric-value">${{ number_format($monthlyRevenue, 2) }}</p>
                                 </div>
                                 <div class="metric-icon warning">
                                     <iconify-icon icon="hugeicons:dollar-02"></iconify-icon>
@@ -105,11 +105,11 @@
 
                                 <div class="plan-stats">
                                     <div class="stat">
-                                        <div class="stat-value success">0</div> {{-- Placeholder for subscribers --}}
+                                        <div class="stat-value success">{{ $subscription?->user_subscriptions_count??0 }}</div> 
                                         <div class="stat-label">Subscribers</div>
                                     </div>
                                     <div class="stat">
-                                        <div class="stat-value warning">$0</div> {{-- Placeholder for revenue --}}
+                                        <div class="stat-value warning">${{ $subscription?->user_subscriptions_sum_price??0 }}</div> 
                                         <div class="stat-label">Revenue</div>
                                     </div>
                                 </div>
@@ -219,7 +219,7 @@
                                             </svg>
                                         </div>
                                         <div class="plmatric_content">
-                                            <div class="metric-value">0</div>
+                                            <div class="metric-value" id="modalSubscribers">0</div>
                                             <div class="metric-label">Subscribers</div>
                                         </div>
 
@@ -237,7 +237,7 @@
                                             </svg>
                                         </div>
                                         <div class="plmatric_content">
-                                            <div class="metric-value">$0.00</div>
+                                            <div class="metric-value" id="modalMonthlyRevenue">$0.00</div>
                                             <div class="metric-label">Monthly Revenue</div>
                                         </div>
 
@@ -356,29 +356,8 @@
                                     </h6>
                                 </div>
                                 <div class="card-body">
-                                    <div class="activity-list">
-                                        <div class="activity-item">
-                                            <div class="activity-dot success"></div>
-                                            <div class="activity-content">
-                                                <div class="activity-title">New subscription</div>
-                                                <div class="activity-subtitle">Beauty Lounge subscribed • 2 hours ago
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="activity-item">
-                                            <div class="activity-dot primary"></div>
-                                            <div class="activity-content">
-                                                <div class="activity-title">Plan updated</div>
-                                                <div class="activity-subtitle">Feature list modified • 1 day ago</div>
-                                            </div>
-                                        </div>
-                                        <div class="activity-item">
-                                            <div class="activity-dot warning"></div>
-                                            <div class="activity-content">
-                                                <div class="activity-title">Subscription cancelled</div>
-                                                <div class="activity-subtitle">Glamour Studio • 3 days ago</div>
-                                            </div>
-                                        </div>
+                                    <div class="activity-list" id="modalRecentActivity">
+                                        <!-- Recent activities will be populated by JavaScript -->
                                     </div>
                                 </div>
                             </div>
@@ -396,9 +375,9 @@
                 const button = event.relatedTarget;
                 const subscriptionId = button.getAttribute('data-subscription-id');
 
-                // Fetch subscription data via AJAX or use data passed from Blade (for simplicity, we'll use a placeholder here)
-                // In a real application, you'd make an AJAX call to a route like /admin/subscriptions/{id}
                 const subscriptions = @json($subscriptions);
+                const allUserSubscriptions = @json($allUserSubscriptions);
+
                 const subscription = subscriptions.find(sub => sub.id == subscriptionId);
 
                 if (subscription) {
@@ -410,6 +389,8 @@
                     document.getElementById('modalPrice').textContent =
                         `$${parseFloat(subscription.price).toFixed(2)}`;
                     document.getElementById('modalPeriod').textContent = `/${subscription.billing_period}`;
+                    document.getElementById('modalSubscribers').textContent = subscription.user_subscriptions_count || 0;
+                    document.getElementById('modalMonthlyRevenue').textContent = `$${parseFloat(subscription.user_subscriptions_sum_price || 0).toFixed(2)}`;
                     document.getElementById('modalFeaturesCount').textContent = subscription.features ?
                         subscription.features.length : 0;
                     document.getElementById('modalDescription').textContent = subscription.description ||
@@ -435,6 +416,55 @@
                         });
                     } else {
                         modalPlanFeatures.innerHTML = '<p>No features included.</p>';
+                    }
+
+                    // Populate Recent Activity
+                    const modalRecentActivity = document.getElementById('modalRecentActivity');
+                    modalRecentActivity.innerHTML = '';
+                    const planActivities = allUserSubscriptions.filter(activity => activity.subscription_id == subscriptionId);
+
+                    if (planActivities.length > 0) {
+                        planActivities.slice(0, 5).forEach(activity => { 
+                            const activityElement = document.createElement('div');
+                            activityElement.className = 'activity-item';
+                            let statusClass = 'primary';
+                            let activityTitle = 'Plan updated';
+                            if (activity.status === 'active') {
+                                statusClass = 'success';
+                                activityTitle = 'New subscription';
+                            } else if (activity.status === 'cancelled') {
+                                statusClass = 'warning';
+                                activityTitle = 'Subscription cancelled';
+                            }
+
+                            const userName = activity.user ? activity.user.name : 'N/A';
+                            const subscriptionName = activity.subscription ? activity.subscription.name : 'N/A';
+                            const actionText = activity.status === 'active' ? 'subscribed' : (activity.status === 'cancelled' ? '' : 'modified');
+                            const timeAgo = new Date(activity.created_at).toLocaleDateString(); 
+
+                            activityElement.innerHTML = `
+                                <div class="activity-dot ${statusClass}"></div>
+                                <div class="activity-content">
+                                    <div class="activity-title">${activityTitle}</div>
+                                    <div class="activity-subtitle">${userName} ${actionText} to ${subscriptionName} • ${timeAgo}</div>
+                                </div>
+                            `;
+                            modalRecentActivity.appendChild(activityElement);
+                        });
+                    } else {
+                        modalRecentActivity.innerHTML = '<p>No recent activity for this plan.</p>';
+                    }
+
+                    // Populate Performance Insights
+                    document.querySelector('#planDetailsModal .performance-item.success .performance-value').textContent = 'N/A'; // Conversion Rate
+                    document.querySelector('#planDetailsModal .performance-item.primary .performance-value').textContent = 'N/A'; // Retention Rate
+
+                    const avgLifetimeValueElement = document.querySelector('#planDetailsModal .performance-item.warning .performance-value');
+                    if (subscription.user_subscriptions_count > 0) {
+                        const avgLifetimeValue = (subscription.user_subscriptions_sum_price / subscription.user_subscriptions_count).toFixed(2);
+                        avgLifetimeValueElement.textContent = `$${avgLifetimeValue}`;
+                    } else {
+                        avgLifetimeValueElement.textContent = '$0.00';
                     }
 
                     // Update edit button link
