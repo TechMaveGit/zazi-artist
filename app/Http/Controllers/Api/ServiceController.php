@@ -61,6 +61,7 @@ class ServiceController extends Controller
                 'service_price' => $validatedData['service_price'],
                 'booking_price' => $validatedData['booking_price'],
                 'cover_img' => $validatedData['cover_img'],
+                'status' => $validatedData['status'] ?? 'draft',
             ]);
             if ($request->has('sessions')) {
                 $service->serviceSessions()->createMany($request->input('sessions'));
