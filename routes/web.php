@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-Route::middleware('auth:salon')->group(function () {
-    Route::get('/checkout/{id}', [HomeController::class, 'checkout'])->name('web.checkout');
+Route::get('/checkout/{id}', [HomeController::class, 'checkout'])->name('web.checkout');
+Route::middleware(['auth:salon','super_admin'])->group(function () {
     Route::get('/profile', [HomeController::class, 'profile'])->name('web.profile');
     Route::patch('/profile/update', [ProfileController::class, 'webUpdate'])->name('web.profile.update');
     Route::post('/profile/update-image', [ProfileController::class, 'webUpdatePicture'])->name('web.profile.update.picture');
@@ -23,7 +23,7 @@ Route::middleware('auth:salon')->group(function () {
 
 
 Route::prefix('super-admin')->group(function () {
-    Route::middleware(['auth', 'super_admin'])->group(function () {
+    Route::middleware(['auth:web', 'super_admin'])->group(function () {
         Route::get('/', function () {
             return view('dashboard');
         })->middleware(['verified'])->name('dashboard');
