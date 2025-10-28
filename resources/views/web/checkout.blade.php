@@ -102,7 +102,7 @@
                             <div class="col-lg-12">
                                 <div class="form-group full-width">
                                     <label class="form-label" for="card-element">Credit or debit card</label>
-                                    <div id="card-element" class="form-input" style="height: 40px; border: 1px solid #ced4da; padding: 10px; border-radius: 4px;">
+                                    <div id="card-element" class="form-input" style="height: 40px; border: 1px solid #ced4da; padding: 10px; border-radius: 4px; background-color: white; display: block !important; visibility: visible !important; z-index: 9999 !important;">
                                         <!-- A Stripe Element will be inserted here. -->
                                     </div>
                                     <!-- Used to display form errors. -->
