@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(ForceJsonForApi::class);
         $middleware->statefulApi();
         $middleware->alias([
+            'auth'=> \App\Http\Middleware\Authenticate::class,
             'super_admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
