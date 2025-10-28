@@ -50,7 +50,7 @@ class BookingController extends Controller
 
     public function show($id)
     {
-        $booking = Booking::with(['bookingServices', 'bookingServices.bookingServiceSessions'])->findOrFail($id);
+        $booking = Booking::with(['user', 'shop', 'bookingServices', 'bookingServices.bookingServiceSessions'])->findOrFail($id);
         return ApiResponse::success('Booking', 200, $booking);
     }
 
