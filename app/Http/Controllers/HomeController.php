@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlanFeature;
 use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,12 @@ class HomeController extends Controller
 
     public function profile() {
         $user = Auth::guard('salon')->user();
-        return view('web.profile', compact('user'));
+        if ($user) {
+            $user = User::with('userSubscription.subscription')->find($user->id);
+        }
+        $activeSubscription = $user->userSubscription()->where('status', 'active')->first();
+        $transactions = $user->userSubscription()->orderBy('purchase_date', 'desc')->get(); // Fetch all user subscriptions as transactions
+        return view('web.profile', compact('user','activeSubscription','transactions'));
     }
 
     public function checkout($id) {

@@ -292,9 +292,9 @@
 <body>
 
     <!-- Preloader -->
-    <div id="preloader">
+    {{-- <div id="preloader">
         <div id="loader"></div>
-    </div>
+    </div> --}}
 
     <!-- Header Start -->
     <header>

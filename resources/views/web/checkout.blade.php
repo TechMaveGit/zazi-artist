@@ -25,16 +25,6 @@
                     </ul>
                 </div>
             @endif
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <strong>Validation Error!</strong>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
             @if(session('success'))
                 <div class="alert alert-success">
                     <strong>Success!</strong>
@@ -56,52 +46,76 @@
                                 <div class="form-group full-width">
                                     <label for="fullName">Full Name</label>
                                     <input type="text" id="fullName" name="fullName" placeholder="First & Last Name"
-                                        required>
+                                        value="{{ old('fullName') }}" required>
+                                    @error('fullName')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group full-width">
                                     <label for="email">Email</label>
-                                    <input type="email" id="email" name="email" placeholder="Email" required>
+                                    <input type="email" id="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                                    @error('email')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group full-width">
                                     <label for="mobileNo">Mobile No.</label>
                                     <input type="text" id="mobileNo" name="mobileNo" placeholder="Mobile No."
-                                        required>
+                                        value="{{ old('mobileNo') }}" required>
+                                    @error('mobileNo')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group full-width">
                                     <label for="address1">Address 1</label>
                                     <input type="text" id="address1" name="address1"
-                                        placeholder="421, Dubai Main St." required>
+                                        placeholder="421, Dubai Main St." value="{{ old('address1') }}" required>
+                                    @error('address1')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group full-width">
                                     <label for="address2">Address 2</label>
                                     <input type="text" id="address2" name="address2"
-                                        placeholder="Apartment, suite, etc. (optional)">
+                                        placeholder="Apartment, suite, etc. (optional)" value="{{ old('address2') }}">
+                                    @error('address2')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label for="city">City</label>
-                                    <input type="text" id="city" name="city" placeholder="City" required>
+                                    <input type="text" id="city" name="city" placeholder="City" value="{{ old('city') }}" required>
+                                    @error('city')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label for="state">State</label>
-                                    <input type="text" id="state" name="state" placeholder="State" required>
+                                    <input type="text" id="state" name="state" placeholder="State" value="{{ old('state') }}" required>
+                                    @error('state')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label for="zipCode">Zip Code</label>
-                                    <input type="text" id="zipCode" name="zipCode" placeholder="Zip code" required>
+                                    <input type="text" id="zipCode" name="zipCode" placeholder="Zip code" value="{{ old('zipCode') }}" required>
+                                    @error('zipCode')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -230,19 +244,16 @@
         });
 
         // Stripe integration
-        console.log('Stripe Key:', '{{ env('STRIPE_KEY') }}');
         const stripe = Stripe('{{ env('STRIPE_KEY') }}');
         const elements = stripe.elements();
         const card = elements.create('card');
         card.mount('#card-element');
-        console.log('Stripe card element mounted.');
 
         const form = document.getElementById('checkout-form');
         const cardButton = document.getElementById('card-button');
 
         cardButton.addEventListener('click', async (e) => {
             e.preventDefault();
-            console.log('Make Payment button clicked. Form submission initiated.');
 
             const { paymentMethod, error } = await stripe.createPaymentMethod(
                 'card', card, {
@@ -265,7 +276,6 @@
                 hiddenInput.setAttribute('value', paymentMethod.id);
                 form.appendChild(hiddenInput);
 
-                console.log('Submitting form to backend...');
                 form.submit();
             }
         });
