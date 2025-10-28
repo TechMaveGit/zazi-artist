@@ -47,6 +47,10 @@ trait UploadFile
      */
     public static function getFileUrl(string $filePath): string
     {
-        return Storage::disk('public')->url($filePath);
+        if (empty($filePath)) {
+            return '';
+        }
+
+        return rtrim(config('app.url'), '/') . '/storage/app/public/' . ltrim($filePath, '/');
     }
 }
