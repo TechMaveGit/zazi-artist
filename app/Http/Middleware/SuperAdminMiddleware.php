@@ -13,7 +13,7 @@ class SuperAdminMiddleware
     {   
         // If user not logged in
         if (!Auth::guard('web')->check()) {
-            return redirect()->route('super-admin.login')->with('error', 'Please log in as Super Admin.');
+            return redirect()->route('login')->with('error', 'Please log in as Super Admin.');
         }
 
         // If user logged in but not a Super Admin
