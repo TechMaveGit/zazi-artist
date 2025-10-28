@@ -70,7 +70,7 @@ class HomeController extends Controller
                             'service_name' => $bookingService?->service?->name,
                             'booking_date' => $bookingService?->booking?->start_date,
                             'booking_time' => $bookingService?->booking?->start_time,
-                            'customer_id' => $bookingService?->booking?->customer_id,
+                            'customer_id' => $bookingService?->booking?->user_id,
                             'customer_name' => $bookingService->booking?->user?->name,
                             'status' => $bookingService->status,
 

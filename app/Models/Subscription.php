@@ -23,4 +23,9 @@ class Subscription extends Model
         'is_popular' => 'boolean',
         'is_active' => 'boolean',
     ];
+
+    public function userSubscriptions()
+    {
+        return $this->hasMany(UserSubscription::class, 'subscription_id');
+    }
 }

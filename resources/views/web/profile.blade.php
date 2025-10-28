@@ -2,8 +2,9 @@
 <!-- Add Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <!-- Data Table CSS -->
-<link rel="stylesheet" href="{{ asset('web_assets/datatables/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}"  />
-<link rel="stylesheet" href="{{ asset('web_assets/datatables/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('web_assets/datatables/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" />
+<link rel="stylesheet"
+    href="{{ asset('web_assets/datatables/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('web_assets/customplugins/buttons.dataTables.min.css') }}">
 <link rel="stylesheet" href="{{ asset('web_assets/css/aos.css') }}">
 <link rel="stylesheet" href="{{ asset('web_assets/css/modernstyle.css') }}">
@@ -13,7 +14,6 @@
         background: #000;
     }
 </style>
-
 <div class="main-container">
     <!-- Sidebar -->
     <div class="sidebar">
@@ -83,7 +83,7 @@
                         <div class="view-mode-grid" style="flex: 1;">
                             <div class="view-mode-item">
                                 <span class="view-mode-label">Full Name</span>
-                                <span class="view-mode-value" id="profileNameView">Not set</span> 
+                                <span class="view-mode-value" id="profileNameView">Not set</span>
                             </div>
                             <div class="view-mode-item">
                                 <span class="view-mode-label">Email</span>
@@ -292,64 +292,68 @@
                     <h2 class="content-title">Active Subscription</h2>
                     <p class="content-subtitle">View and manage your subscription plan</p>
                 </div>
-                <div class="action-buttons">
+                {{-- <div class="action-buttons">
                     <button class="btn-primary-custom btn-custom">
                         <i class="fas fa-edit"></i>
                         Update Plan
                     </button>
-                </div>
+                </div> --}}
             </div>
 
-            <!-- Subscription history Previous -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="planHead">
-                        <div class="PlanLeft">
-                            <div class="iconPlan">
-                                <iconify-icon icon="mdi:badge-outline"></iconify-icon>
+            <!-- Active Subscription -->
+            @if ($activeSubscription)
+                <div class="card">
+                    <div class="card-header">
+                        <div class="planHead">
+                            <div class="PlanLeft">
+                                <div class="iconPlan">
+                                    <iconify-icon icon="mdi:badge-outline"></iconify-icon>
+                                </div>
+                                <div class="PlanTitle">
+                                    <h5>{{ $activeSubscription->subscription->name ?? 'N/A' }} Plan</h5>
+                                </div>
                             </div>
-                            <div class="PlanTitle">
-                                <h5>Premium Plan</h5>
+                            <div class="planRight">
+                                <span
+                                    class="badge badge-soft-success">{{ ucfirst($activeSubscription->status) }}</span>
                             </div>
-                        </div>
-                        <div class="planRight">
-                            <span class="badge badge-soft-success">Active</span>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="planBody">
-                        <div class="PlanDt">
-                            <h6>Price</h6>
-                            <p>$8/month</p>
-                        </div>
-                        <!-- <div class="PlanDt">
-                                    <h6>Total Task</h6>
-                                    <p>20</p>
-                                </div> -->
-                        <div class="PlanDt">
-                            <h6>Purchase Date</h6>
-                            <p>20 Sep, 2024</p>
-                        </div>
-                        <div class="PlanDt">
-                            <h6>Valid On</h6>
-                            <p>20 Oct, 2024</p>
-                        </div>
-                        <div class="PlanDt">
-                            <h6>Payment Method</h6>
-                            <p>Credit Card</p>
                         </div>
                     </div>
-
-
+                    <div class="card-body">
+                        <div class="planBody">
+                            <div class="PlanDt">
+                                <h6>Price</h6>
+                                <p>${{ number_format($activeSubscription->price, 2) }}/{{ $activeSubscription->subscription->billing_period ?? 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="PlanDt">
+                                <h6>Purchase Date</h6>
+                                <p>{{ $activeSubscription->purchase_date ? $activeSubscription->purchase_date->format('d M, Y') : 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="PlanDt">
+                                <h6>Valid On</h6>
+                                <p>{{ $activeSubscription->expiry_date ? $activeSubscription->expiry_date->format('d M, Y') : 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="PlanDt">
+                                <h6>Payment Method</h6>
+                                <p>{{ $activeSubscription->payment_method ?? 'N/A' }}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="card">
+                    <div class="card-body">
+                        <p class="text-center">No active subscription found.</p>
+                    </div>
+                </div>
+            @endif
 
+            <!-- Previous Subscription History -->
             <div class="card mt-3">
                 <div class="card-header">
-
                     <div class="planHead">
                         <div class="PlanLeft">
                             <div class="PlanTitle">
@@ -366,36 +370,31 @@
                                     <th>Id</th>
                                     <th>Plan</th>
                                     <th>Price</th>
-                                    <th>Total Task</th>
                                     <th>Purchase Date</th>
                                     <th>Expire Date</th>
                                     <th>Payment Method</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>#SUB5623</td>
-                                    <td>Monthly Plan</td>
-                                    <td>$8/month</td>
-                                    <td>20</td>
-                                    <td>20 Aug, 2024</td>
-                                    <td>20 Sep, 2024</td>
-                                    <td>Credit Card</td>
-                                </tr>
-                                <tr>
-                                    <td>#SUB5623</td>
-                                    <td>Monthly Plan</td>
-                                    <td>$8/month</td>
-                                    <td>20</td>
-                                    <td>25 July, 2024</td>
-                                    <td>25 Aug, 2024</td>
-                                    <td>Credit Card</td>
-                                </tr>
+                                @foreach($user->userSubscription as $eachSub)
+                                    <tr>
+                                        <td>#SUB{{ $eachSub?->id }}</td>
+                                        <td>{{ $eachSub?->subscription?->name ?? 'N/A' }}</td>
+                                        <td>${{ number_format($eachSub->price, 2) }}/{{ $sueachSubb?->subscription?->billing_period ?? 'N/A' }}
+                                        </td>
+                                        <td>{{ $eachSub?->purchase_date ? $eachSub?->purchase_date->format('d M, Y') : 'N/A' }}
+                                        </td>
+                                        <td>{{ $eachSub->expiry_date ? $eachSub->expiry_date->format('d M, Y') : 'N/A' }}</td>
+                                        <td>{{ $eachSub->payment_method ?? 'N/A' }}</td>
+                                        <td><span
+                                                class="badge badge-soft-{{ $eachSub->status === 'active' ? 'success' : 'danger' }}">{{ ucfirst($eachSub->status) }}</span>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
-
-
                 </div>
             </div>
 
@@ -515,72 +514,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>#TXN-2025-001</td>
-                                    <td>Jan 15, 2025 10:30 AM</td>
-                                    <td>Subscription</td>
-                                    <td>Premium Plan - Monthly</td>
-                                    <td>$45.00</td>
-                                    <td>
-                                        <iconify-icon icon="logos:visa" width="20"></iconify-icon> **** 4242
-                                    </td>
-                                    <td><span class="badge badge-soft-success">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td>#TXN-2024-012</td>
-                                    <td>Dec 15, 2024 09:20 AM</td>
-                                    <td>Subscription</td>
-                                    <td>Premium Plan - Monthly</td>
-                                    <td>$45.00</td>
-                                    <td>
-                                        <iconify-icon icon="logos:mastercard" width="20"></iconify-icon> **** 8888
-                                    </td>
-                                    <td><span class="badge badge-soft-success">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td>#TXN-2024-011</td>
-                                    <td>Nov 15, 2024 11:45 AM</td>
-                                    <td>Subscription</td>
-                                    <td>Premium Plan - Monthly</td>
-                                    <td>$45.00</td>
-                                    <td>
-                                        <iconify-icon icon="logos:paypal" width="14"></iconify-icon> PayPal
-                                    </td>
-                                    <td><span class="badge badge-soft-success">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td>#TXN-2024-010</td>
-                                    <td>Oct 15, 2024 01:15 PM</td>
-                                    <td>Subscription</td>
-                                    <td>Premium Plan - Monthly</td>
-                                    <td>$45.00</td>
-                                    <td>
-                                        <iconify-icon icon="logos:visa" width="20"></iconify-icon> **** 4242
-                                    </td>
-                                    <td><span class="badge badge-soft-success">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td>#TXN-2024-009</td>
-                                    <td>Sep 15, 2024 03:40 PM</td>
-                                    <td>Subscription</td>
-                                    <td>Premium Plan - Monthly</td>
-                                    <td>$45.00</td>
-                                    <td>
-                                        <iconify-icon icon="logos:mastercard" width="20"></iconify-icon> **** 2222
-                                    </td>
-                                    <td><span class="badge badge-soft-success">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td>#TXN-2024-008</td>
-                                    <td>Aug 15, 2024 08:10 AM</td>
-                                    <td>Subscription</td>
-                                    <td>Premium Plan - Monthly</td>
-                                    <td>$45.00</td>
-                                    <td>
-                                        <iconify-icon icon="logos:paypal" width="14"></iconify-icon> PayPal
-                                    </td>
-                                    <td><span class="badge badge-soft-warning">Pending</span></td>
-                                </tr>
+                                @forelse($transactions as $transaction)
+                                    <tr>
+                                        <td>{{ $transaction->stripe_payment_intent_id??'N/A' }}</td>
+                                        <td>{{ $transaction->purchase_date ? $transaction->purchase_date->format('d M, Y h:i A') : 'N/A' }}</td>
+                                        <td>Subscription</td> {{-- Assuming all transactions here are subscriptions --}}
+                                        <td>{{ $transaction->subscription->name ?? 'N/A' }} Plan</td>
+                                        <td>${{ number_format($transaction->price, 2) }}</td>
+                                        <td>
+                                            @if($transaction->payment_method == 'card')
+                                                <iconify-icon icon="logos:visa" width="20"></iconify-icon> **** {{ substr($transaction->stripe_response['card']['last4'] ?? 'N/A', -4) }}
+                                            @elseif($transaction->payment_method == 'paypal')
+                                                <iconify-icon icon="logos:paypal" width="14"></iconify-icon> PayPal
+                                            @else
+                                                {{ $transaction->payment_method ?? 'N/A' }}
+                                            @endif
+                                        </td>
+                                        <td><span class="badge badge-soft-{{ $transaction->status === 'active' || $transaction->status === 'completed' ? 'success' : 'danger' }}">{{ ucfirst($transaction->status) }}</span></td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center">No transactions found.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -666,7 +622,7 @@
                                 <option value="therapeutic">Therapeutic Tattoo</option>
                             </select>
                         </div>
-                    </div> --}} 
+                    </div> --}}
                 </div>
                 <div class="form-group">
                     <label class="form-label">Bio / Experience</label>
@@ -978,8 +934,10 @@
 
 <!-- Data Table JS -->
 <script type="text/javascript" src="{{ asset('web_assets/datatables/datatables.net/js/dataTables.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('web_assets/datatables/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('web_assets/datatables/datatables.net-select/js/dataTables.select.min.js') }}"></script>
+<script type="text/javascript"
+    src="{{ asset('web_assets/datatables/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+<script type="text/javascript"
+    src="{{ asset('web_assets/datatables/datatables.net-select/js/dataTables.select.min.js') }}"></script>
 
 <script type="text/javascript" src="{{ asset('web_assets/customplugins/dataTables.buttons.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('web_assets/customplugins/jszip.min.js') }}"></script>
@@ -1082,7 +1040,7 @@
             fullName: '{{ $user?->name }}',
             email: '{{ $user?->email }}',
             phone: '{{ $user?->dial_code }} {{ $user?->phone }}',
-            //category: '{{ $user?->hasRole("salon") ? "Salon" : "Artist" }}',
+            //category: '{{ $user?->hasRole('salon') ? 'Salon' : 'Artist' }}',
             bio: '{{ $user?->about }}',
             address1: '{{ $user?->address?->address_line1 }} ',
             address2: '{{ $user?->address?->address_line2 }}',
@@ -1094,7 +1052,7 @@
         console.log(profileData);
 
         // Sample shop data
-        
+
         shopData = {
             shopName: 'MediTattoo Studio',
             shopEmail: 'contact@meditattoo.com',
@@ -1238,7 +1196,9 @@
                             'Content-Type': 'application/json', // Important for JSON body
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify({ image: currentProfileImage })
+                        body: JSON.stringify({
+                            image: currentProfileImage
+                        })
                     });
                     const data = await response.json();
 
@@ -1274,7 +1234,8 @@
         };
 
         // Basic validation
-        if (!updatedProfileData.fullName || !updatedProfileData.phone || !updatedProfileData.address1 || !updatedProfileData.city || !updatedProfileData.state || !updatedProfileData.zipCode) {
+        if (!updatedProfileData.fullName || !updatedProfileData.phone || !updatedProfileData.address1 || !
+            updatedProfileData.city || !updatedProfileData.state || !updatedProfileData.zipCode) {
             showToast('Validation Error', 'Please fill in all required fields', 'error');
             return;
         }

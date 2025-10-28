@@ -65,6 +65,11 @@ class User extends Authenticatable
         return $this->hasOne(UserAddress::class);
     }
 
+    public function userSubscription()
+    {
+        return $this->hasMany(UserSubscription::class);
+    }
+
     public function sendOtp($type = 'mobile')
     {
         $otp = 123456; //rand(100000, 999999);
