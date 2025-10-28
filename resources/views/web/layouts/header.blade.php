@@ -326,18 +326,18 @@
                         <!-- secondery menu end -->
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/#AboutUssection">About us</a>
+                            <a class="nav-link" href="{{ url('/') }}#AboutUssection">About us</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/#ServiceSection">Services</a>
+                            <a class="nav-link" href="{{ url('/') }}#ServiceSection">Services</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/#PricingSection">Pricing</a>
+                            <a class="nav-link" href="{{ url('/') }}#PricingSection">Pricing</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/#ReviewSection">Reviews</a>
+                            <a class="nav-link" href="{{ url('/') }}#ReviewSection">Reviews</a>
                         </li>
 
                         <li class="nav-item">
