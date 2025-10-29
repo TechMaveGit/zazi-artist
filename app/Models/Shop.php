@@ -24,7 +24,6 @@ class Shop extends Model
         'zipcode',
         'description',
         'banner_img',
-        'is_opened_today'
     ];
     protected $casts = [
         'banner_img' => 'array',
@@ -68,6 +67,11 @@ class Shop extends Model
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
+    public function owner()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
     public function bookings()
     {
         return $this->hasMany(Booking::class);
@@ -76,6 +80,11 @@ class Shop extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function userSubscription()
+    {
+        return $this->hasOne(UserSubscription::class, 'shop_id', 'id');
     }
 
     public function getBannerImgUrlAttribute()

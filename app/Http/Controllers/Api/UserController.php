@@ -66,9 +66,6 @@ class UserController extends Controller
         // --- 3. Applying Filters ---
         // 3.1. Service Type Filters (from first image)
         // Assuming 'Hair Services', 'Color Treatments', etc. are fields/values
-        // related to the bookings/services a customer has utilized.
-        // This requires a many-to-many relationship (bookings have services) or a direct service column on bookings.
-        // We'll use a placeholder structure for the `service_type` filter.
         if (!empty($filters['service_type'])) {
             $query->whereHas('bookings.bookingServices.service', function ($q) use ($filters) {
                 $q->whereIn('name', $filters['service_type']);
