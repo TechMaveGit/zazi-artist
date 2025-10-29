@@ -70,6 +70,11 @@ class User extends Authenticatable
         return $this->hasMany(UserSubscription::class);
     }
 
+    public function subscriptionInvoices()
+    {
+        return $this->hasMany(SubscriptionInvoice::class);
+    }
+
     public function sendOtp($type = 'mobile')
     {
         $otp = 123456; //rand(100000, 999999);

@@ -38,8 +38,9 @@ class UserSubscription extends Model
         return $this->belongsTo(Subscription::class);
     }
 
-    public function invoices()
+    public function invoice()
     {
-        return $this->hasMany(Invoice::class, 'user_subscription_id', 'id');
+        return $this->hasOne(SubscriptionInvoice::class, 'user_subscription_id', 'id');
     }
+
 }

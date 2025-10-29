@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\{SubscriptionController, SalonController, Transac
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SubscriptionInvoiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -20,9 +21,6 @@ Route::middleware(['auth:salon'])->group(function () {
     Route::patch('/profile/update', [ProfileController::class, 'webUpdate'])->name('web.profile.update');
     Route::post('/profile/update-image', [ProfileController::class, 'webUpdatePicture'])->name('web.profile.update.picture');
 });
-
-
-
 
 Route::prefix('super-admin')->group(function () {
     Route::middleware(['auth:web', 'super_admin'])->group(function () {
@@ -49,6 +47,9 @@ Route::prefix('super-admin')->group(function () {
         Route::post('delete/record', [CommonController::class, 'deleteRecord'])->name('delete.record');
     });
 });
+
+Route::get('/subscription-invoice/{invoiceId}/download', [SubscriptionInvoiceController::class, 'downloadPdf'])->name('web.subscription.invoice.download');
+
 
 Route::get('/google/auth', function (GoogleCalendarService $googleCalendarService) {
     return redirect()->away($googleCalendarService->getAuthUrl());
@@ -86,5 +87,6 @@ Route::get('/mail', function () {
     });
     dd('Email sent!');
 });
+
 
 require __DIR__ . '/auth.php';

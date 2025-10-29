@@ -29,18 +29,24 @@ class SalonController extends Controller
     }
 
     public function show(Shop $salon)
-    {   
+    {
         $salon->load([
-            'artists', 
+            'artists',
             'galleryImages',
             'services.category',
-            'owner.userSubscription.subscription', 
+            'owner.userSubscription.subscription',
+            'owner.userSubscription.invoice', 
             'bookings.invoices.invoiceItems',
             'bookings.invoices.payments'
         ]);
         $currentSubscription = $salon?->owner?->userSubscription->where('status', 'active')->first();
         $allSubscriptions = $salon?->owner?->userSubscription->sortByDesc('created_at');
+        $allSubscriptionsWithInvoice = $allSubscriptions->map(function ($subscription) {
+            $subscription->invoice_id = $subscription?->invoice?->id ?? null;
+            $subscription->invoice_number = $subscription?->invoice?->invoice_number ?? null;
+            return $subscription;
+        });
 
-        return view('salons.show', compact('salon','currentSubscription', 'allSubscriptions'));
+        return view('salons.show', compact('salon', 'currentSubscription', 'allSubscriptionsWithInvoice'));
     }
 }
