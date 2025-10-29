@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Shop;
 use App\Models\User;
+use App\Models\UserSubscription;
 use App\Observers\ShopObserver;
 use App\Observers\UserObserver;
+use App\Observers\UserSubscriptionObserver;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\PersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         User::observe(UserObserver::class);
         Shop::observe(ShopObserver::class);
+        UserSubscription::observe(UserSubscriptionObserver::class);
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 }

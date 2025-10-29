@@ -379,7 +379,7 @@
                             <tbody>
                                 @foreach($user->userSubscription as $eachSub)
                                     <tr>
-                                        <td>#SUB{{ $eachSub?->id }}</td>
+                                        <td><a href="{{ route('web.subscription.invoice.download', encrypt($eachSub?->invoice?->id)) }}" class="text-primary" target="_blank">#{{ $eachSub?->invoice?->invoice_number }}</a></td>
                                         <td>{{ $eachSub?->subscription?->name ?? 'N/A' }}</td>
                                         <td>${{ number_format($eachSub->price, 2) }}/{{ $sueachSubb?->subscription?->billing_period ?? 'N/A' }}
                                         </td>
@@ -397,8 +397,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
 
 

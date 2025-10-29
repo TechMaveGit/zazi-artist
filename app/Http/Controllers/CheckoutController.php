@@ -27,12 +27,12 @@ class CheckoutController extends Controller
     }
 
     public function store(Request $request)
-    {   
+    {
 
         $request->validate([
             'fullName' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'mobileNo' => 'required|string|max:20',
+            'mobileNo' => 'required|string|max:20|unique:users,phone',
             'address1' => 'required|string|max:255',
             'address2' => 'nullable|string|max:255',
             'city' => 'required|string|max:255',
@@ -47,30 +47,30 @@ class CheckoutController extends Controller
         DB::beginTransaction();
         try {
             $paymentIntent = PaymentIntent::create([
-                'amount' => $plan->price * 100, 
+                'amount' => $plan->price * 100,
                 'currency' => 'usd',
                 'payment_method' => $request->stripeToken,
                 'confirmation_method' => 'manual',
                 'confirm' => true,
                 'description' => 'Subscription for ' . $plan->name . ' Plan',
-                'return_url' => route('web.profile'), 
+                'return_url' => route('web.profile'),
             ]);
 
             if ($paymentIntent->status === 'succeeded') {
-                $password = Str::random(10);
+                $password = 123456;
                 $user = User::create([
                     'name' => $request->fullName,
                     'email' => $request->email,
                     'phone' => $request->mobileNo,
                     'password' => Hash::make($password),
-                    'role' => 'salon', 
+                    'role' => 'salon',
                 ]);
 
                 $user->assignRole('salon');
 
                 Shop::create([
                     'user_id' => $user->id,
-                    'name' => $request->fullName . "'s Shop", 
+                    'name' => $request->fullName . "'s Shop",
                     'email' => $request->email,
                     'dial_code' => '1',
                     'phone' => $request->mobileNo,
@@ -93,7 +93,7 @@ class CheckoutController extends Controller
                     $expiryDate = $purchaseDate->copy()->addMonth();
                 }
 
-                UserSubscription::create([
+                $userSubscription = UserSubscription::create([
                     'user_id' => $user->id,
                     'subscription_id' => $plan->id,
                     'price' => $plan->price,
@@ -101,7 +101,7 @@ class CheckoutController extends Controller
                     'purchase_date' => $purchaseDate,
                     'expiry_date' => $expiryDate,
                     'status' => 'active',
-                    'payment_method' => 'Credit Card', 
+                    'payment_method' => 'Credit Card',
                     'stripe_payment_intent_id' => $paymentIntent->id,
                     'stripe_response' => (array) $paymentIntent,
                 ]);
