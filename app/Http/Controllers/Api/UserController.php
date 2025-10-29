@@ -128,10 +128,19 @@ class UserController extends Controller
             });
         }
 
-        $users = $query->paginate($request->get('per_page', 10), ['*'], 'page', $request->get('page', 1));
+        $users = $query->paginate($request->get('per_page', 10));
+
         if ($users->isEmpty()) {
             return ApiResponse::error("No customers found matching the filters", 400);
         }
+
+        $users->getCollection()->transform(function ($user) {
+            $user->total_visits = $user->bookings->count();
+            $user->last_visit = optional($user->bookings->first())->created_at;
+            $user->total_spent = $user->bookings->sum('total_amount');
+            unset($user->bookings); // optional: hide raw bookings data
+            return $user;
+        });
 
         return ApiResponse::success("Customers", 200, $users);
     }
