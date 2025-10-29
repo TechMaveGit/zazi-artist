@@ -91,7 +91,9 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Total Revenue</p>
-                                    <p class="metric-value">${{ number_format($salon->bookings->flatMap(fn($booking) => $booking->invoices)->sum('total_amount'), 2) }}</p>
+                                    <p class="metric-value">
+                                        ${{ number_format($salon->bookings->flatMap(fn($booking) => $booking->invoices)->sum('total_amount'), 2) }}
+                                    </p>
                                 </div>
                                 <div class="metric-icon warning">
                                     <iconify-icon icon="hugeicons:dollar-02"></iconify-icon>
@@ -110,10 +112,10 @@
                         <div class="card-body">
                             <div class="salon-detail-profile">
                                 <div class="salon-detail-avatar">
-                                    <img src="{{ !empty($salon->banner_img_url) ? $salon->banner_img_url : asset('assets/img/users/userdummy.png') }}" alt="{{ $salon->name }}"
-                                        class="salon-detail-image">
+                                    <img src="{{ !empty($salon->banner_img_url) ? $salon->banner_img_url : asset('assets/img/users/userdummy.png') }}"
+                                        alt="{{ $salon->name }}" class="salon-detail-image">
                                     <div class="salon-detail-status salon-detail-{{ $salon->status }}">
-                                        @if($salon->status == 'active')
+                                        @if ($salon->status == 'active')
                                             <iconify-icon icon="material-symbols:check-circle"></iconify-icon>
                                         @elseif($salon->status == 'suspended')
                                             <iconify-icon icon="material-symbols:block"></iconify-icon>
@@ -124,7 +126,7 @@
                                 </div>
                                 <div class="salon-detail-info">
                                     <h3 class="salon-detail-name">{{ $salon->name }}</h3>
-                                    <p class="salon-detail-owner">Owner: {{ ucwords($salon?->owner?->name)??'' }}</p>
+                                    <p class="salon-detail-owner">Owner: {{ ucwords($salon?->owner?->name) ?? '' }}</p>
                                     <div class="salon-detail-meta">
                                         <div class="salon-detail-meta-item">
                                             <iconify-icon icon="material-symbols:mail-outline"></iconify-icon>
@@ -136,7 +138,8 @@
                                         </div>
                                         <div class="salon-detail-meta-item">
                                             <iconify-icon icon="material-symbols:location-on-outline"></iconify-icon>
-                                            <span>{{ ucfirst($salon?->city) }}, {{ ucfirst($salon?->state) }} ({{ ucfirst($salon?->country) }})</span>
+                                            <span>{{ ucfirst($salon?->city) }}, {{ ucfirst($salon?->state) }}
+                                                ({{ ucfirst($salon?->country) }})</span>
                                         </div>
                                         <div class="salon-detail-meta-item">
                                             <iconify-icon icon="material-symbols:calendar-today-outline"></iconify-icon>
@@ -160,22 +163,28 @@
                         <div class="card-body">
                             <div class="salon-detail-current-plan">
                                 @php
-                                    $subscriptionPlan = $currentSubscription ? $currentSubscription->subscription : null;
+                                    $subscriptionPlan = $currentSubscription
+                                        ? $currentSubscription->subscription
+                                        : null;
                                 @endphp
 
-                                @if($currentSubscription && $subscriptionPlan)
+                                @if ($currentSubscription && $subscriptionPlan)
                                     <div class="plansalonwrap">
                                         <div class="salon-detail-plan-badge">{{ $subscriptionPlan->name }}</div>
                                         <div class="salonplantile">
-                                            <div class="salon-detail-plan-price">${{ number_format($subscriptionPlan->price, 2) }}<span>/{{ $subscriptionPlan->plan_type }}</span></div>
+                                            <div class="salon-detail-plan-price">
+                                                ${{ number_format($subscriptionPlan->price, 2) }}<span>/{{ $subscriptionPlan->plan_type }}</span>
+                                            </div>
                                             <div class="salon-detail-plan-expiry">
                                                 <iconify-icon icon="material-symbols:schedule-outline"></iconify-icon>
-                                                <span>Expires: {{ \Carbon\Carbon::parse($currentSubscription->end_date)->format('M d, Y') }}</span>
+                                                <span>Expires:
+                                                    {{ \Carbon\Carbon::parse($currentSubscription->end_date)->format('M d, Y') }}</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="salon-detail-plan-status salon-detail-{{ $currentSubscription->status }}">
+                                    <div
+                                        class="salon-detail-plan-status salon-detail-{{ $currentSubscription->status }}">
                                         <iconify-icon icon="material-symbols:check-circle"></iconify-icon>
                                         <span>{{ ucfirst($currentSubscription->status) }}</span>
                                     </div>
@@ -257,21 +266,39 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @forelse($allSubscriptions??[] as $subscription)
+                                                @forelse($allSubscriptionsWithInvoice??[] as $subscription)
                                                     <tr>
-                                                        <td>#INV-{{ $subscription->id }}</td>
+                                                        <td>#{{ $subscription?->invoice_number ?? '' }}</td>
                                                         <td>{{ $subscription?->subscription?->name ?? 'N/A' }}</td>
-                                                        <td>${{ number_format($subscription?->subscription?->price, 2) }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($subscription->created_at)->format('M d, Y') }}</td>
-                                                        <td><span class="salon-detail-badge-{{ $subscription->status == 'active' ? 'success' : 'warning' }}">{{ ucfirst($subscription->status) }}</span></td>
+                                                        <td>${{ number_format($subscription?->subscription?->price, 2) }}
+                                                        </td>
+                                                        <td>{{ \Carbon\Carbon::parse($subscription->created_at)->format('M d, Y') }}
+                                                        </td>
+                                                        <td><span
+                                                                class="salon-detail-badge-{{ $subscription->status == 'active' ? 'success' : 'warning' }}">{{ ucfirst($subscription->status) }}</span>
+                                                        </td>
                                                         <td>
-                                                            <button class="btninvoiceDownload btn">
-                                                                <iconify-icon icon="bytesize:download"></iconify-icon>
-                                                                Download
-                                                            </button>
+                                                            @if ($subscription->invoice_id)
+                                                                <a href="{{ route('web.subscription.invoice.download',encrypt($subscription->invoice_id)) }}" target="_blank">
+                                                                    <button class="btninvoiceDownload btn" disabled>
+                                                                        <iconify-icon icon="bytesize:download"></iconify-icon>
+                                                                        Download
+                                                                    </button>
+                                                                </a>
+                                                            @else
+                                                                <button class="btninvoiceDownload btn" disabled>
+                                                                    <iconify-icon
+                                                                        icon="bytesize:download"></iconify-icon>
+                                                                    N/A
+                                                                </button>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                 @empty
+                                                    <tr>
+                                                        <td colspan="6" class="text-center">No subscription history
+                                                            found.</td>
+                                                    </tr>
                                                 @endforelse
                                             </tbody>
                                         </table>
@@ -281,15 +308,17 @@
                                 <!-- Artists Tab -->
                                 <div class="tab-pane fade" id="artists" role="tabpanel">
                                     <div class="salon-detail-artists-grid card-body">
-                                        @if($salon->artists)
+                                        @if ($salon->artists)
                                             <div class="salon-detail-artist-card">
                                                 <div class="salon-detail-artist-avatar">
                                                     <img src="{{ $salon->artists->profile ? asset('storage/' . $salon->artists->profile) : asset('assets/img/users/userdummy.png') }}"
                                                         alt="{{ $salon->artists->name }}">
                                                 </div>
                                                 <div class="salon-detail-artist-info">
-                                                    <h6 class="salon-detail-artist-name">{{ $salon->artists->name }}</h6>
-                                                    <p class="salon-detail-artist-specialty">{{ $salon->artists->specialty ?? 'N/A' }}</p>
+                                                    <h6 class="salon-detail-artist-name">{{ $salon->artists->name }}
+                                                    </h6>
+                                                    <p class="salon-detail-artist-specialty">
+                                                        {{ $salon->artists->specialty ?? 'N/A' }}</p>
                                                     <div class="salon-detail-artist-meta">
                                                         <span class="salon-detail-artist-rating">
                                                             <iconify-icon icon="material-symbols:star"></iconify-icon>
@@ -298,7 +327,9 @@
                                                         <span class="salon-detail-artist-bookings">N/A bookings</span>
                                                     </div>
                                                 </div>
-                                                <div class="salon-detail-artist-status salon-detail-{{ $salon->artists->status ?? 'active' }}">{{ ucfirst($salon->artists->status ?? 'Active') }}</div>
+                                                <div
+                                                    class="salon-detail-artist-status salon-detail-{{ $salon->artists->status ?? 'active' }}">
+                                                    {{ ucfirst($salon->artists->status ?? 'Active') }}</div>
                                             </div>
                                         @else
                                             <p class="text-center">No artist found for this salon.</p>
@@ -311,8 +342,8 @@
                                     <div class="salon-detail-gallery-grid card-body">
                                         @forelse($salon->galleryImages as $image)
                                             <div class="salon-detail-gallery-item">
-                                                <img src="{{ asset('storage/' . $image->file) }}"
-                                                    alt="Gallery Image" data-lightbox="salon-gallery">
+                                                <img src="{{ asset('storage/' . $image->file) }}" alt="Gallery Image"
+                                                    data-lightbox="salon-gallery">
                                             </div>
                                         @empty
                                             <p class="text-center">No gallery images found for this salon.</p>
@@ -327,10 +358,15 @@
                                             <div class="salon-detail-service-card">
                                                 <div class="salon-detail-service-info">
                                                     <h6 class="salon-detail-service-name">{{ $service->name }}</h6>
-                                                    <p class="salon-detail-service-description">{{ $service->description }}</p>
-                                                    <div class="salon-detail-service-price">${{ number_format($service->service_price, 0) }}</div>
+                                                    <p class="salon-detail-service-description">
+                                                        {{ $service->description }}</p>
+                                                    <div class="salon-detail-service-price">
+                                                        ${{ number_format($service->service_price, 0) }}</div>
                                                 </div>
-                                                <div class="salon-detail-service-status salon-detail-{{ $service->status=='publish' ? 'active' : 'inactive'  }}">{{ ucfirst($service->status=='publish' ? 'Published' : 'Draft') }}</div>
+                                                <div
+                                                    class="salon-detail-service-status salon-detail-{{ $service->status == 'publish' ? 'active' : 'inactive' }}">
+                                                    {{ ucfirst($service->status == 'publish' ? 'Published' : 'Draft') }}
+                                                </div>
                                             </div>
                                         @empty
                                             <p class="text-center">No services found for this salon.</p>
@@ -361,7 +397,8 @@
                 </div>
                 <div class="modal-body text-center">
                     <h5 class="modal-title mb-2">Suspend Account</h5>
-                    <p class="salon-detail-modal-description">Are you sure you want to suspend <strong>{{ $salon->name }}</strong>? This action will:</p>
+                    <p class="salon-detail-modal-description">Are you sure you want to suspend
+                        <strong>{{ $salon->name }}</strong>? This action will:</p>
                     <ul class="salon-detail-suspension-effects">
                         <li>Disable salon's access to the platform</li>
                         <li>Hide salon from customer searches</li>

@@ -132,12 +132,12 @@
                             </div>
                             <span>Credit Card</span>
                         </div>
-                        <div class="payment-option" data-method="paypal">
+                        {{-- <div class="payment-option" data-method="paypal">
                             <div class="payment-icon">
                                 <i class="icofont-paypal"></i>
                             </div>
                             <span>PayPal</span>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <!-- Credit Card Form -->
@@ -282,7 +282,8 @@
 
         // Update order summary based on selected plan
         const price = {{ $plan->price }};
-        const tax = Math.round(price * 0.1 * 100) / 100;
+        // const tax = Math.round(price * 0.1 * 100) / 100;
+        const tax = 0;
         const total = price + tax;
 
         document.getElementById('subtotal').textContent = `$${price}.00`;
