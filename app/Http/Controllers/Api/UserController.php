@@ -133,9 +133,9 @@ class UserController extends Controller
 
         $users->getCollection()->transform(function ($user) {
             $user->total_visits = $user->bookings->count();
-            $user->last_visit = optional($user->bookings->first())->created_at;
+            $user->last_visit = optional($user->bookings()->orderByDesc('created_at')->first())->created_at;
             $user->total_spent = $user->bookings->sum('total_amount');
-            unset($user->bookings); // optional: hide raw bookings data
+            unset($user->bookings); 
             return $user;
         });
 
@@ -227,7 +227,7 @@ class UserController extends Controller
         if (empty($request->id)) {
             return ApiResponse::error("Customer id is required", 400);
         }
-        $user = User::with(['bookings', 'bookings.bookingServices', 'bookings.bookingServices.bookingServiceSessions'])
+        $user = User::with(['bookings', 'bookings.bookingServices', 'bookings.bookingServices.service', 'bookings.bookingServices.bookingServiceSessions'])
             ->whereHas('bookings', function ($query) use ($request) {
                 $query->where('shop_id', $request->shop_id);
             })
