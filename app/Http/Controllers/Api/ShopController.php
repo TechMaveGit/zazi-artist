@@ -23,7 +23,8 @@ class ShopController extends Controller
     public function index(Request $request)
     {
         $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])
-            ->select('id', 'name', 'email', 'lat', 'lng', 'banner_img', 'is_opened_today')
+            ->select('id', 'name', 'email', 'lat', 'lng', 'banner_img','status')
+            ->where('status','active')
             ->when(auth()->user()->hasAnyRole(['artist', 'salon']), function ($query) {
                 $shop_id = auth()->user()->shop->pluck('id')->toArray();
                 $query->whereIn('id', $shop_id);
@@ -141,11 +142,12 @@ class ShopController extends Controller
     public function openedClosedBooking(Request $request, string $id)
     {
         try {
-            $shop = Shop::findOrFail($id);
-            $shop->is_opened_today = $shop->is_opened_today == 1 ? 0 : 1;
-            $shop->save();
+                // $shop = Shop::findOrFail($id);
+                // $shop->is_opened_today = $shop->is_opened_today == 1 ? 0 : 1;
+                // $shop->save();
 
-            $message = $shop->is_opened_today == 1 ? 'Booking opened successfully for today.' : 'Booking closed successfully for today.';
+                // $message = $shop->is_opened_today == 1 ? 'Booking opened successfully for today.' : 'Booking closed successfully for today.';
+                $message = 'Booking status updated successfully for today.';
             return ApiResponse::success($message, 200, null);
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());

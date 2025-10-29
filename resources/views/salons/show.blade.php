@@ -7,7 +7,7 @@
             <div
                 class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
                 <div class="pageheaderleft">
-                    <a href="salons.php" class="btn btn-ghost btn-sm">
+                    <a href="{{ route('salon.index') }}" class="btn btn-ghost btn-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" data-lucide="arrow-left" class="lucide lucide-arrow-left">
@@ -16,7 +16,7 @@
                         </svg>
                     </a>
                     <div class="my-auto ">
-                        <h2 class="mb-1">Salon Details</h2>
+                        <h2 class="mb-1">{{ $salon?->name }}</h2>
                         <p class="page-subtitle">Complete overview of salon information and performance</p>
                     </div>
                 </div>
@@ -50,10 +50,23 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Total Artists</p>
-                                    <p class="metric-value">15</p>
+                                    <p class="metric-value">{{ $salon->artists->count() }}</p>
                                 </div>
                                 <div class="metric-icon primary">
                                     <iconify-icon icon="proicons:star"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 ">
+                        <div class="metric-card card">
+                            <div class="metric-content">
+                                <div class="metric-info">
+                                    <p class="metric-label">Gallery Images</p>
+                                    <p class="metric-value">{{ $salon?->galleryImages?->count() }}</p>
+                                </div>
+                                <div class="metric-icon primary">
+                                    <iconify-icon icon="hugeicons:floor-plan"></iconify-icon>
                                 </div>
                             </div>
                         </div>
@@ -63,8 +76,8 @@
                         <div class="metric-card card">
                             <div class="metric-content">
                                 <div class="metric-info">
-                                    <p class="metric-label">Gallery Images</p>
-                                    <p class="metric-value">48</p>
+                                    <p class="metric-label">Services</p>
+                                    <p class="metric-value">{{ $salon->services->count() }}</p>
                                 </div>
                                 <div class="metric-icon success">
                                     <iconify-icon icon="mynaui:users"></iconify-icon>
@@ -77,8 +90,8 @@
                         <div class="metric-card card">
                             <div class="metric-content">
                                 <div class="metric-info">
-                                    <p class="metric-label">Services</p>
-                                    <p class="metric-value">23</p>
+                                    <p class="metric-label">Total Revenue</p>
+                                    <p class="metric-value">${{ number_format($salon->bookings->flatMap(fn($booking) => $booking->invoices)->sum('total_amount'), 2) }}</p>
                                 </div>
                                 <div class="metric-icon warning">
                                     <iconify-icon icon="hugeicons:dollar-02"></iconify-icon>
@@ -87,19 +100,6 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 ">
-                        <div class="metric-card card">
-                            <div class="metric-content">
-                                <div class="metric-info">
-                                    <p class="metric-label">Monthly Revenue</p>
-                                    <p class="metric-value">$12,500</p>
-                                </div>
-                                <div class="metric-icon primary">
-                                    <iconify-icon icon="hugeicons:floor-plan"></iconify-icon>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
@@ -110,31 +110,37 @@
                         <div class="card-body">
                             <div class="salon-detail-profile">
                                 <div class="salon-detail-avatar">
-                                    <img src="{{ asset('assets/img/users/userdummy.png') }}" alt="Glamour Studio"
+                                    <img src="{{ !empty($salon->banner_img_url) ? $salon->banner_img_url : asset('assets/img/users/userdummy.png') }}" alt="{{ $salon->name }}"
                                         class="salon-detail-image">
-                                    <div class="salon-detail-status salon-detail-active">
-                                        <iconify-icon icon="material-symbols:check-circle"></iconify-icon>
+                                    <div class="salon-detail-status salon-detail-{{ $salon->status }}">
+                                        @if($salon->status == 'active')
+                                            <iconify-icon icon="material-symbols:check-circle"></iconify-icon>
+                                        @elseif($salon->status == 'suspended')
+                                            <iconify-icon icon="material-symbols:block"></iconify-icon>
+                                        @else
+                                            <iconify-icon icon="material-symbols:info"></iconify-icon>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="salon-detail-info">
-                                    <h3 class="salon-detail-name">Glamour Studio</h3>
-                                    <p class="salon-detail-owner">Owner: Sarah Johnson</p>
+                                    <h3 class="salon-detail-name">{{ $salon->name }}</h3>
+                                    <p class="salon-detail-owner">Owner: {{ ucwords($salon?->owner?->name)??'' }}</p>
                                     <div class="salon-detail-meta">
                                         <div class="salon-detail-meta-item">
                                             <iconify-icon icon="material-symbols:mail-outline"></iconify-icon>
-                                            <span>glamour@example.com</span>
+                                            <span>{{ $salon->email }}</span>
                                         </div>
                                         <div class="salon-detail-meta-item">
                                             <iconify-icon icon="material-symbols:call-outline"></iconify-icon>
-                                            <span>+1 212 555 7890</span>
+                                            <span>{{ $salon->phone_number }}</span>
                                         </div>
                                         <div class="salon-detail-meta-item">
                                             <iconify-icon icon="material-symbols:location-on-outline"></iconify-icon>
-                                            <span>New York, NY (USA)</span>
+                                            <span>{{ ucfirst($salon?->city) }}, {{ ucfirst($salon?->state) }} ({{ ucfirst($salon?->country) }})</span>
                                         </div>
                                         <div class="salon-detail-meta-item">
                                             <iconify-icon icon="material-symbols:calendar-today-outline"></iconify-icon>
-                                            <span>Joined: Dec 15, 2023</span>
+                                            <span>Joined: {{ $salon->created_at->format('M d, Y') }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -153,22 +159,43 @@
                         </div>
                         <div class="card-body">
                             <div class="salon-detail-current-plan">
-                                <div class="plansalonwrap">
-                                    <div class="salon-detail-plan-badge">Premium Plan</div>
-                                    <div class="salonplantile">
-                                        <div class="salon-detail-plan-price">$199.99<span>/monthly</span></div>
-                                        <div class="salon-detail-plan-expiry">
-                                            <iconify-icon icon="material-symbols:schedule-outline"></iconify-icon>
-                                            <span>Expires: Jan 15, 2025</span>
+                                @php
+                                    $subscriptionPlan = $currentSubscription ? $currentSubscription->subscription : null;
+                                @endphp
+
+                                @if($currentSubscription && $subscriptionPlan)
+                                    <div class="plansalonwrap">
+                                        <div class="salon-detail-plan-badge">{{ $subscriptionPlan->name }}</div>
+                                        <div class="salonplantile">
+                                            <div class="salon-detail-plan-price">${{ number_format($subscriptionPlan->price, 2) }}<span>/{{ $subscriptionPlan->plan_type }}</span></div>
+                                            <div class="salon-detail-plan-expiry">
+                                                <iconify-icon icon="material-symbols:schedule-outline"></iconify-icon>
+                                                <span>Expires: {{ \Carbon\Carbon::parse($currentSubscription->end_date)->format('M d, Y') }}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
+                                    <div class="salon-detail-plan-status salon-detail-{{ $currentSubscription->status }}">
+                                        <iconify-icon icon="material-symbols:check-circle"></iconify-icon>
+                                        <span>{{ ucfirst($currentSubscription->status) }}</span>
+                                    </div>
+                                @else
+                                    <div class="plansalonwrap">
+                                        <div class="salon-detail-plan-badge">No Active Plan</div>
+                                        <div class="salonplantile">
+                                            <div class="salon-detail-plan-price">$0.00<span>/N/A</span></div>
+                                            <div class="salon-detail-plan-expiry">
+                                                <iconify-icon icon="material-symbols:schedule-outline"></iconify-icon>
+                                                <span>Expires: N/A</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="salon-detail-plan-status salon-detail-inactive">
+                                        <iconify-icon icon="material-symbols:info"></iconify-icon>
+                                        <span>Inactive</span>
+                                    </div>
+                                @endif
 
-                                <div class="salon-detail-plan-status salon-detail-active">
-                                    <iconify-icon icon="material-symbols:check-circle"></iconify-icon>
-                                    <span>Active</span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -230,45 +257,22 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>#INV-001</td>
-                                                    <td>Premium Plan</td>
-                                                    <td>$199.99</td>
-                                                    <td>Dec 15, 2024</td>
-                                                    <td><span class="salon-detail-badge-success">Paid</span></td>
-                                                    <td>
-                                                        <button class="btninvoiceDownload btn">
-                                                            <iconify-icon icon="bytesize:download"></iconify-icon>
-                                                            Download
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>#INV-002</td>
-                                                    <td>Premium Plan</td>
-                                                    <td>$199.99</td>
-                                                    <td>Nov 15, 2024</td>
-                                                    <td><span class="salon-detail-badge-success">Paid</span></td>
-                                                    <td>
-                                                        <button class="btninvoiceDownload btn">
-                                                            <iconify-icon icon="bytesize:download"></iconify-icon>
-                                                            Download
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>#INV-003</td>
-                                                    <td>Professional Plan</td>
-                                                    <td>$99.99</td>
-                                                    <td>Oct 15, 2024</td>
-                                                    <td><span class="salon-detail-badge-success">Paid</span></td>
-                                                    <td>
-                                                        <button class="btninvoiceDownload btn">
-                                                            <iconify-icon icon="bytesize:download"></iconify-icon>
-                                                            Download
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                                @forelse($allSubscriptions??[] as $subscription)
+                                                    <tr>
+                                                        <td>#INV-{{ $subscription->id }}</td>
+                                                        <td>{{ $subscription?->subscription?->name ?? 'N/A' }}</td>
+                                                        <td>${{ number_format($subscription?->subscription?->price, 2) }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($subscription->created_at)->format('M d, Y') }}</td>
+                                                        <td><span class="salon-detail-badge-{{ $subscription->status == 'active' ? 'success' : 'warning' }}">{{ ucfirst($subscription->status) }}</span></td>
+                                                        <td>
+                                                            <button class="btninvoiceDownload btn">
+                                                                <iconify-icon icon="bytesize:download"></iconify-icon>
+                                                                Download
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @empty
+                                                @endforelse
                                             </tbody>
                                         </table>
                                     </div>
@@ -277,186 +281,60 @@
                                 <!-- Artists Tab -->
                                 <div class="tab-pane fade" id="artists" role="tabpanel">
                                     <div class="salon-detail-artists-grid card-body">
-                                        <div class="salon-detail-artist-card">
-                                            <div class="salon-detail-artist-avatar">
-                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
-                                                    alt="Emma Wilson">
-                                            </div>
-                                            <div class="salon-detail-artist-info">
-                                                <h6 class="salon-detail-artist-name">Emma Wilson</h6>
-                                                <p class="salon-detail-artist-specialty">Hair Stylist</p>
-                                                <div class="salon-detail-artist-meta">
-                                                    <span class="salon-detail-artist-rating">
-                                                        <iconify-icon icon="material-symbols:star"></iconify-icon>
-                                                        4.8
-                                                    </span>
-                                                    <span class="salon-detail-artist-bookings">142 bookings</span>
+                                        @if($salon->artists)
+                                            <div class="salon-detail-artist-card">
+                                                <div class="salon-detail-artist-avatar">
+                                                    <img src="{{ $salon->artists->profile ? asset('storage/' . $salon->artists->profile) : asset('assets/img/users/userdummy.png') }}"
+                                                        alt="{{ $salon->artists->name }}">
                                                 </div>
-                                            </div>
-                                            <div class="salon-detail-artist-status salon-detail-active">Active</div>
-                                        </div>
-
-                                        <div class="salon-detail-artist-card">
-                                            <div class="salon-detail-artist-avatar">
-                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
-                                                    alt="Michael Chen">
-                                            </div>
-                                            <div class="salon-detail-artist-info">
-                                                <h6 class="salon-detail-artist-name">Michael Chen</h6>
-                                                <p class="salon-detail-artist-specialty">Makeup Artist</p>
-                                                <div class="salon-detail-artist-meta">
-                                                    <span class="salon-detail-artist-rating">
-                                                        <iconify-icon icon="material-symbols:star"></iconify-icon>
-                                                        4.9
-                                                    </span>
-                                                    <span class="salon-detail-artist-bookings">98 bookings</span>
+                                                <div class="salon-detail-artist-info">
+                                                    <h6 class="salon-detail-artist-name">{{ $salon->artists->name }}</h6>
+                                                    <p class="salon-detail-artist-specialty">{{ $salon->artists->specialty ?? 'N/A' }}</p>
+                                                    <div class="salon-detail-artist-meta">
+                                                        <span class="salon-detail-artist-rating">
+                                                            <iconify-icon icon="material-symbols:star"></iconify-icon>
+                                                            N/A
+                                                        </span>
+                                                        <span class="salon-detail-artist-bookings">N/A bookings</span>
+                                                    </div>
                                                 </div>
+                                                <div class="salon-detail-artist-status salon-detail-{{ $salon->artists->status ?? 'active' }}">{{ ucfirst($salon->artists->status ?? 'Active') }}</div>
                                             </div>
-                                            <div class="salon-detail-artist-status salon-detail-active">Active</div>
-                                        </div>
-
-                                        <div class="salon-detail-artist-card">
-                                            <div class="salon-detail-artist-avatar">
-                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
-                                                    alt="Sofia Rodriguez">
-                                            </div>
-                                            <div class="salon-detail-artist-info">
-                                                <h6 class="salon-detail-artist-name">Sofia Rodriguez</h6>
-                                                <p class="salon-detail-artist-specialty">Nail Technician</p>
-                                                <div class="salon-detail-artist-meta">
-                                                    <span class="salon-detail-artist-rating">
-                                                        <iconify-icon icon="material-symbols:star"></iconify-icon>
-                                                        4.7
-                                                    </span>
-                                                    <span class="salon-detail-artist-bookings">76 bookings</span>
-                                                </div>
-                                            </div>
-                                            <div class="salon-detail-artist-status salon-detail-inactive">Inactive
-                                            </div>
-                                        </div>
-
-                                        <div class="salon-detail-artist-card">
-                                            <div class="salon-detail-artist-avatar">
-                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
-                                                    alt="James Thompson">
-                                            </div>
-                                            <div class="salon-detail-artist-info">
-                                                <h6 class="salon-detail-artist-name">James Thompson</h6>
-                                                <p class="salon-detail-artist-specialty">Barber</p>
-                                                <div class="salon-detail-artist-meta">
-                                                    <span class="salon-detail-artist-rating">
-                                                        <iconify-icon icon="material-symbols:star"></iconify-icon>
-                                                        4.6
-                                                    </span>
-                                                    <span class="salon-detail-artist-bookings">89 bookings</span>
-                                                </div>
-                                            </div>
-                                            <div class="salon-detail-artist-status salon-detail-active">Active</div>
-                                        </div>
+                                        @else
+                                            <p class="text-center">No artist found for this salon.</p>
+                                        @endif
                                     </div>
                                 </div>
 
                                 <!-- Gallery Tab -->
                                 <div class="tab-pane fade" id="gallery" role="tabpanel">
                                     <div class="salon-detail-gallery-grid card-body">
-                                        <div class="salon-detail-gallery-item">
-                                            <img src="https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?auto=compress&cs=tinysrgb&w=300"
-                                                alt="Gallery Image" data-lightbox="salon-gallery">
-                                        </div>
-                                        <div class="salon-detail-gallery-item">
-                                            <img src="https://images.pexels.com/photos/3764011/pexels-photo-3764011.jpeg?auto=compress&cs=tinysrgb&w=300"
-                                                alt="Gallery Image" data-lightbox="salon-gallery">
-                                        </div>
-                                        <div class="salon-detail-gallery-item">
-                                            <img src="https://images.pexels.com/photos/3993456/pexels-photo-3993456.jpeg?auto=compress&cs=tinysrgb&w=300"
-                                                alt="Gallery Image" data-lightbox="salon-gallery">
-                                        </div>
-                                        <div class="salon-detail-gallery-item">
-                                            <img src="https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg?auto=compress&cs=tinysrgb&w=300"
-                                                alt="Gallery Image" data-lightbox="salon-gallery">
-                                        </div>
-                                        <div class="salon-detail-gallery-item">
-                                            <img src="https://images.pexels.com/photos/3993454/pexels-photo-3993454.jpeg?auto=compress&cs=tinysrgb&w=300"
-                                                alt="Gallery Image" data-lightbox="salon-gallery">
-                                        </div>
-                                        <div class="salon-detail-gallery-item">
-                                            <img src="https://images.pexels.com/photos/3764010/pexels-photo-3764010.jpeg?auto=compress&cs=tinysrgb&w=300"
-                                                alt="Gallery Image" data-lightbox="salon-gallery">
-                                        </div>
-                                        <div class="salon-detail-gallery-item">
-                                            <img src="https://images.pexels.com/photos/3993458/pexels-photo-3993458.jpeg?auto=compress&cs=tinysrgb&w=300"
-                                                alt="Gallery Image" data-lightbox="salon-gallery">
-                                        </div>
-                                        <div class="salon-detail-gallery-item">
-                                            <img src="https://images.pexels.com/photos/3764012/pexels-photo-3764012.jpeg?auto=compress&cs=tinysrgb&w=300"
-                                                alt="Gallery Image" data-lightbox="salon-gallery">
-                                        </div>
+                                        @forelse($salon->galleryImages as $image)
+                                            <div class="salon-detail-gallery-item">
+                                                <img src="{{ asset('storage/' . $image->file) }}"
+                                                    alt="Gallery Image" data-lightbox="salon-gallery">
+                                            </div>
+                                        @empty
+                                            <p class="text-center">No gallery images found for this salon.</p>
+                                        @endforelse
                                     </div>
                                 </div>
 
                                 <!-- Services Tab -->
                                 <div class="tab-pane fade" id="services" role="tabpanel">
                                     <div class="salon-detail-services-grid card-body">
-                                        <div class="salon-detail-service-card">
-                                            <div class="salon-detail-service-info">
-                                                <h6 class="salon-detail-service-name">Hair Cut & Styling</h6>
-                                                <p class="salon-detail-service-description">Professional hair cutting
-                                                    and styling services</p>
-                                                <div class="salon-detail-service-price">$45.00</div>
+                                        @forelse($salon->services as $service)
+                                            <div class="salon-detail-service-card">
+                                                <div class="salon-detail-service-info">
+                                                    <h6 class="salon-detail-service-name">{{ $service->name }}</h6>
+                                                    <p class="salon-detail-service-description">{{ $service->description }}</p>
+                                                    <div class="salon-detail-service-price">${{ number_format($service->service_price, 0) }}</div>
+                                                </div>
+                                                <div class="salon-detail-service-status salon-detail-{{ $service->status=='publish' ? 'active' : 'inactive'  }}">{{ ucfirst($service->status=='publish' ? 'Published' : 'Draft') }}</div>
                                             </div>
-                                            <div class="salon-detail-service-status salon-detail-active">Active</div>
-                                        </div>
-
-                                        <div class="salon-detail-service-card">
-                                            <div class="salon-detail-service-info">
-                                                <h6 class="salon-detail-service-name">Hair Coloring</h6>
-                                                <p class="salon-detail-service-description">Full hair coloring and
-                                                    highlighting services</p>
-                                                <div class="salon-detail-service-price">$85.00</div>
-                                            </div>
-                                            <div class="salon-detail-service-status salon-detail-active">Active</div>
-                                        </div>
-
-                                        <div class="salon-detail-service-card">
-                                            <div class="salon-detail-service-info">
-                                                <h6 class="salon-detail-service-name">Bridal Makeup</h6>
-                                                <p class="salon-detail-service-description">Complete bridal makeup
-                                                    package</p>
-                                                <div class="salon-detail-service-price">$150.00</div>
-                                            </div>
-                                            <div class="salon-detail-service-status salon-detail-active">Active</div>
-                                        </div>
-
-                                        <div class="salon-detail-service-card">
-                                            <div class="salon-detail-service-info">
-                                                <h6 class="salon-detail-service-name">Nail Art</h6>
-                                                <p class="salon-detail-service-description">Creative nail art and
-                                                    manicure services</p>
-                                                <div class="salon-detail-service-price">$35.00</div>
-                                            </div>
-                                            <div class="salon-detail-service-status salon-detail-inactive">Inactive
-                                            </div>
-                                        </div>
-
-                                        <div class="salon-detail-service-card">
-                                            <div class="salon-detail-service-info">
-                                                <h6 class="salon-detail-service-name">Facial Treatment</h6>
-                                                <p class="salon-detail-service-description">Deep cleansing and
-                                                    rejuvenating facial</p>
-                                                <div class="salon-detail-service-price">$65.00</div>
-                                            </div>
-                                            <div class="salon-detail-service-status salon-detail-active">Active</div>
-                                        </div>
-
-                                        <div class="salon-detail-service-card">
-                                            <div class="salon-detail-service-info">
-                                                <h6 class="salon-detail-service-name">Hair Spa</h6>
-                                                <p class="salon-detail-service-description">Relaxing hair spa and
-                                                    treatment</p>
-                                                <div class="salon-detail-service-price">$75.00</div>
-                                            </div>
-                                            <div class="salon-detail-service-status salon-detail-active">Active</div>
-                                        </div>
+                                        @empty
+                                            <p class="text-center">No services found for this salon.</p>
+                                        @endforelse
                                     </div>
                                 </div>
                             </div>
@@ -483,8 +361,7 @@
                 </div>
                 <div class="modal-body text-center">
                     <h5 class="modal-title mb-2">Suspend Account</h5>
-                    <p class="salon-detail-modal-description">Are you sure you want to suspend <strong>Glamour
-                            Studio</strong>? This action will:</p>
+                    <p class="salon-detail-modal-description">Are you sure you want to suspend <strong>{{ $salon->name }}</strong>? This action will:</p>
                     <ul class="salon-detail-suspension-effects">
                         <li>Disable salon's access to the platform</li>
                         <li>Hide salon from customer searches</li>
@@ -596,7 +473,7 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Account Suspended',
-                        text: 'Glamour Studio account has been suspended successfully.',
+                        text: '{{ $salon->name }} account has been suspended successfully.',
                         confirmButtonText: 'OK',
                         customClass: {
                             confirmButton: 'btn btn-primary'
@@ -652,7 +529,7 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Reminder Sent',
-                        text: `${selectedReminder.value.charAt(0).toUpperCase() + selectedReminder.value.slice(1)} reminder has been sent to Glamour Studio.`,
+                        text: `${selectedReminder.value.charAt(0).toUpperCase() + selectedReminder.value.slice(1)} reminder has been sent to {{ $salon->name }}.`,
                         confirmButtonText: 'OK',
                         customClass: {
                             confirmButton: 'btn btn-primary'

@@ -8,8 +8,6 @@
                     <p class="page-subtitle">Manage registered salons, their subscriptions, and performance.</p>
                 </div>
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
-
-
                     <div class="head-icons ms-2 headicon_innerpage">
                         <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top"
                             data-bs-original-title="Collapse" id="collapse-header">
@@ -19,9 +17,94 @@
                 </div>
             </div>
 
+            <div class="transactons_matrix">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="metric-card">
+                            <div class="metric-content">
+                                <div class="metric-info">
+                                    <p class="metric-label">Total Salons</p>
+                                    <p class="metric-value primary">{{ $totalSalons }}</p>
+                                </div>
+                                <div class="metric-icon primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" data-lucide="store"
+                                        class="lucide lucide-store">
+                                        <path d="M12.22 2h.06a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-.12a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2.72 18h-5.88"></path>
+                                        <path d="M19 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2z"></path>
+                                        <path d="M14 2v2"></path>
+                                        <path d="M10 2v2"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="metric-card">
+                            <div class="metric-content">
+                                <div class="metric-info">
+                                    <p class="metric-label">Active Salons</p>
+                                    <p class="metric-value success">{{ $activeSalons }}</p>
+                                </div>
+                                <div class="metric-icon success">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" data-lucide="check-circle"
+                                        class="lucide lucide-check-circle">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22,4 12,14.01 9,11.01"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="metric-card">
+                            <div class="metric-content">
+                                <div class="metric-info">
+                                    <p class="metric-label">Inactive Salons</p>
+                                    <p class="metric-value warning">{{ $inactiveSalons }}</p>
+                                </div>
+                                <div class="metric-icon warning">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" data-lucide="minus-circle"
+                                        class="lucide lucide-minus-circle">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="metric-card">
+                            <div class="metric-content">
+                                <div class="metric-info">
+                                    <p class="metric-label">Suspended Salons</p>
+                                    <p class="metric-value destructive">{{ $suspendedSalons }}</p>
+                                </div>
+                                <div class="metric-icon destructive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" data-lucide="minus-circle"
+                                        class="lucide lucide-minus-circle">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card tablemaincard_nopaddingleftright">
                 <div id="tablefiltesa_container">
-                    <div class="row">
+                    <div class="row mb-2">
                         <!-- Left Filters -->
                         <div class="col-lg-8">
                             <div class="leftprFilters">
@@ -31,11 +114,11 @@
                                     <div class="col-lg-3 col-sm-6 col-12">
                                         <div class="input-blocks">
                                             <i data-feather="layers" class="info-img"></i>
-                                            <select class="select2">
+                                            <select class="select2" id="plan_type">
                                                 <option value="">Choose Plan</option>
-                                                <option value="Premium">Premium</option>
-                                                <option value="Professional">Professional</option>
-                                                <option value="Basic">Basic</option>
+                                                @foreach($plans as $plan)
+                                                    <option value="{{ $plan }}">{{ $plan }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -44,11 +127,11 @@
                                     <div class="col-lg-3 col-sm-6 col-12">
                                         <div class="input-blocks">
                                             <i data-feather="toggle-right" class="info-img"></i>
-                                            <select class="select2">
+                                            <select class="select2" id="status">
                                                 <option value="">Choose Status</option>
-                                                <option value="Active">Active</option>
-                                                <option value="Pending">Pending</option>
-                                                <option value="Suspended">Suspended</option>
+                                                <option value="active">Active</option>
+                                                <option value="inactive">Inactive</option>
+                                                <option value="suspended">Suspended</option> 
                                             </select>
                                         </div>
                                     </div>
@@ -57,12 +140,11 @@
                                     <div class="col-lg-3 col-sm-6 col-12">
                                         <div class="input-blocks">
                                             <i data-feather="map-pin" class="info-img"></i>
-                                            <select class="select2">
+                                            <select class="select2" id="location">
                                                 <option value="">Choose Location</option>
-                                                <option value="USA">USA</option>
-                                                <option value="UK">UK</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="France">France</option>
+                                                @foreach($locations as $location)
+                                                    <option value="{{ $location }}">{{ ucwords($location) }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -71,234 +153,40 @@
                             </div>
                         </div>
 
-                        <!-- Right Filters -->
+                        <!-- Right Filters - Removed date range filter -->
                         <div class="col-lg-4">
                             <div class="rightPrFilters">
-                                <div class="input-icon mb-2 position-relative">
-                                    <span class="input-icon-addon">
-                                        <i class="ti ti-calendar text-gray-9"></i>
-                                    </span>
-                                    <input type="text" class="form-control date-range bookingrange"
-                                        placeholder="dd/mm/yyyy - dd/mm/yyyy">
-                                </div>
+                                <!-- This section can be used for other filters if needed, currently empty as date range is removed -->
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- /Filter -->
 
-
-                <table class="table common-datatable withoutActionTR nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th>Salon ID</th>
-                            <th>Salon / Owner</th>
-                            <th>Type</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Location</th>
-                            <th>Total Artists</th>
-                            <th>Plan</th>
-                            <th>Revenue</th>
-                            <th>Status</th>
-                            <th>Joined</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><a href="{{route('salon.show',1)}}" class="tbuserid">#SAL001</a></td>
-                            <td>
-                                <a href="{{route('salon.show',1)}}">
-                                    <div class="tbUserWrap">
-                                        <div class="media-head me-2">
-                                            <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
-                                                    alt="Glamour Studio" class="avatar-img">
-                                            </div>
-                                        </div>
-                                        <div class="media-body">
-                                            <span class="d-block text-high-em">Glamour Studio</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </td>
-                            <td>Salon</td>
-                            <td>glamour@example.com</td>
-                            <td>+1 212 555 7890</td>
-                            <td>New York, NY (USA)</td>
-                            <td>12</td>
-                            <td>Premium</td>
-                            <td>$12,500</td>
-                            <td>
-                                <span class="badge badge-soft-success d-inline-flex align-items-center badge-xs">
-                                    <i class="ti ti-point-filled me-1"></i>Active
-                                </span>
-                            </td>
-                            <td>2 days ago</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{route('salon.show',1)}}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><a href="{{route('salon.show',1)}}" class="tbuserid">#SAL002</a></td>
-                            <td>
-                                <a href="{{route('salon.show',1)}}">
-                                    <div class="tbUserWrap">
-                                        <div class="media-head me-2">
-                                            <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
-                                                    alt="Elite Beauty Lounge" class="avatar-img">
-                                            </div>
-                                        </div>
-                                        <div class="media-body">
-                                            <span class="d-block text-high-em">Elite Beauty Lounge</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </td>
-                            <td>Salon</td>
-                            <td>elite@example.com</td>
-                            <td>+1 310 444 5678</td>
-                            <td>Los Angeles, CA (USA)</td>
-                            <td>8</td>
-                            <td>Professional</td>
-                            <td>$8,900</td>
-                            <td>
-                                <span class="badge badge-soft-success d-inline-flex align-items-center badge-xs">
-                                    <i class="ti ti-point-filled me-1"></i>Active
-                                </span>
-                            </td>
-                            <td>5 days ago</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{route('salon.show',1)}}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><a href="{{route('salon.show',1)}}" class="tbuserid">#SAL003</a></td>
-                            <td>
-                                <a href="{{route('salon.show',1)}}">
-                                    <div class="tbUserWrap">
-                                        <div class="media-head me-2">
-                                            <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
-                                                    alt="Harmony Spa & Salon" class="avatar-img">
-                                            </div>
-                                        </div>
-                                        <div class="media-body">
-                                            <span class="d-block text-high-em">Harmony Spa & Salon</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </td>
-                            <td>Salon</td>
-                            <td>harmony@example.com</td>
-                            <td>+1 773 888 1234</td>
-                            <td>Chicago, IL (USA)</td>
-                            <td>6</td>
-                            <td>Basic</td>
-                            <td>$5,200</td>
-                            <td>
-                                <span class="badge badge-soft-warning d-inline-flex align-items-center badge-xs">
-                                    <i class="ti ti-point-filled me-1"></i>Pending
-                                </span>
-                            </td>
-                            <td>1 week ago</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{route('salon.show',1)}}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><a href="{{route('salon.show',1)}}" class="tbuserid">#SAL004</a></td>
-                            <td>
-                                <a href="{{route('salon.show',1)}}">
-                                    <div class="tbUserWrap">
-                                        <div class="media-head me-2">
-                                            <div class="avatar avatar-xs avatar-rounded">
-                                                <img src="{{ asset('assets/img/users/userdummy.png') }}"
-                                                    alt="Royal Crown Beauty" class="avatar-img">
-                                            </div>
-                                        </div>
-                                        <div class="media-body">
-                                            <span class="d-block text-high-em">Royal Crown Beauty</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </td>
-                            <td>Salon</td>
-                            <td>royal@example.com</td>
-                            <td>+1 305 666 4321</td>
-                            <td>Miami, FL (USA)</td>
-                            <td>15</td>
-                            <td>Premium</td>
-                            <td>$14,300</td>
-                            <td>
-                                <span class="badge badge-soft-danger d-inline-flex align-items-center badge-xs">
-                                    <i class="ti ti-point-filled me-1"></i>Suspended
-                                </span>
-                            </td>
-                            <td>1 week ago</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{route('salon.show',1)}}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                {{ $dataTable->table() }}
 
             </div>
 
             <!-- /Filter -->
         </div>
     </div>
+
+    @push('scripts')
+        {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+        <script>
+            $(document).ready(function() {
+                const table = window.LaravelDataTables && window.LaravelDataTables["global-datatable"];
+
+                table.on('preXhr.dt', function(e, settings, data) {
+                    data.status = $('#status').val();
+                    data.plan_type = $('#plan_type').val();
+                    data.location = $('#location').val();
+                });
+
+                $("body").on('change', '#status, #plan_type, #location', function() {
+                    table.ajax.reload();
+                });
+            });
+        </script>
+    @endpush
 </x-app-layout>

@@ -26,7 +26,7 @@ class HomeController extends Controller
 
 
                 //shops nearby
-                $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img', 'is_opened_today')->get();
+                $shops = Shop::with(['scheduled' => fn($query) => $query->where('day', date('l'))])->select('id', 'name', 'email', 'lat', 'lng', 'banner_img','status')->where('status','active')->get();
                 $data['shops'] = Collection::make($shops)->sortBy('distance')->take(5);
 
                 //latest visits
@@ -48,7 +48,7 @@ class HomeController extends Controller
                 if (empty($request->get('shop_id'))) {
                     return ApiResponse::error('Shop ID is required', 400);
                 }
-                $shop = Shop::where('id', $request->get('shop_id'))->first();
+                $shop = Shop::where('id', $request->get('shop_id'))->where('status', 'active')->first();
                 if (empty($shop)) {
                     return ApiResponse::error('Shop not found', 400);
                 }
@@ -136,7 +136,7 @@ class HomeController extends Controller
                 'query' => $query
             ]);
 
-            $shopsQuery = Shop::query()->select('id', 'name', 'lat', 'lng', 'banner_img');
+            $shopsQuery = Shop::query()->select('id', 'name', 'lat', 'lng', 'banner_img','status')->where('status','active');
             if ($query) {
                 $shopsQuery->where('name', 'like', "%{$query}%");
             }
