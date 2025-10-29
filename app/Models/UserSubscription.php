@@ -37,4 +37,9 @@ class UserSubscription extends Model
     {
         return $this->belongsTo(Subscription::class);
     }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'user_subscription_id', 'id');
+    }
 }
