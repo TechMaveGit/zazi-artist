@@ -8,12 +8,6 @@
                     <p class="page-subtitle">Monitor payments and financial activities</p>
                 </div>
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
-
-                    <div class="">
-                        <button class="btn refreshpagebtn">
-                            <iconify-icon icon="mynaui:refresh"></iconify-icon> Refresh
-                        </button>
-                    </div>
                     <div class="head-icons ms-2 headicon_innerpage">
                         <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top"
                             data-bs-original-title="Collapse" id="collapse-header">
@@ -30,7 +24,7 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Total Revenue</p>
-                                    <p class="metric-value success">$549</p>
+                                    <p class="metric-value success">${{ number_format($totalRevenue, 2) }}</p>
                                 </div>
                                 <div class="metric-icon success">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -43,15 +37,25 @@
                                 </div>
                             </div>
                             <div class="metric-footer">
-                                <div class="metric-change positive">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" data-lucide="trending-up"
-                                        class="lucide lucide-trending-up">
-                                        <path d="M16 7h6v6"></path>
-                                        <path d="m22 7-8.5 8.5-5-5L2 17"></path>
-                                    </svg>
-                                    <span>+12.3%</span>
+                                <div class="metric-change {{ $successRateChange >= 0 ? 'positive' : 'negative' }}">
+                                    @if($successRateChange >= 0)
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" data-lucide="trending-up"
+                                            class="lucide lucide-trending-up">
+                                            <path d="M16 7h6v6"></path>
+                                            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
+                                        </svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" data-lucide="trending-down"
+                                            class="lucide lucide-trending-down">
+                                            <path d="M16 17h6v-6"></path>
+                                            <path d="m22 17-8.5-8.5-5 5L2 7"></path>
+                                        </svg>
+                                    @endif
+                                    <span>{{ number_format(abs($successRateChange), 2) }}%</span>
                                     <span class="text-muted">vs last month</span>
                                 </div>
                             </div>
@@ -63,7 +67,7 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Pending Payments</p>
-                                    <p class="metric-value warning">$200</p>
+                                    <p class="metric-value warning">{{ $pendingPayments }}</p>
                                 </div>
                                 <div class="metric-icon warning">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -76,7 +80,7 @@
                                 </div>
                             </div>
                             <div class="metric-footer">
-                                <p class="text-muted">1 transactions pending</p>
+                                <p class="text-muted">{{ $pendingPayments }} transactions pending</p>
                             </div>
                         </div>
                     </div>
@@ -86,7 +90,7 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Failed Transactions</p>
-                                    <p class="metric-value destructive">1</p>
+                                    <p class="metric-value destructive">{{ $failedTransactions }}</p>
                                 </div>
                                 <div class="metric-icon destructive">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -110,7 +114,7 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Success Rate</p>
-                                    <p class="metric-value primary">94.2%</p>
+                                    <p class="metric-value primary">{{ number_format($successRate, 2) }}%</p>
                                 </div>
                                 <div class="metric-icon primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -148,11 +152,11 @@
                                     <div class="col-lg-3 col-sm-6 col-12">
                                         <div class="input-blocks">
                                             <i data-feather="layers" class="info-img"></i>
-                                            <select class="select2">
+                                            <select class="select2" id="plan_type">
                                                 <option value="">Choose Plan</option>
-                                                <option value="Premium">Premium</option>
-                                                <option value="Professional">Professional</option>
-                                                <option value="Basic">Basic</option>
+                                                @foreach($plans as $plan)
+                                                    <option value="{{ $plan }}">{{ $plan }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -160,11 +164,11 @@
                                     <div class="col-lg-3 col-sm-6 col-12">
                                         <div class="input-blocks">
                                             <i data-feather="toggle-right" class="info-img"></i>
-                                            <select class="select2">
+                                            <select class="select2" id="status">
                                                 <option value="">Choose Status</option>
-                                                <option value="Completed">Completed</option>
-                                                <option value="Pending">Pending</option>
-                                                <option value="Failed">Failed</option>
+                                                @foreach($statuses as $status)
+                                                    <option value="{{ $status }}">{{ ucfirst($status) }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -181,7 +185,7 @@
                                         <i class="ti ti-calendar text-gray-9"></i>
                                     </span>
                                     <input type="text" class="form-control date-range bookingrange"
-                                        placeholder="dd/mm/yyyy - dd/mm/yyyy">
+                                        placeholder="dd/mm/yyyy - dd/mm/yyyy" id="date_range">
                                 </div>
                             </div>
                         </div>
@@ -189,137 +193,7 @@
                 </div>
                 <!-- /Filter -->
 
-                <table class="table common-datatable nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th>Transaction ID</th>
-                            <th>Salon Name</th>
-                            <th>Plan</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Payment Method</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><a href="{{ route('salon.show',1) }}" class="tbuserid">#TXN1001</a></td>
-                            <td>Glamour Studio</td>
-                            <td>Premium</td>
-                            <td>$199</td>
-                            <td>
-                                <span class="badge badge-soft-success d-inline-flex align-items-center badge-xs">
-                                    <i class="ti ti-point-filled me-1"></i>Success
-                                </span>
-                            </td>
-                            <td>14 Sep, 2025</td>
-                            <td>Credit Card</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{ route('salon.show',1) }}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><a href="{{ route('salon.show',1) }}" class="tbuserid">#TXN1002</a></td>
-                            <td>Elite Beauty Lounge</td>
-                            <td>Professional</td>
-                            <td>$129</td>
-                            <td>
-                                <span class="badge badge-soft-warning d-inline-flex align-items-center badge-xs">
-                                    <i class="ti ti-point-filled me-1"></i>Pending
-                                </span>
-                            </td>
-                            <td>13 Sep, 2025</td>
-                            <td>PayPal</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{ route('salon.show',1) }}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><a href="{{ route('salon.show',1) }}" class="tbuserid">#TXN1003</a></td>
-                            <td>Harmony Spa & Salon</td>
-                            <td>Basic</td>
-                            <td>$79</td>
-                            <td>
-                                <span class="badge badge-soft-danger d-inline-flex align-items-center badge-xs">
-                                    <i class="ti ti-point-filled me-1"></i>Failed
-                                </span>
-                            </td>
-                            <td>12 Sep, 2025</td>
-                            <td>Bank Transfer</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{ route('salon.show',1) }}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><a href="{{ route('salon.show',1) }}" class="tbuserid">#TXN1004</a></td>
-                            <td>Royal Crown Beauty</td>
-                            <td>Premium</td>
-                            <td>$199</td>
-                            <td>
-                                <span class="badge badge-soft-success d-inline-flex align-items-center badge-xs">
-                                    <i class="ti ti-point-filled me-1"></i>Success
-                                </span>
-                            </td>
-                            <td>10 Sep, 2025</td>
-                            <td>Stripe</td>
-                            <td>
-                                <div class="d-flex align-items-center ActionDropdown">
-                                    <div class="d-flex">
-
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-bs-toggle="tooltip" data-placement="top" title=""
-                                            data-bs-original-title="Salon Details" href="{{ route('salon.show',1) }}">
-                                            <span class="icon"><span class="feather-icon">
-                                                    <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                </span></span>
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                {{ $dataTable->table() }}
 
             </div>
 
@@ -328,100 +202,29 @@
         </div>
     </div>
 
-    <!-- Add Category modal start -->
-    <div class="modal fade custombottm_modalStyle" id="Addcategory_modal">
-        <div class="modal-dialog modal-dialog-centered modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add Category</h4>
-                    <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <i class="ti ti-x"></i>
-                    </button>
-                </div>
-                <form action="categories.php">
-                    <div class="modal-body">
-                        <div class="row">
+    @push('scripts')
+        {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+        <script>
+            $(document).ready(function() {
+                const table = window.LaravelDataTables && window.LaravelDataTables["global-datatable"]; 
 
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="form-label">Category Name <div class="requiredLabel">*</div>
-                                    </label>
-                                    <input type="text" placeholder="" class="form-control largeinp_height">
-                                    <p class="frmlabelwith_peragraph">The name is how it appears on your site.</p>
-                                </div>
-                            </div>
+                table.on('preXhr.dt', function(e, settings, data) {
+                    data.status = $('#status').val();
+                    data.plan_type = $('#plan_type').val();
+                    data.date_range = $('#date_range').val();
+                });
 
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <div
-                                        class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                        <span class="status-label">Status</span>
-                                        <input type="checkbox" id="user2" class="check" checked="">
-                                        <label for="user2" class="checktoggle"></label>
-                                    </div>
-                                </div>
-                            </div>
+                $("body").on('change', '#status, #plan_type', function() {
+                    table.ajax.reload();
+                });
 
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-white border me-2"
-                            data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary canvasSubmit_button">Add Category</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- Add category end -->
+                $('.bookingrange').on('apply.daterangepicker', function(ev, picker) {
+                    table.ajax.reload();
+                });
+            });
+        </script>
+    @endpush
 
-    <!-- edit Category modal start -->
-    <div class="modal fade custombottm_modalStyle" id="Editcategory_modal">
-        <div class="modal-dialog modal-dialog-centered modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Category</h4>
-                    <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <i class="ti ti-x"></i>
-                    </button>
-                </div>
-                <form action="categories.php">
-                    <div class="modal-body">
-                        <div class="row">
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="form-label">Category Name <div class="requiredLabel">*</div>
-                                    </label>
-                                    <input type="text" placeholder="" class="form-control largeinp_height">
-                                    <p class="frmlabelwith_peragraph">The name is how it appears on your site.</p>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <div
-                                        class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                        <span class="status-label">Status</span>
-                                        <input type="checkbox" id="user2" class="check" checked="">
-                                        <label for="user2" class="checktoggle"></label>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-white border me-2"
-                            data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary canvasSubmit_button">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- Edit category end -->
+    {{-- Removed Add Category and Edit Category modals as they are not relevant to transactions --}}
 
 </x-app-layout>

@@ -40,6 +40,7 @@ Route::prefix('super-admin')->group(function () {
 
         // Transactions
         Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+        Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
 
         // Email Management
         Route::resource('email-management', EmailManagementController::class);

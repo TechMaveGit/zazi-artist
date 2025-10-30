@@ -59,11 +59,11 @@ class EmailTemplateDataTable extends DataTable
                 return $action;
             })
             ->filter(function ($query) {
-                if (request()->has('status') && !empty(request('status'))) {
+                if (request()->has('status') && request()->get('status') != ''){
                     $status = request('status');
                     $query->where('status', $status);
                 }
-                if (request()->has('template_type') && !empty(request('template_type'))) {
+                if (request()->has('template_type') && request()->get('template_type') != '') {
                     $type = request('template_type');
                     $query->where('type', $type);
                 }
