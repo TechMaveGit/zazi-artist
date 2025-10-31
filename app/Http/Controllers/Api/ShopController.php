@@ -48,7 +48,7 @@ class ShopController extends Controller
     public function show(Request $request)
     {
         try {
-            $shop = Shop::with(['services', 'galleryImages', 'scheduled', 'artists', 'reviews', 'reviews.user'])->withCount('reviews')->findOrFail($request->id);
+            $shop = Shop::with(['services', 'locations', 'locations.schedules', 'galleryImages', 'scheduled', 'artists', 'reviews', 'reviews.user'])->withCount('reviews')->findOrFail($request->id);
             return ApiResponse::success("Shop details", 200, $shop);
         } catch (\Throwable $th) {
             return ApiResponse::error("Something went wrong", 500, $th->getMessage());

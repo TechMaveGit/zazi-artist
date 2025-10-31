@@ -777,17 +777,25 @@
                                                     </h3>
                                                 </div>
                                                 <ul class="features">
-                                                    @forelse ($plan_features as $plan_feature)
-                                                        <li>
-                                                            <span class="icon"><i
-                                                                    class="{{ in_array($plan_feature->name,$each->features) ? 'icofont-check-circled' : 'icofont-close-circled' }}"></i></span>
-                                                            <p>{{ $plan_feature?->name??'' }}</p>
-                                                        </li>
-                                                    @empty
-                                                    @endforelse
+                                                    <li>
+                                                        <span class="icon"><i class="icofont-check-circled"></i>
+                                                        </span>
+                                                        <p>{{ ucfirst($each?->type) ?? '' }}</p>
+                                                    </li>
+                                                    <li>
+                                                        <span class="icon"><i class="icofont-check-circled"></i>
+                                                        </span>
+                                                        <p>Max {{ $each?->max_location ?? '' }} Locations</p>
+                                                    </li>
+                                                    <li>
+                                                        <span class="icon"><i class="icofont-check-circled"></i>
+                                                        </span>
+                                                        <p>Max {{ $each?->max_artists ?? '' }} Artists</p>
+                                                    </li>
                                                 </ul>
                                                 <div class="btn_block">
-                                                    <a href="{{ route('web.checkout', $each->id) }}" class="btn puprple_btn ml-0">Choose Plan</a>
+                                                    <a href="{{ route('web.checkout', $each->id) }}"
+                                                        class="btn puprple_btn ml-0">Choose Plan</a>
                                                     <div class="btn_bottom"></div>
                                                 </div>
                                             </div>
@@ -796,134 +804,134 @@
                                 </div>
                             </div>
                         </div>
-                        @empty
-                        @endforelse
+                    @empty
+                    @endforelse
 
-                        <p class="contact_text text-center" data-aos="fade-up" data-aos-duration="1500">Not
-                            sure what to choose ? <a href="#">contact us</a> for custom packages</p>
+                    <p class="contact_text text-center" data-aos="fade-up" data-aos-duration="1500">Not
+                        sure what to choose ? <a href="#">contact us</a> for custom packages</p>
+                </div>
+            </div>
+        </div>
+        <!-- container start end -->
+    </section>
+    <!-- Pricing-Section end -->
+
+    <!-- Beautifull-interface-Section start -->
+    <section class="row_am interface_section">
+        <!-- container start -->
+        <div class="container-fluid">
+            <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="300">
+                <span class="title_badge">App screens</span>
+                <h2>Userfriendly <span>interface</span> design</h2>
+            </div>
+
+            <!-- screen slider start -->
+            <div class="screen_slider" data-aos="fade-up" data-aos-duration="1500">
+                <div id="screen_slider" class="owl-carousel owl-theme">
+                    <div class="item">
+                        <div class="screen_frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/onboarding1.jpg') }}" alt="image">
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="screen_frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/onboarding2.jpg') }}" alt="image">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="screen_frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/Home.jpg') }}" alt="image">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="screen_frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/All-Customers.jpg') }}" alt="image">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="screen_frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/customer-sessions-list.jpg') }}"
+                                alt="image">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="screen_frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/Customer-all-transactions.jpg') }}"
+                                alt="image">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="screen_frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/completed-booking-and-session-list.jpg') }}"
+                                alt="image">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="screen_frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/All-Services.jpg') }}" alt="image">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="screen_frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/messages-list.jpg') }}" alt="image">
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- container start end -->
-        </section>
-        <!-- Pricing-Section end -->
+            <!-- screen slider end -->
+        </div>
+        <!-- container end -->
+    </section>
+    <!-- Beautifull-interface-Section end -->
 
-        <!-- Beautifull-interface-Section start -->
-        <section class="row_am interface_section">
-            <!-- container start -->
-            <div class="container-fluid">
-                <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="300">
-                    <span class="title_badge">App screens</span>
-                    <h2>Userfriendly <span>interface</span> design</h2>
+    <!-- App-Download-Section-Start -->
+    <section class="row_am download_app">
+        <!-- Task Block start -->
+        <div class="task_block" data-aos="fade-up" data-aos-duration="1500">
+            <!-- row start -->
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- task text -->
+                    <div class="task_text">
+                        <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
+                            <span class="title_badge">Download</span>
+                            <h2>Our app is available for
+                                Android & iOS</h2>
+                            <p>
+                                Your Beauty Business, Anytime, Anywhere
+                            </p>
+                        </div>
+                        <!-- app buttons -->
+                        <ul class="app_btn" data-aos="fade-up" data-aos-duration="1500">
+                            <li>
+                                <a href="#">
+                                    <img class="blue_img" src="{{ asset('web_assets/images/googleplay.png') }}"
+                                        alt="image">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <img class="blue_img" src="{{ asset('web_assets/images/appstorebtn.png') }}"
+                                        alt="image">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-
-                <!-- screen slider start -->
-                <div class="screen_slider" data-aos="fade-up" data-aos-duration="1500">
-                    <div id="screen_slider" class="owl-carousel owl-theme">
-                        <div class="item">
-                            <div class="screen_frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/onboarding1.jpg') }}" alt="image">
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <div class="screen_frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/onboarding2.jpg') }}" alt="image">
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="screen_frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/Home.jpg') }}" alt="image">
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="screen_frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/All-Customers.jpg') }}" alt="image">
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="screen_frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/customer-sessions-list.jpg') }}"
-                                    alt="image">
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="screen_frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/Customer-all-transactions.jpg') }}"
-                                    alt="image">
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="screen_frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/completed-booking-and-session-list.jpg') }}"
-                                    alt="image">
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="screen_frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/All-Services.jpg') }}" alt="image">
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="screen_frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/messages-list.jpg') }}" alt="image">
-                            </div>
+                <div class="col-md-6">
+                    <!-- task images -->
+                    <div class="task_img" data-aos="fade-in" data-aos-duration="1500">
+                        <div class="frame_img">
+                            <img src="{{ asset('web_assets/images/new-image/our_app.png') }}" alt="image">
                         </div>
                     </div>
                 </div>
-                <!-- screen slider end -->
             </div>
-            <!-- container end -->
-        </section>
-        <!-- Beautifull-interface-Section end -->
-
-        <!-- App-Download-Section-Start -->
-        <section class="row_am download_app">
-            <!-- Task Block start -->
-            <div class="task_block" data-aos="fade-up" data-aos-duration="1500">
-                <!-- row start -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <!-- task text -->
-                        <div class="task_text">
-                            <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                                <span class="title_badge">Download</span>
-                                <h2>Our app is available for
-                                    Android & iOS</h2>
-                                <p>
-                                    Your Beauty Business, Anytime, Anywhere
-                                </p>
-                            </div>
-                            <!-- app buttons -->
-                            <ul class="app_btn" data-aos="fade-up" data-aos-duration="1500">
-                                <li>
-                                    <a href="#">
-                                        <img class="blue_img" src="{{ asset('web_assets/images/googleplay.png') }}"
-                                            alt="image">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <img class="blue_img" src="{{ asset('web_assets/images/appstorebtn.png') }}"
-                                            alt="image">
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <!-- task images -->
-                        <div class="task_img" data-aos="fade-in" data-aos-duration="1500">
-                            <div class="frame_img">
-                                <img src="{{ asset('web_assets/images/new-image/our_app.png') }}" alt="image">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- row end -->
-            </div>
-            <!-- Task Block end -->
-        </section>
-    </div>
-    <!-- App-Download-Section-end -->
-    @include('web.layouts.footer')
+            <!-- row end -->
+        </div>
+        <!-- Task Block end -->
+    </section>
+</div>
+<!-- App-Download-Section-end -->
+@include('web.layouts.footer')
