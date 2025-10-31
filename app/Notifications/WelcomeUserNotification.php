@@ -11,7 +11,7 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public $user)
+    public function __construct(public $user, public $password)
     {
     }
 
@@ -24,9 +24,10 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Welcome to Salon & Tattoo App')
-            ->greeting("Hello {$this->user->name},")
-            ->line('Thank you for registering with us!')
-            ->line('We are excited to have you onboard.');
+            ->view('emails.welcome', [
+                'user' => $this->user,
+                'password' => $this->password,
+            ]);
     }
 
     public function toArray($notifiable)
