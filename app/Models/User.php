@@ -21,6 +21,7 @@ class User extends Authenticatable
 
 
     protected $fillable = [
+        'shop_id',
         'name',
         'email',
         'password',
@@ -29,11 +30,13 @@ class User extends Authenticatable
         'gender',
         'type',
         'email_verified_at',
-        'about', // Added 'about' field
-        'profile', // Added 'profile' field for image path
+        'about',
+        'profile',
+        'categories', 
     ];
 
     public $appends = ['profile_url'];
+    protected $guard_name = 'web';
 
 
     protected $hidden = [
@@ -78,6 +81,16 @@ class User extends Authenticatable
     public function subscriptionInvoices()
     {
         return $this->hasMany(SubscriptionInvoice::class);
+    }
+
+    public function staffSchedules()
+    {
+        return $this->hasMany(StaffSchedule::class);
+    }
+
+    public function categories()
+    {
+        return Category::whereIn('id', $this->categories)->get();
     }
 
     public function sendOtp($type = 'mobile')

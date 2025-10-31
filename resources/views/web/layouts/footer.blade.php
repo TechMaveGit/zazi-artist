@@ -191,31 +191,73 @@
                     $.each(errors, function(field, messages) {
                         let input = form.find(`[name="${field}"]`);
 
-                        // If not found, try array-style name (e.g. features[])
+                        if (input.length === 0) {
+                            let fixedName = field
+                                .replace(/\.(\d+)\./g, '[$1][')
+                                .replace(/\.(\d+)$/g, '[$1]')
+                                .replace(/\./g, '][') + ']';
+
+                            input = form.find(`[name="${fixedName}"]`);
+
+                            if (input.length === 0) {
+                                // Append [] to handle checkbox arrays
+                                fixedName = fixedName.replace(/\]$/, '][]');
+                                input = form.find(`[name="${fixedName}"]`);
+                            }
+                        }
+
                         if (input.length === 0) {
                             input = form.find(`[name="${field}[]"]`);
                         }
 
                         if (input.length > 0) {
                             input.addClass('is-invalid');
+                            if (input.hasClass('select2-hidden-accessible')) {
+                                const select2Container = input.next('.select2');
+                                if (select2Container.length) {
+                                    select2Container.after(
+                                        `<div class="text-danger mt-1">${messages[0]}</div>`
+                                    );
+                                } else {
+                                    input.after(
+                                        `<div class="text-danger mt-1">${messages[0]}</div>`
+                                    );
+                                }
+                            } else if (input.attr('type') === 'checkbox' || input.attr(
+                                    'type') === 'radio') {
+                                const group = input.closest('.days-checkboxes');
+                                if (group.length) {
+                                    group.after(
+                                        `<div class="text-danger mt-1">${messages[0]}</div>`
+                                    );
+                                } else {
+                                    const lastInput = input.last();
+                                    const featureBox = lastInput.closest(
+                                        '.feature-checkbox');
 
-                            if (input.attr('type') === 'checkbox' || input.attr('type') ===
-                                'radio') {
-                                input.last().closest('.feature-checkbox').after(
-                                    `<div class="text-danger mt-1">${messages[0]}</div>`
-                                );
+                                    if (featureBox.length) {
+                                        featureBox.after(
+                                            `<div class="text-danger mt-1">${messages[0]}</div>`
+                                            );
+                                    } else {
+                                        lastInput.after(
+                                            `<div class="text-danger mt-1">${messages[0]}</div>`
+                                            );
+                                    }
+                                }
                             } else {
                                 input.after(
                                     `<div class="text-danger mt-1">${messages[0]}</div>`
                                 );
                             }
                         } else {
-                            showToast('error', `${messages[0]} || Validation Error`,
+                            showToast('error', messages[0] || "Validation Error",
                                 'error');
                         }
                     });
                 } else {
-                    showToast('Error', xhr.responseJSON.message || 'An unexpected error occurred. Please try again later.',
+                    showToast('Error', xhr.responseJSON.message ||
+                        'An unexpected error occurred. Please try again later.',
                         'error');
                 }
             }

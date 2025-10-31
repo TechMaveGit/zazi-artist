@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ShopGalleryImage extends Model
 {   use UploadFile;
+    protected $fillable = [
+        'shop_id',
+        'file',
+    ];
     protected $hidden = [
         'created_at',
         'updated_at',

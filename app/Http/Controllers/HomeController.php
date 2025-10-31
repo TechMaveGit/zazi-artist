@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\PlanFeature;
 use App\Models\Subscription;
 use App\Models\User;
@@ -34,8 +35,9 @@ class HomeController extends Controller
         $shop = $user->shop;
         $shopLocations = $shop->locations;
         $galleryImages = $shop->galleryImages;
-        $artists= [];
-        return view('web.profile', compact('user', 'activeSubscription', 'transactions','shop', 'shopLocations','galleryImages','artists'));
+        $serviceCategorys = Category::all();
+        $artists = $shop->artists;
+        return view('web.profile', compact('user', 'artists', 'activeSubscription', 'transactions','shop', 'shopLocations','galleryImages','serviceCategorys'));
     }
 
     public function checkout($id)

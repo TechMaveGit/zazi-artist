@@ -64,8 +64,9 @@ class Shop extends Model
 
     public function artists()
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasMany(User::class);
     }
+
 
     public function owner()
     {

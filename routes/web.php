@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\ShopLocationController;
 use App\Http\Controllers\SubscriptionInvoiceController;
+use App\Http\Controllers\Web\StaffController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -32,6 +33,13 @@ Route::middleware(['auth:salon'])->group(function () {
         Route::put('/{shopLocation}', [ShopLocationController::class, 'update'])->name('update');
         Route::delete('/{shopLocation}', [ShopLocationController::class, 'destroy'])->name('destroy');
     });
+
+    // Shop Gallery Images
+    Route::post('/gallery/store', [ShopController::class, 'uploadGalleryImages'])->name('web.gallery.upload');
+    Route::delete('/profile/gallery/{shopGalleryImage}', [ShopController::class, 'deleteGalleryImage'])->name('web.gallery.delete');
+
+    // Staff Management
+    Route::resource('staff', StaffController::class)->names('web.staff');
 });
 
 Route::prefix('super-admin')->group(function () {

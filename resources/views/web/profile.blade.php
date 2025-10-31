@@ -108,12 +108,9 @@
 <script>
     let currentProfileImage = null;
     let currentShopBanner = null;
-    let currentArtistImage = null;
     let uploadPreviewImages = [];
     let locationScheduleItems = [];
     let currentEditLocationId = null;
-    let currentEditArtistId = null;
-    let currentArtistData = null;
 
     // Initialize the application
     document.addEventListener('DOMContentLoaded', function() {
@@ -566,68 +563,41 @@
         renderUploadPreview();
     }
 
-    async function uploadGalleryImages() {
-        if (uploadPreviewImages.length === 0) {
-            showToast('Validation Error', 'Please select at least one image', 'error');
-            return;
-        }
-
-        const formData = new FormData();
-        uploadPreviewImages.forEach((image, index) => {
-            formData.append(`images[${index}]`, image.file);
-        });
-        formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
-
-        try {
-            const response = await fetch("gallery/store", {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                }
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                showToast('Success', `${uploadPreviewImages.length} image(s) uploaded successfully!`,
-                    'success');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('galleryUploadModal'));
-                modal.hide();
-                location.reload();
-            } else {
-                showToast('Error', data.message || 'Failed to upload images.', 'error');
-            }
-        } catch (error) {
-            console.error('Error uploading images:', error);
-            showToast('Error', 'An error occurred while uploading images.', 'error');
-        }
-    }
-
     async function deleteGalleryImage(id) {
-        if (!confirm('Are you sure you want to delete this image?')) {
-            return;
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            try {
+                let url = "{{ route('web.gallery.delete', ':id') }}".replace(':id', id);
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                            .content,
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
 
-        try {
-            const response = await fetch(`{{ url('gallery') }}/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
+                if (response.ok) {
+                    showToast('Success', data.message || 'Image deleted successfully!', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000)
+                } else {
+                    showToast('Error', data.message || 'Failed to delete image.', 'error');
                 }
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                showToast('Success', data.message || 'Image deleted successfully!', 'success');
-                location.reload();
-            } else {
-                showToast('Error', data.message || 'Failed to delete image.', 'error');
+            } catch (error) {
+                console.error('Error deleting image:', error);
+                showToast('Error', 'An error occurred while deleting image.', 'error');
             }
-        } catch (error) {
-            console.error('Error deleting image:', error);
-            showToast('Error', 'An error occurred while deleting image.', 'error');
-        }
+        })
     }
 
     function openFancyPopup(imageSrc) {
@@ -639,154 +609,6 @@
         document.getElementById('fancyPopup').classList.remove('active');
     }
 
-    // Artist functions
-    function openArtistModal() {
-        currentEditArtistId = null;
-        document.getElementById('artistModalTitle').textContent = 'Add Artist';
-        // Clear form
-        document.getElementById('artistName').value = '';
-        document.getElementById('artistEmail').value = '';
-        document.getElementById('artistPhone').value = '';
-        document.getElementById('artistExperience').value = '';
-        document.getElementById('artistExpertise').value = '';
-        document.getElementById('artistBio').value = '';
-        document.getElementById('artistImageInput').value = '';
-        document.getElementById('artistImagePreview').innerHTML = '<i class="fas fa-user"></i>';
-        currentArtistImage = null;
-        currentArtistData = null;
-
-        const modal = new bootstrap.Modal(document.getElementById('artistModal'));
-        modal.show();
-    }
-
-    async function editArtist(id) {
-        currentEditArtistId = id;
-        document.getElementById('artistModalTitle').textContent = 'Edit Artist';
-
-        try {
-            const response = await fetch(`{{ url('artists') }}/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                }
-            });
-            const artist = await response.json();
-
-            if (response.ok) {
-                document.getElementById('artistName').value = artist.name;
-                document.getElementById('artistEmail').value = artist.email;
-                document.getElementById('artistPhone').value = artist.phone;
-                document.getElementById('artistExperience').value = artist.experience;
-                document.getElementById('artistExpertise').value = artist.expertise;
-                document.getElementById('artistBio').value = artist.bio;
-                if (artist.image_url) {
-                    document.getElementById('artistImagePreview').innerHTML =
-                        `<img src="${artist.image_url}" alt="Artist" class="profile-image">`;
-                    currentArtistImage = artist.image_url;
-                }
-                currentArtistData = artist;
-
-                const modal = new bootstrap.Modal(document.getElementById('artistModal'));
-                modal.show();
-            } else {
-                showToast('Error', 'Artist not found.', 'error');
-            }
-        } catch (error) {
-            console.error('Error fetching artist:', error);
-            showToast('Error', 'An error occurred while fetching artist.', 'error');
-        }
-    }
-
-    function handleArtistImageUpload(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentArtistImage = file;
-                const preview = document.getElementById('artistImagePreview');
-                preview.innerHTML = `<img src="${e.target.result}" alt="Artist" class="profile-image">`;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    async function saveArtist() {
-        const formData = new FormData();
-        formData.append('name', document.getElementById('artistName').value);
-        formData.append('email', document.getElementById('artistEmail').value);
-        formData.append('phone', document.getElementById('artistPhone').value);
-        formData.append('experience', document.getElementById('artistExperience').value);
-        formData.append('expertise', document.getElementById('artistExpertise').value);
-        formData.append('bio', document.getElementById('artistBio').value);
-        if (currentArtistImage && currentArtistImage instanceof File) {
-            formData.append('image', currentArtistImage);
-        }
-        formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
-        if (currentEditArtistId) {
-            formData.append('_method', 'PUT');
-        }
-
-        if (!formData.get('name') || !formData.get('email') || !formData.get('phone') || !formData.get(
-                'experience') || !formData.get('expertise')) {
-            showToast('Validation Error', 'Please fill in all required fields', 'error');
-            return;
-        }
-
-        const url = currentEditArtistId ? `{{ url('artists') }}/${currentEditArtistId}` : "artist/store";
-        const method = currentEditArtistId ? 'POST' : 'POST';
-
-        try {
-            const response = await fetch(url, {
-                method,
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                }
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                showToast('Success', data.message || (currentEditArtistId ? 'Artist updated successfully!' :
-                    'Artist added successfully!'), 'success');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('artistModal'));
-                modal.hide();
-                location.reload();
-            } else {
-                showToast('Error', data.message || 'Failed to save artist.', 'error');
-            }
-        } catch (error) {
-            console.error('Error saving artist:', error);
-            showToast('Error', 'An error occurred while saving artist.', 'error');
-        }
-    }
-
-    async function deleteArtist(id) {
-        if (!confirm('Are you sure you want to delete this artist?')) {
-            return;
-        }
-
-        try {
-            const response = await fetch(`{{ url('artists') }}/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                }
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                showToast('Success', data.message || 'Artist deleted successfully!', 'success');
-                location.reload();
-            } else {
-                showToast('Error', data.message || 'Failed to delete artist.', 'error');
-            }
-        } catch (error) {
-            console.error('Error deleting artist:', error);
-            showToast('Error', 'An error occurred while deleting artist.', 'error');
-        }
-    }
 
     // Toast notification system
     function showToast(title, message, type = 'success') {
@@ -837,4 +659,298 @@
             closeFancyPopup();
         }
     });
+
+    function openArtistModal() {
+        // jQuery form object
+        const $form = $('#artistModal form');
+
+        // Title
+        document.getElementById('artistModalTitle').textContent = 'Add Artist';
+
+        // Reset native fields and remove previous validation errors
+        $form[0].reset();
+        $form.find('.text-danger').remove();
+
+        // Clear hidden id
+        $form.find('#artistId').val('');
+
+        // Clear profile image preview
+        $('#artistImagePreview').html('<i class="fas fa-user"></i>');
+
+        // Reset Select2 category
+        const $category = $('#artistCategory');
+        $category.val(null).trigger('change');
+        $category.select2({
+            placeholder: "Select category",
+            dropdownParent: $('#artistModal')
+        });
+
+        // Reset schedule container and counter then add a fresh row
+        const $scheduleContainer = $('#workingScheduleContainer');
+        $scheduleContainer.html('');
+        rowCounter = 0;
+        addScheduleRow();
+
+        // Reset form attributes for create mode
+        const token = document.querySelector('meta[name="csrf-token"]').content;
+        $form.attr('method', 'POST');
+        $form.attr('action', "{{ route('web.staff.store') }}");
+        $form.find('input[name="_method"]').remove();
+        $form.find('input[name="_token"]').remove();
+        $form.prepend(`<input type="hidden" name="_token" value="${token}">`);
+
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('artistModal'));
+        modal.show();
+    }
+
+
+
+    function handleArtistImageUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentArtistImage = file;
+                const preview = document.getElementById('artistImagePreview');
+                preview.innerHTML = `<img src="${e.target.result}" alt="Artist" class="profile-image">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    async function editArtist(id) {
+        document.getElementById('artistModalTitle').textContent = 'Edit Artist';
+
+        // Clear previous form content before loading new data
+        const form = document.querySelector('#artistModal form');
+        form.reset();
+        document.getElementById('artistImagePreview').innerHTML = '<i class="fas fa-user"></i>';
+        const scheduleContainer = document.getElementById('workingScheduleContainer');
+        scheduleContainer.innerHTML = '';
+        rowCounter = 0;
+
+        try {
+            let url = "{{ route('web.staff.edit', ':id') }}".replace(':id', id);
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            });
+            const artist = await response.json();
+
+            if (response.ok) {
+                document.getElementById('artistId').value = artist.id;
+                document.getElementById('artistName').value = artist.name;
+                document.getElementById('artistEmail').value = artist.email;
+                document.getElementById('artistPhone').value = artist.phone;
+                document.getElementById('artistBio').value = artist.about || '';
+
+                // Populate categories
+                $('#artistCategory').val(artist.categories).trigger('change');
+                $('#artistCategory').select2({
+                    placeholder: "Select category",
+                    dropdownParent: $('#artistModal')
+                });
+
+                // Profile image
+                if (artist.profile) {
+                    document.getElementById('artistImagePreview').innerHTML =
+                        `<img src="${artist.profile}" alt="Artist Photo" class="profile-image">`;
+                }
+
+                // Populate working schedules
+                if (artist.staff_schedules && artist.staff_schedules.length > 0) {
+                    artist.staff_schedules.forEach(schedule => addScheduleRow(schedule));
+                } else {
+                    addScheduleRow();
+                }
+
+                // Set form to update mode
+                let token = document.querySelector('meta[name="csrf-token"]').content;
+                $(form).attr('method', 'POST');
+                $(form).attr('action', "{{ route('web.staff.update', ':id') }}".replace(':id', id));
+                $(form).find('input[name="_method"]').remove();
+                $(form).find('input[name="_token"]').remove();
+                $(form).prepend(`
+                <input type="hidden" name="_token" value="${token}">
+                <input type="hidden" name="_method" value="PUT">
+            `);
+
+                const modal = new bootstrap.Modal(document.getElementById('artistModal'));
+                modal.show();
+            } else {
+                showToast('Error', 'Artist not found.', 'error');
+            }
+        } catch (error) {
+            console.error('Error fetching artist:', error);
+            showToast('Error', 'An error occurred while fetching artist.', 'error');
+        }
+    }
+
+
+    async function deleteArtist(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            try {
+                let url = "{{ route('web.staff.destroy', ':id') }}".replace(':id', id);
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                            .content,
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    showToast('Success', data.message || 'Artist deleted successfully!', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000)
+                } else {
+                    showToast('Error', data.message || 'Failed to delete artist.', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting artist:', error);
+                showToast('Error', 'An error occurred while deleting artist.', 'error');
+            }
+        })
+    }
+
+    $('.location-select').select2({
+        placeholder: 'Select Location',
+        minimumResultsForSearch: 10,
+        width: '100%'
+    })
+    let rowCounter = 0;
+
+    function addScheduleRow(schedule = null) {
+        const container = document.getElementById('workingScheduleContainer');
+        const maxRow = "{{ $shopLocations->count() }}";
+        const shopLocations = @json($shopLocations);
+        if (typeof rowCounter === 'undefined') window.rowCounter = 0;
+
+        if (!schedule && rowCounter >= maxRow) {
+            showToast('Error', 'You have only added ' + maxRow + ' locations', 'error');
+            return;
+        }
+
+        const newRow = document.createElement('div');
+        newRow.className = 'schedule-row mb-3 p-3 border rounded';
+        newRow.dataset.rowId = rowCounter;
+
+        const selectedLocationId = schedule ? schedule.shop_location_id : '';
+        const workingDays = schedule ? schedule.working_days : [];
+
+        newRow.innerHTML = `
+            <div class="row align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small">Location</label>
+                    <select class="form-control location-select" name="schedule[${rowCounter}][location_id]">
+                        ${shopLocations.map(location => `<option value="${location.id}" ${selectedLocationId === location.id ? 'selected' : ''}>${location.name}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="col-md-7">
+                    <label class="form-label small">Working Days</label>
+                    <div class="days-checkboxes d-flex flex-wrap gap-2">
+                        ${['sun','mon','tue','wed','thu','fri','sat'].map(day => `
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox"
+                                    name="schedule[${rowCounter}][working_days][]"
+                                    value="${day}" id="${day}-${rowCounter}">
+                                <label class="form-check-label small mb-0 text-muted" for="${day}-${rowCounter}">
+                                    ${day.charAt(0).toUpperCase() + day.slice(1)}
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeScheduleRow(this)">×</button>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(newRow);
+        const $select = $(newRow).find('.location-select');
+        $select.select2({
+            placeholder: 'Select Location',
+            minimumResultsForSearch: 10,
+            width: '100%'
+        });
+
+        $select.on('change', function() {
+            updateDisabledLocations();
+        });
+
+        if (schedule) {
+            $(newRow).find('.location-select').val(selectedLocationId).trigger('change');
+
+            workingDays.forEach(day => {
+                $(newRow).find(`input[value="${day}"]`).prop('checked', true);
+            });
+        }
+
+        // ✅ Auto-select all if only one location available
+        if (maxRow == 1 && !schedule) {
+            const firstLoc = shopLocations[0]?.id;
+            if (firstLoc) {
+                $select.val(firstLoc).trigger('change');
+            }
+
+            $(newRow).find('.form-check-input').prop('checked', true);
+        }
+
+        rowCounter++;
+        updateDisabledLocations();
+    }
+
+
+    function removeScheduleRow(button) {
+        const totalRows = document.querySelectorAll('.schedule-row').length;
+        if (document.querySelectorAll('.schedule-row').length > 1) {
+            button.closest('.schedule-row').remove();
+            rowCounter = Math.max(0, rowCounter - 1);
+            updateDisabledLocations();
+        } else {
+            alert('At least one schedule entry is required.');
+        }
+    }
+
+    /**
+     * Disable already-selected locations in all Select2 dropdowns
+     */
+    function updateDisabledLocations() {
+        const selectedValues = $('.location-select').map(function() {
+            return $(this).val();
+        }).get().filter(v => v);
+
+        $('.location-select').each(function() {
+            const currentSelect = $(this);
+            const currentValue = currentSelect.val();
+
+            currentSelect.find('option').each(function() {
+                const optionValue = $(this).val();
+                if (!optionValue) return;
+
+                if (selectedValues.includes(optionValue) && optionValue !== currentValue) {
+                    $(this).prop('disabled', true);
+                } else {
+                    $(this).prop('disabled', false);
+                }
+            });
+
+            currentSelect.trigger('change.select2');
+        });
+    }
 </script>
