@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Mail\WelcomeUserMail;
+use App\Mail\SubscriptionNotificationMail;
 use App\Models\UserSubscription;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -107,9 +107,8 @@ class CheckoutController extends Controller
                 ]);
 
                 Auth::guard('salon')->login($user);
-
                 $shopConfigMessage = "Please log in and navigate to your profile to complete your shop's setup, including adding services, scheduling, and gallery images.";
-                Mail::to($user->email)->send(new WelcomeUserMail($user, $password, $shopConfigMessage));
+                Mail::to($user->email)->send(new SubscriptionNotificationMail($user, $password, $shopConfigMessage));
                 DB::commit();
                 return redirect()->route('web.profile')->with('success', 'Payment successful and shop created!');
             } else {

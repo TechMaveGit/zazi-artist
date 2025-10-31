@@ -34,7 +34,10 @@ class StaffController extends Controller
     public function store(Request $request)
     {
         $shop = Auth::user()->shop;
-
+        $maxArtists = $user->activeUserSubscription->subscription->max_artists ?? 1;
+        if ($shop->artists()->count() >= $maxArtists) {
+            return response()->json(['message' => 'You have reached the maximum number of artists allowed by your subscription plan.'], 403);
+        }
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',

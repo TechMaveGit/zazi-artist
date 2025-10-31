@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class WelcomeUserMail extends Mailable implements ShouldQueue
+class SubscriptionNotificationMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -44,7 +44,7 @@ class WelcomeUserMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.welcome-user',
+            view: 'emails.welcome-subscription',
             with: [
                 'user' => $this->user,
                 'password' => $this->password,
