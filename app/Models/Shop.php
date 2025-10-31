@@ -64,8 +64,9 @@ class Shop extends Model
 
     public function artists()
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasMany(User::class);
     }
+
 
     public function owner()
     {
@@ -85,6 +86,11 @@ class Shop extends Model
     public function userSubscription()
     {
         return $this->hasOne(UserSubscription::class, 'shop_id', 'id');
+    }
+
+    public function locations()
+    {
+        return $this->hasMany(ShopLocation::class);
     }
 
     public function getBannerImgUrlAttribute()

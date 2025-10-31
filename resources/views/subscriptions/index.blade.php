@@ -45,7 +45,7 @@
                             <div class="metric-content">
                                 <div class="metric-info">
                                     <p class="metric-label">Total Subscribers</p>
-                                    <p class="metric-value">{{ $userSubsciptions?->count()??0 }}</p>
+                                    <p class="metric-value">{{ $userSubsciptions?->count() ?? 0 }}</p>
                                 </div>
                                 <div class="metric-icon success">
                                     <iconify-icon icon="mynaui:users"></iconify-icon>
@@ -105,30 +105,31 @@
 
                                 <div class="plan-stats">
                                     <div class="stat">
-                                        <div class="stat-value success">{{ $subscription?->user_subscriptions_count??0 }}</div> 
+                                        <div class="stat-value success">
+                                            {{ $subscription?->user_subscriptions_count ?? 0 }}</div>
                                         <div class="stat-label">Subscribers</div>
                                     </div>
                                     <div class="stat">
-                                        <div class="stat-value warning">${{ $subscription?->user_subscriptions_sum_price??0 }}</div> 
+                                        <div class="stat-value warning">
+                                            ${{ $subscription?->user_subscriptions_sum_price ?? 0 }}</div>
                                         <div class="stat-label">Revenue</div>
                                     </div>
                                 </div>
 
                                 <div class="plan-body">
                                     <div class="plan-features">
-                                        @forelse($subscription->features as $feature)
-                                            @if ($loop->index < 3)
-                                                <div class="feature">
-                                                    <div class="feature-dot"></div>
-                                                    {{ $feature }}
-                                                </div>
-                                            @else
-                                                <div class="feature-more">+{{ $loop->count - 3 }} more features</div>
-                                                @break
-                                            @endif
-                                        @empty
-                                            <div class="feature">No features defined.</div>
-                                        @endforelse
+                                        <div class="feature">
+                                            <div class="feature-dot"></div>
+                                            {{ ucfirst($subscription->type ?? '') }}
+                                        </div>
+                                        <div class="feature">
+                                            <div class="feature-dot"></div>
+                                            Max {{ $subscription->max_location }} Location's
+                                        </div>
+                                        <div class="feature">
+                                            <div class="feature-dot"></div>
+                                            Max {{ $subscription->max_artists }} Artist's
+                                        </div>
                                     </div>
 
                                     <div class="plan-actions">
@@ -140,8 +141,8 @@
                                         <a href="{{ route('subscription.edit', $subscription->id) }}" class="btn-icon">
                                             <iconify-icon icon="cuida:edit-outline"></iconify-icon>
                                         </a>
-                                        <button type="button" class="btn-icon text-danger del-button" data-id="{{ $subscription->id}}"
-                                            data-table="subscriptions">
+                                        <button type="button" class="btn-icon text-danger del-button"
+                                            data-id="{{ $subscription->id }}" data-table="subscriptions">
                                             <iconify-icon icon="fluent:delete-32-regular"></iconify-icon>
                                         </button>
                                     </div>
@@ -389,8 +390,10 @@
                     document.getElementById('modalPrice').textContent =
                         `$${parseFloat(subscription.price).toFixed(2)}`;
                     document.getElementById('modalPeriod').textContent = `/${subscription.billing_period}`;
-                    document.getElementById('modalSubscribers').textContent = subscription.user_subscriptions_count || 0;
-                    document.getElementById('modalMonthlyRevenue').textContent = `$${parseFloat(subscription.user_subscriptions_sum_price || 0).toFixed(2)}`;
+                    document.getElementById('modalSubscribers').textContent = subscription
+                        .user_subscriptions_count || 0;
+                    document.getElementById('modalMonthlyRevenue').textContent =
+                        `$${parseFloat(subscription.user_subscriptions_sum_price || 0).toFixed(2)}`;
                     document.getElementById('modalFeaturesCount').textContent = subscription.features ?
                         subscription.features.length : 0;
                     document.getElementById('modalDescription').textContent = subscription.description ||
@@ -406,10 +409,15 @@
 
                     const modalPlanFeatures = document.getElementById('modalPlanFeatures');
                     modalPlanFeatures.innerHTML = '';
-                    if (subscription.features && subscription.features.length > 0) {
-                        subscription.features.forEach(feature => {
+                    let features = [
+                        subscription.type,
+                        `Max ${subscription.max_location} Location's`,
+                        `Max ${subscription.max_artists} Artist's`
+                    ]
+                    if (features && features.length > 0) {
+                        features.forEach(feature => {
                             const featureElement = document.createElement('div');
-                            featureElement.className = 'feature mb-2';
+                            featureElement.className = 'feature mb-2 text-capitalize';
                             featureElement.innerHTML =
                                 `<iconify-icon icon="prime:check-circle"></iconify-icon><span>${feature}</span>`;
                             modalPlanFeatures.appendChild(featureElement);
@@ -421,10 +429,11 @@
                     // Populate Recent Activity
                     const modalRecentActivity = document.getElementById('modalRecentActivity');
                     modalRecentActivity.innerHTML = '';
-                    const planActivities = allUserSubscriptions.filter(activity => activity.subscription_id == subscriptionId);
+                    const planActivities = allUserSubscriptions.filter(activity => activity
+                        .subscription_id == subscriptionId);
 
                     if (planActivities.length > 0) {
-                        planActivities.slice(0, 5).forEach(activity => { 
+                        planActivities.slice(0, 5).forEach(activity => {
                             const activityElement = document.createElement('div');
                             activityElement.className = 'activity-item';
                             let statusClass = 'primary';
@@ -438,9 +447,11 @@
                             }
 
                             const userName = activity.user ? activity.user.name : 'N/A';
-                            const subscriptionName = activity.subscription ? activity.subscription.name : 'N/A';
-                            const actionText = activity.status === 'active' ? 'subscribed' : (activity.status === 'cancelled' ? '' : 'modified');
-                            const timeAgo = new Date(activity.created_at).toLocaleDateString(); 
+                            const subscriptionName = activity.subscription ? activity.subscription
+                                .name : 'N/A';
+                            const actionText = activity.status === 'active' ? 'subscribed' : (
+                                activity.status === 'cancelled' ? '' : 'modified');
+                            const timeAgo = new Date(activity.created_at).toLocaleDateString();
 
                             activityElement.innerHTML = `
                                 <div class="activity-dot ${statusClass}"></div>
@@ -456,20 +467,29 @@
                     }
 
                     // Populate Performance Insights
-                    document.querySelector('#planDetailsModal .performance-item.success .performance-value').textContent = 'N/A'; // Conversion Rate
-                    document.querySelector('#planDetailsModal .performance-item.primary .performance-value').textContent = 'N/A'; // Retention Rate
+                    document.querySelector('#planDetailsModal .performance-item.success .performance-value')
+                        .textContent = 'N/A'; // Conversion Rate
+                    document.querySelector('#planDetailsModal .performance-item.primary .performance-value')
+                        .textContent = 'N/A'; // Retention Rate
 
-                    const avgLifetimeValueElement = document.querySelector('#planDetailsModal .performance-item.warning .performance-value');
+                    const avgLifetimeValueElement = document.querySelector(
+                        '#planDetailsModal .performance-item.warning .performance-value');
                     if (subscription.user_subscriptions_count > 0) {
-                        const avgLifetimeValue = (subscription.user_subscriptions_sum_price / subscription.user_subscriptions_count).toFixed(2);
+                        const avgLifetimeValue = (subscription.user_subscriptions_sum_price / subscription
+                            .user_subscriptions_count).toFixed(2);
                         avgLifetimeValueElement.textContent = `$${avgLifetimeValue}`;
                     } else {
                         avgLifetimeValueElement.textContent = '$0.00';
                     }
 
-                    // Update edit button link
-                    document.getElementById('editPlanBtn').href =
-                        `/admin/subscriptions/${subscription.id}/edit`; // Assuming a route structure
+                    if (subscription.id !== '1') {
+                        document.getElementById('editPlanBtn').href =
+                            "{{ route('subscription.edit', ':id') }}".replace(
+                                ':id',
+                                subscription.id
+                            )
+                    }
+
                 }
             });
         });

@@ -420,7 +420,7 @@ h3 {
 header {
     position: absolute;
     width: 100%;
-    z-index: 99999;
+    z-index: 1;
     transition: .4s all;
     border-bottom: 1px solid rgba(255, 255, 255, .2);
 }
@@ -1100,11 +1100,11 @@ header.fixed .navbar {
 
 /* how it works video model   */
 .modal {
-    z-index: 999999;
+    /* z-index: 999999; */
 }
 
 .modal-backdrop.show {
-    z-index: 99999;
+    /* z-index: 99999; */
     opacity: .7;
 }
 

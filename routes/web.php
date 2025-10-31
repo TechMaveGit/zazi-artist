@@ -5,7 +5,10 @@ use App\Http\Controllers\Admin\{SubscriptionController, SalonController, Transac
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\ShopLocationController;
 use App\Http\Controllers\SubscriptionInvoiceController;
+use App\Http\Controllers\Web\StaffController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -20,6 +23,23 @@ Route::middleware(['auth:salon'])->group(function () {
     Route::get('/profile', [HomeController::class, 'profile'])->name('web.profile');
     Route::patch('/profile/update', [ProfileController::class, 'webUpdate'])->name('web.profile.update');
     Route::post('/profile/update-image', [ProfileController::class, 'webUpdatePicture'])->name('web.profile.update.picture');
+
+    Route::put('/shop/{shop}/update', [ShopController::class, 'update'])->name('web.shop.update');
+    // Shop Locations
+    Route::prefix('shop-locations')->name('web.shop_locations.')->group(function () {
+        Route::get('/', [ShopLocationController::class, 'index'])->name('index');
+        Route::get('/{shopLocation}', [ShopLocationController::class, 'show'])->name('show');
+        Route::post('/', [ShopLocationController::class, 'store'])->name('store');
+        Route::put('/{shopLocation}', [ShopLocationController::class, 'update'])->name('update');
+        Route::delete('/{shopLocation}', [ShopLocationController::class, 'destroy'])->name('destroy');
+    });
+
+    // Shop Gallery Images
+    Route::post('/gallery/store', [ShopController::class, 'uploadGalleryImages'])->name('web.gallery.upload');
+    Route::delete('/profile/gallery/{shopGalleryImage}', [ShopController::class, 'deleteGalleryImage'])->name('web.gallery.delete');
+
+    // Staff Management
+    Route::resource('staff', StaffController::class)->names('web.staff');
 });
 
 Route::prefix('super-admin')->group(function () {

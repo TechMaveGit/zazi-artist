@@ -46,6 +46,10 @@
                 font-weight: 800;
                 color: #667eea;
             }
+
+            #maxSalons:read-only {
+                background-color: #ebebebcf;
+            }
         </style>
     @endpush
     <div class="page-wrapper">
@@ -127,7 +131,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-4 mb-3">
+                                        <div class="col-md-6 mb-3">
                                             <label class="form-label">Billing Duration</label>
 
                                             <div class="custom-default-select">
@@ -147,15 +151,34 @@
                                             <input type="hidden" name="billing_period" id="billingPeriodHidden"
                                                 value="monthly">
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label">Max Branches</label>
-                                            <input type="number" class="form-control" id="maxSalons" placeholder="5"
-                                                name="max_branches">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Plan Type</label>
+
+                                            <div class="custom-default-select" id="plan_type">
+                                                <div class="select-trigger form-control" data-value="individual">
+                                                    <span class="selected-text">Individual</span>
+                                                    <span class="select-arrow">
+                                                        <iconify-icon
+                                                            icon="iconamoon:arrow-down-2-light"></iconify-icon>
+                                                    </span>
+                                                </div>
+                                                <div class="options">
+                                                    <span data-value="individual">Individual</span>
+                                                    <span data-value="multiple">Multiple</span>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="type" id="planTypeHidden"
+                                                value="individual">
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label">Max Artists Per Branch</label>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Max Locations</label>
+                                            <input type="number" class="form-control" id="maxSalons"
+                                                placeholder="5" name="max_location">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Max Artists</label>
                                             <input type="number" class="form-control" id="maxArtists"
-                                                placeholder="10" name="max_artists_per_branch">
+                                                placeholder="10" name="max_artists">
                                         </div>
                                     </div>
 
@@ -182,34 +205,7 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Features -->
-                            <div class="card glass-card">
-                                <div class="card-header">
-                                    <h6 class="card-title">
-                                        <iconify-icon icon="iconoir:star"></iconify-icon>
-                                        Plan Features
-                                    </h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row" id="featuresGrid">
-                                        @forelse ($features as $feature)
-                                            <div class="col-md-6 mb-3">
-                                                <div class="feature-checkbox">
-                                                    <input type="checkbox" id="feature{{ $loop->index }}"
-                                                        class="feature-input" name="features[]"
-                                                        value="{{ $feature?->name ?? '' }}">
-                                                    <label for="feature{{ $loop->index }}"
-                                                        class="feature-label">{{ $feature?->name ?? '' }}</label>
-                                                </div>
-                                            </div>
-                                        @empty
-                                        @endforelse
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
                         <!-- Preview -->
                         <div class="col-lg-4">
                             <div class="card glass-card mb-4">
@@ -259,8 +255,9 @@
                         </div>
                     </div>
                 </div>
-            </form>
         </div>
+        </form>
+    </div>
     </div>
 
     @push('scripts')
@@ -274,9 +271,10 @@
                 const maxArtistsInput = document.getElementById('maxArtists');
                 const isPopularCheckbox = document.getElementById('isPopular');
                 const isActiveCheckbox = document.getElementById('isActive');
-                const billingDurationSelect = document.querySelector('.custom-default-select');
+                const billingDurationSelect = document.querySelector('.custom-default-select:nth-of-type(1)');
                 const billingPeriodHiddenInput = document.getElementById('billingPeriodHidden');
-                const featureCheckboxes = document.querySelectorAll('.feature-input');
+                const planTypeSelect = document.querySelector('#plan_type'); 
+                const planTypeHiddenInput = document.getElementById('planTypeHidden');
 
                 // Get all preview elements
                 const previewName = document.getElementById('previewName');
@@ -284,7 +282,6 @@
                 const previewPeriod = document.getElementById('previewPeriod');
                 const previewDescription = document.getElementById('previewDescription');
                 const previewBadge = document.getElementById('previewBadge');
-                const previewFeatures = document.getElementById('previewFeatures');
                 const previewMaxSalons = document.getElementById('previewMaxSalons');
                 const previewMaxArtists = document.getElementById('previewMaxArtists');
                 const previewStatus = document.getElementById('previewStatus');
@@ -332,6 +329,24 @@
                     billingPeriodHiddenInput.value = selectedValue; // Update hidden input
                 }
 
+                // Update plan type
+                function updatePlanType() {
+                    if (!planTypeSelect) { // Add null check
+                        console.error("planTypeSelect is null in updatePlanType");
+                        return;
+                    }
+                    const selectTrigger = planTypeSelect.querySelector('.select-trigger');
+                    const selectedValue = selectTrigger.getAttribute('data-value') || 'individual';
+                    planTypeHiddenInput.value = selectedValue; 
+                    if (selectedValue === 'individual') {
+                        maxSalonsInput.value = 1;
+                        maxSalonsInput.readOnly = true;
+                    } else {
+                        maxSalonsInput.readOnly = false;
+                    }
+                    updateMaxSalons(); 
+                }
+
                 // Update max salons
                 function updateMaxSalons() {
                     const maxSalons = maxSalonsInput.value.trim();
@@ -364,30 +379,6 @@
                     }
                 }
 
-                // Update features
-                function updateFeatures() {
-                    previewFeatures.innerHTML = '';
-
-                    featureCheckboxes.forEach(checkbox => {
-                        if (checkbox.checked) {
-                            const featureLabel = checkbox.nextElementSibling.textContent;
-                            const featureElement = document.createElement('div');
-                            featureElement.className = 'preview-feature';
-                            featureElement.innerHTML = `
-                    <iconify-icon icon="prime:check-circle" class="feature-check"></iconify-icon>
-                    <span>${featureLabel}</span>
-                `;
-                            previewFeatures.appendChild(featureElement);
-                        }
-                    });
-
-                    // If no features selected, show placeholder
-                    if (previewFeatures.children.length === 0) {
-                        previewFeatures.innerHTML =
-                            '<div class="preview-feature-placeholder">Select features to display here</div>';
-                    }
-                }
-
                 // Add event listeners
                 planNameInput.addEventListener('input', updatePlanName);
                 planPriceInput.addEventListener('input', updatePlanPrice);
@@ -397,7 +388,7 @@
                 isPopularCheckbox.addEventListener('change', updatePopularBadge);
                 isActiveCheckbox.addEventListener('change', updateStatus);
 
-                // Add event listener for custom select dropdown - listen for clicks on options
+                // Add event listener for custom select dropdown - billing duration
                 if (billingDurationSelect) {
                     const options = billingDurationSelect.querySelectorAll('.options span');
                     options.forEach(option => {
@@ -407,24 +398,44 @@
                     });
                 }
 
-                // Add event listeners for feature checkboxes
-                featureCheckboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', updateFeatures);
-                });
+                // Add event listener for custom select dropdown - plan type
+                if (planTypeSelect) {
+                    const options = planTypeSelect.querySelectorAll('.options span');
+                    options.forEach(option => {
+                        option.addEventListener('click', function() {
+                            const selectedTextSpan = planTypeSelect.querySelector('.selected-text');
+                            selectedTextSpan.textContent = this.textContent;
+                            planTypeSelect.querySelector('.select-trigger').setAttribute('data-value', this.dataset.value);
+                            updatePlanType(); 
+                        });
+                    });
+                }
 
                 // Initialize preview with default values
                 updatePlanName();
                 updatePlanPrice();
                 updatePlanDescription();
                 updateBillingPeriod();
+                if (planTypeSelect) { // Add null check before initial call
+                    updatePlanType();
+                }
                 updateMaxSalons();
                 updateMaxArtists();
                 updatePopularBadge();
                 updateStatus();
-                updateFeatures();
+                // Initial state for maxSalonsInput based on plan type
+                if (planTypeSelect) { // Add null check
+                    const initialPlanType = planTypeSelect.querySelector('.select-trigger').getAttribute('data-value');
+                    if (initialPlanType === 'individual') {
+                        maxSalonsInput.value = 1;
+                        maxSalonsInput.readOnly = true;
+                    } else {
+                        maxSalonsInput.readOnly = false;
+                    }
+                }
 
-                
-                const observer = new MutationObserver(function(mutations) {
+                // MutationObserver for billing duration (if needed, keep it)
+                const observerBilling = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'attributes' && mutation.attributeName === 'data-value') {
                             updateBillingPeriod();
@@ -432,14 +443,14 @@
                     });
                 });
 
-                // Observe changes to the select trigger's data-value attribute
-                const selectTrigger = billingDurationSelect?.querySelector('.select-trigger');
-                if (selectTrigger) {
-                    observer.observe(selectTrigger, {
+                const selectTriggerBilling = billingDurationSelect?.querySelector('.select-trigger');
+                if (selectTriggerBilling) {
+                    observerBilling.observe(selectTriggerBilling, {
                         attributes: true,
                         attributeFilter: ['data-value']
                     });
                 }
+                // Removed MutationObserver for plan type as direct click handler is now used.
             });
         </script>
     @endpush

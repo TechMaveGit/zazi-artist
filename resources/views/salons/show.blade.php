@@ -279,9 +279,11 @@
                                                         </td>
                                                         <td>
                                                             @if ($subscription->invoice_id)
-                                                                <a href="{{ route('web.subscription.invoice.download',encrypt($subscription->invoice_id)) }}" target="_blank">
+                                                                <a href="{{ route('web.subscription.invoice.download', encrypt($subscription->invoice_id)) }}"
+                                                                    target="_blank">
                                                                     <button class="btninvoiceDownload btn" disabled>
-                                                                        <iconify-icon icon="bytesize:download"></iconify-icon>
+                                                                        <iconify-icon
+                                                                            icon="bytesize:download"></iconify-icon>
                                                                         Download
                                                                     </button>
                                                                 </a>
@@ -309,28 +311,33 @@
                                 <div class="tab-pane fade" id="artists" role="tabpanel">
                                     <div class="salon-detail-artists-grid card-body">
                                         @if ($salon->artists)
-                                            <div class="salon-detail-artist-card">
-                                                <div class="salon-detail-artist-avatar">
-                                                    <img src="{{ $salon->artists->profile ? asset('storage/' . $salon->artists->profile) : asset('assets/img/users/userdummy.png') }}"
-                                                        alt="{{ $salon->artists->name }}">
-                                                </div>
-                                                <div class="salon-detail-artist-info">
-                                                    <h6 class="salon-detail-artist-name">{{ $salon->artists->name }}
-                                                    </h6>
-                                                    <p class="salon-detail-artist-specialty">
-                                                        {{ $salon->artists->specialty ?? 'N/A' }}</p>
-                                                    <div class="salon-detail-artist-meta">
-                                                        <span class="salon-detail-artist-rating">
-                                                            <iconify-icon icon="material-symbols:star"></iconify-icon>
-                                                            N/A
-                                                        </span>
-                                                        <span class="salon-detail-artist-bookings">N/A bookings</span>
+                                            @foreach ($salon->artists as $artist)
+                                                <div class="salon-detail-artist-card">
+                                                    <div class="salon-detail-artist-avatar">
+                                                        <img src="{{ $artist->profile ? asset('storage/' . $artist->profile) : asset('assets/img/users/userdummy.png') }}"
+                                                            alt="{{ $artist->name }}">
                                                     </div>
+                                                    <div class="salon-detail-artist-info">
+                                                        <h6 class="salon-detail-artist-name">
+                                                            {{ $artist->name }}
+                                                        </h6>
+                                                        <p class="salon-detail-artist-specialty">
+                                                            {{ $artist->specialty ?? 'N/A' }}</p>
+                                                        <div class="salon-detail-artist-meta">
+                                                            <span class="salon-detail-artist-rating">
+                                                                <iconify-icon
+                                                                    icon="material-symbols:star"></iconify-icon>
+                                                                N/A
+                                                            </span>
+                                                            <span class="salon-detail-artist-bookings">N/A
+                                                                bookings</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="salon-detail-artist-status salon-detail-{{ $artist->status ?? 'active' }}">
+                                                        {{ ucfirst($artist->status ?? 'Active') }}</div>
                                                 </div>
-                                                <div
-                                                    class="salon-detail-artist-status salon-detail-{{ $salon->artists->status ?? 'active' }}">
-                                                    {{ ucfirst($salon->artists->status ?? 'Active') }}</div>
-                                            </div>
+                                            @endforeach
                                         @else
                                             <p class="text-center">No artist found for this salon.</p>
                                         @endif
@@ -398,7 +405,8 @@
                 <div class="modal-body text-center">
                     <h5 class="modal-title mb-2">Suspend Account</h5>
                     <p class="salon-detail-modal-description">Are you sure you want to suspend
-                        <strong>{{ $salon->name }}</strong>? This action will:</p>
+                        <strong>{{ $salon->name }}</strong>? This action will:
+                    </p>
                     <ul class="salon-detail-suspension-effects">
                         <li>Disable salon's access to the platform</li>
                         <li>Hide salon from customer searches</li>
