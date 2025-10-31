@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ShopScheduled extends Model
 {
     protected $guarded = ['id'];
-    protected $fillable = ['shop_id', 'day', 'opening_time', 'closing_time','is_closed','additional_hours'];
+    protected $fillable = ['shop_id', 'shop_location_id', 'day', 'opening_time', 'closing_time','is_closed','additional_hours'];
     protected $casts = [
         'additional_hours' => 'array',
     ];
@@ -26,5 +26,10 @@ class ShopScheduled extends Model
         $date = $startDate->copy()->addDays($dayIndex);
         // 4. Return the date in your desired format (e.g., Sun, 25 October)
         return $date->format('D, d F');
+    }
+
+    public function shopLocation()
+    {
+        return $this->belongsTo(ShopLocation::class);
     }
 }

@@ -54,7 +54,7 @@ class User extends Authenticatable
     }
 
     public function shop(){
-        return $this->hasMany(Shop::class);
+        return $this->hasOne(Shop::class);
     }
 
     public function bookings(){
@@ -68,6 +68,11 @@ class User extends Authenticatable
     public function userSubscription()
     {
         return $this->hasMany(UserSubscription::class);
+    }
+
+    public function activeUserSubscription()
+    {
+        return $this->hasOne(UserSubscription::class)->where('status', 'active');
     }
 
     public function subscriptionInvoices()

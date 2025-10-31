@@ -25,13 +25,12 @@ class StoreSubscriptionRequest extends FormRequest
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
+            'type' => 'required|in:individual,multiple',
             'billing_period' => 'required|in:monthly,quarterly,yearly',
-            'max_branches' => 'required|integer|min:1',
-            'max_artists_per_branch' => 'required|integer|min:1',
+            'max_location' => 'required|integer|min:1',
+            'max_artists' => 'required|integer|min:1',
             'is_popular' => 'boolean',
             'is_active' => 'boolean',
-            'features' => 'required|array',
-            'features.*' => 'string|required', // Each feature should be a string
         ];
     }
 }

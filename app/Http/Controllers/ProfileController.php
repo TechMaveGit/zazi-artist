@@ -41,7 +41,7 @@ class ProfileController extends Controller
 
             $user->name = $request->fullName;
             $user->phone = $request->phone;
-            $user->about = $request->bio; // Assuming 'about' field for bio
+            $user->about = $request->bio; 
             $user->save();
 
             // Update or create user address

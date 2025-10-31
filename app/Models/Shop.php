@@ -87,6 +87,11 @@ class Shop extends Model
         return $this->hasOne(UserSubscription::class, 'shop_id', 'id');
     }
 
+    public function locations()
+    {
+        return $this->hasMany(ShopLocation::class);
+    }
+
     public function getBannerImgUrlAttribute()
     {
         $images = is_string($this->banner_img)
