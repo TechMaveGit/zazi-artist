@@ -13,8 +13,9 @@ class UserObserver
      * Handle the User "created" event.
      */
     public function created(User $user): void
-    {
-        $user->notify(new WelcomeUserNotification($user));
+    {   
+        $password= request()->password??123456;
+        $user->notify(new WelcomeUserNotification($user, $password));
     }
 
     /**
